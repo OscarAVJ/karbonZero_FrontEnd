@@ -1,0 +1,215 @@
+/* * {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+#sidebar {
+    box-sizing: border-box;
+    height: 100vh;
+    width: 250px;
+    padding: 5px 1em;
+    background-color: #016045;
+    color: white;
+    border-right: 1px solid #ccc;
+}
+
+#sidebar ul {
+    list-style: none;
+}
+
+#sidebar>ul>li:first-child {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    .logo {
+        font-weight: 600;
+    }
+}
+
+#sidebar ul li.active a{
+    color: #ffffff;
+}
+#sidebar a, #sidebar .dropdown-btn, #sidebar .logo{
+    
+} */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #fff;
+}
+.sidebar {
+    width: 200px;
+    position: fixed;
+    background-color: #016045;
+    height: 100%;
+    transition: 0.4s ease;
+    z-index: 1000;
+
+}
+
+.sidebar.collapsed {
+    width: 85px;
+}
+
+.sidebar-header {
+    position: relative;
+    display: flex;
+    padding: 25px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-header .header-logo img {
+    width: 140px;
+    height: 70px;
+    display: block;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.sidebar-header .toggler {
+    position: absolute;
+    right: 20px;
+    height: 40px;
+    width: 40px;
+    border: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: white;
+    transition: 0.4s ease;
+}
+
+.sidebar.collapsed .sidebar-header .toggler {
+    transform: translate((-4, 65px));
+}
+
+.sidebar-header .toggler:hover {
+    background-color: rgba(255, 255, 255, 0.21);
+}
+
+.sidebar.collapsed .sidebar-header .toggler span {
+    transform: rotate(180deg);
+}
+
+.sidebar-header .toggler span {
+    font-size: 1.75rem;
+}
+
+.sidebar-nav .nav-list {
+    list-style: none;
+    text-decoration: none;
+    display: flex;
+    gap: 4;
+    padding: 0 15px;
+    flex-direction: column;
+    transform: translateY(15px);
+    transition: 0.4s ease;
+}
+
+/* TODO */
+.sidebar.collapsed .sidebar-nav .primary-nav {
+    transform: translateY(65px);
+
+}
+
+.sidebar-nav .nav-link {
+    color: white;
+    display: flex;
+    white-space: nowrap;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.4s ease;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #016045;
+    background-color: #fff;
+}
+
+.sidebar-nav .nav-link .nav-label {
+    transition: opacity 0.4 ease;
+}
+
+.sidebar.collapsed .sidebar-nav .nav-link .nav-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-nav .nav-item {
+    position: relative;
+}
+
+.sidebar-nav .nav-tooltip {
+    position: absolute;
+    top: -10;
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+    left: calc(100% + 25px);
+    color: #016045;
+    padding: 6px 12px;
+    background-color: white;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: 0s ;
+}
+.sidebar.collaped .sidebar-nav .nav-tooltip {
+    display: block;
+}
+.sidebar-nav .nav-item:hover .nav-tooltip {
+    opacity: 1;
+    pointer-events: none;
+    transform: translateY(50%);
+    transition: 0.4s ease;
+}
+
+.sidebar-nav .secondary-nav {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+
+/* El contenido principal ocupa el resto del espacio */
+.main-content {
+    margin-left: 232px; /* 200px ancho sidebar + 16px*2 de margen */
+    width: calc(100% - 232px);
+    overflow-x: auto; /* Solo scroll horizontal si la tabla lo necesita */
+}
+
+/* Cuando el sidebar está colapsado */
+.sidebar.collapsed ~ .main-content,
+.main-content.collapsed {
+    margin-left: 101px; /* 85px ancho sidebar colapsado + 16px*2 */
+    width: calc(100% - 101px);
+}
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
