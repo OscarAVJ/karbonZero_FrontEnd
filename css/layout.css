@@ -51,6 +51,7 @@ body {
     min-height: 100vh;
     background-color: #fff;
 }
+
 .sidebar {
     width: 200px;
     position: fixed;
@@ -113,6 +114,13 @@ body {
     font-size: 1.75rem;
 }
 
+.nav-label-info {
+    color: white;
+    opacity: 0.7;
+    padding-top: 20px;
+    padding-left: 17px;
+}
+
 .sidebar-nav .nav-list {
     list-style: none;
     text-decoration: none;
@@ -173,11 +181,13 @@ body {
     border-radius: 8px;
     white-space: nowrap;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    transition: 0s ;
+    transition: 0s;
 }
+
 .sidebar.collaped .sidebar-nav .nav-tooltip {
     display: block;
 }
+
 .sidebar-nav .nav-item:hover .nav-tooltip {
     opacity: 1;
     pointer-events: none;
@@ -194,21 +204,32 @@ body {
 
 /* El contenido principal ocupa el resto del espacio */
 .main-content {
-    margin-left: 232px; /* 200px ancho sidebar + 16px*2 de margen */
+    margin-left: 232px;
+    /* 200px ancho sidebar + 16px*2 de margen */
     width: calc(100% - 232px);
-    overflow-x: auto; /* Solo scroll horizontal si la tabla lo necesita */
+    overflow-x: auto;
+    /* Solo scroll horizontal si la tabla lo necesita */
 }
 
 /* Cuando el sidebar está colapsado */
-.sidebar.collapsed ~ .main-content,
+.sidebar.collapsed~.main-content,
 .main-content.collapsed {
-    margin-left: 101px; /* 85px ancho sidebar colapsado + 16px*2 */
+    margin-left: 101px;
+    /* 85px ancho sidebar colapsado + 16px*2 */
     width: calc(100% - 101px);
 }
+
+.nav-label-info.collapsed {
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s;
+}
+
 .fade-out {
     opacity: 0;
     transition: opacity 0.3s;
 }
+
 .fade-in {
     opacity: 1;
     transition: opacity 0.3s;

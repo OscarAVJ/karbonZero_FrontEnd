@@ -1,9 +1,11 @@
 const sidebar = document.querySelector(".sidebar");
 const sidebarToggler = document.querySelector(".sidebar-toggler");
 const mainContent = document.querySelector(".main-content");
+const sideBarLabels = document.querySelectorAll(".nav-label-info");
 
 sidebarToggler.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
+    sideBarLabels.forEach(label => label.classList.toggle("collapsed"));
     if (mainContent) {
         mainContent.classList.toggle("collapsed");
     }

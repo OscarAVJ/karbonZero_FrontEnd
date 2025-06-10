@@ -125,63 +125,71 @@ function setupPagination(tabId, data) {
 
 
 function initConsumptions() {
-    // Datos de ejemplo
-    const tabsData = [
-        {
-            id: 'agua',
-            name: 'Agua',
-            data: Array.from({ length: 23 }, (_, i) => ({
-                id: i + 1,
-                cantidad: `${100 + i * 10}L`,
-                fecha: `2024-01-${(i % 30 + 1).toString().padStart(2, '0')}`,
-                costo: `$${10 + i}`
-            }))
-        },
-        {
-            id: 'luz',
-            name: 'Luz',
-            data: Array.from({ length: 12 }, (_, i) => ({
-                id: i + 1,
-                cantidad: `${200 + i * 20}kWh`,
-                fecha: `2024-02-${(i % 28 + 1).toString().padStart(2, '0')}`,
-                costo: `$${20 + i}`
-            }))
-        },
-        {
-            id: 'gasolina',
-            name: 'Gasolina',
-            data: Array.from({ length: 8 }, (_, i) => ({
-                id: i + 1,
-                cantidad: `${20 + i * 2}L`,
-                fecha: `2024-03-${(i % 31 + 1).toString().padStart(2, '0')}`,
-                costo: `$${30 + i}`
-            }))
-        }
-    ];
+  // Datos de ejemplo
+  const tabsData = [
+    {
+      id: 'agua',
+      name: 'Agua',
+      data: Array.from({ length: 23 }, (_, i) => ({
+        id: i + 1,
+        cantidad: `${100 + i * 10}L`,
+        fecha: `2024-01-${(i % 30 + 1).toString().padStart(2, '0')}`,
+        costo: `$${10 + i}`
+      }))
+    },
+    {
+      id: 'luz',
+      name: 'Luz',
+      data: Array.from({ length: 12 }, (_, i) => ({
+        id: i + 1,
+        cantidad: `${200 + i * 20}kWh`,
+        fecha: `2024-02-${(i % 28 + 1).toString().padStart(2, '0')}`,
+        costo: `$${20 + i}`
+      }))
+    },
+    {
+      id: 'gasolina',
+      name: 'Gasolina',
+      data: Array.from({ length: 8 }, (_, i) => ({
+        id: i + 1,
+        cantidad: `${20 + i * 2}L`,
+        fecha: `2024-03-${(i % 31 + 1).toString().padStart(2, '0')}`,
+        costo: `$${30 + i}`
+      }))
+    },
+    {
+      id: '1',
+      name: 'Gasolina',
+      data: Array.from({ length: 8 }, (_, i) => ({
+        id: i + 1,
+        cantidad: `${20 + i * 2}L`,
+        fecha: `2024-03-${(i % 31 + 1).toString().padStart(2, '0')}`,
+        costo: `$${30 + i}`
+      }))
+    }
+  ];
 
-    renderTabs(tabsData);
+  renderTabs(tabsData);
 
-    // --- Funciones internas ---
-    function renderTabs(tabsData) {
-        const tabList = document.getElementById('tabList');
-        const tabContent = document.getElementById('tabContent');
-        tabList.innerHTML = '';
-        tabContent.innerHTML = '';
+  function renderTabs(tabsData) {
+    const tabList = document.getElementById('tabList');
+    const tabContent = document.getElementById('tabContent');
+    tabList.innerHTML = '';
+    tabContent.innerHTML = '';
 
-        tabsData.forEach((tab, idx) => {
-            // Tab
-            const tabItem = document.createElement('li');
-            tabItem.className = 'nav-item';
-            tabItem.innerHTML = `
+    tabsData.forEach((tab, idx) => {
+      const tabItem = document.createElement('li');
+      tabItem.className = 'nav-item';
+      tabItem.innerHTML = `
                 <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
             `;
-            tabList.appendChild(tabItem);
+      tabList.appendChild(tabItem);
 
-            // Tab content
-            const tabPane = document.createElement('div');
-            tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
-            tabPane.id = tab.id;
-            tabPane.innerHTML = `
+      // Tab content
+      const tabPane = document.createElement('div');
+      tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
+      tabPane.id = tab.id;
+      tabPane.innerHTML = `
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -210,25 +218,25 @@ function initConsumptions() {
                     </nav>
                 </div>
             `;
-            tabContent.appendChild(tabPane);
+      tabContent.appendChild(tabPane);
 
-            setupPagination(tabPane, tab.data);
-        });
-    }
+      setupPagination(tabPane, tab.data);
+    });
+  }
 
-    function setupPagination(tabPane, data) {
-        const tableBody = tabPane.querySelector('tbody');
-        const pagination = tabPane.querySelector('.pagination');
-        const itemsPerPageSelect = tabPane.querySelector('.itemsPerPage');
-        let currentPage = 1;
-        let itemsPerPage = parseInt(itemsPerPageSelect.value);
+  function setupPagination(tabPane, data) {
+    const tableBody = tabPane.querySelector('tbody');
+    const pagination = tabPane.querySelector('.pagination');
+    const itemsPerPageSelect = tabPane.querySelector('.itemsPerPage');
+    let currentPage = 1;
+    let itemsPerPage = parseInt(itemsPerPageSelect.value);
 
-        function renderTablePage(page) {
-            currentPage = page;
-            const start = (page - 1) * itemsPerPage;
-            const paginatedItems = data.slice(start, start + itemsPerPage);
+    function renderTablePage(page) {
+      currentPage = page;
+      const start = (page - 1) * itemsPerPage;
+      const paginatedItems = data.slice(start, start + itemsPerPage);
 
-            tableBody.innerHTML = paginatedItems.map(item => `
+      tableBody.innerHTML = paginatedItems.map(item => `
                 <tr>
                     <td>${item.id}</td>
                     <td>${item.cantidad}</td>
@@ -240,31 +248,31 @@ function initConsumptions() {
                     </td>
                 </tr>
             `).join('');
-        }
-
-        function renderPagination() {
-            const totalPages = Math.ceil(data.length / itemsPerPage);
-            pagination.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.className = `page-item${i === currentPage ? ' active' : ''}`;
-                li.innerHTML = `<button class="page-link">${i}</button>`;
-                li.querySelector('button').addEventListener('click', () => {
-                    renderTablePage(i);
-                    renderPagination();
-                });
-                pagination.appendChild(li);
-            }
-        }
-
-        itemsPerPageSelect.addEventListener('change', () => {
-            itemsPerPage = parseInt(itemsPerPageSelect.value);
-            renderTablePage(1);
-            renderPagination();
-        });
-
-        renderTablePage(currentPage);
-        renderPagination();
     }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const list = document.createElement('li');
+        list.className = `page-item${i === currentPage ? ' active' : ''}`;
+        list.innerHTML = `<button class="page-link">${i}</button>`;
+        list.querySelector('button').addEventListener('click', () => {
+          renderTablePage(i);
+          renderPagination();
+        });
+        pagination.appendChild(li);
+      }
+    }
+
+    itemsPerPageSelect.addEventListener('change', () => {
+      itemsPerPage = parseInt(itemsPerPageSelect.value);
+      renderTablePage(1);
+      renderPagination();
+    });
+
+    renderTablePage(currentPage);
+    renderPagination();
+  }
 }
