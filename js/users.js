@@ -236,14 +236,14 @@ function initUsers() {
       pagination.innerHTML = '';
 
       for (let i = 1; i <= totalPages; i++) {
-        const list = document.createElement('li');
+        const list = document.createElement('list');
         list.className = `page-item${i === currentPage ? ' active' : ''}`;
         list.innerHTML = `<button class="page-link">${i}</button>`;
         list.querySelector('button').addEventListener('click', () => {
           renderTablePage(i);
           renderPagination();
         });
-        pagination.appendChild(li);
+        pagination.appendChild(list);
       }
     }
 

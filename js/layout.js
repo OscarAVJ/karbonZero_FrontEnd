@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const body = temp.querySelector('body');
                     mainContent.innerHTML = body ? body.innerHTML : html;
 
-                    // Cargar CSS específico si existe
+                    //! Cargar CSS específico si existe
                     const cssName = '../css/' + page.replace('.html', '.css');
                     const oldCss = document.querySelector(`link[data-dynamic-css="${cssName}"]`);
                     if (oldCss) oldCss.remove();
@@ -52,19 +52,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
 
-                    ///Cargar javascript asociado a la página
+                    //!~Cargar javascript asociado a la página
                     const scriptName = '../js/' + page.replace('.html', '.js');
                     const oldScript = document.querySelector(`script[src="${scriptName}"]`);
                     if (oldScript) oldScript.remove();
 
                     ///Limpia la función global antes de cargar el nuevo script
                     //TODO: Aca iran las demas paginas a ingresar
-
                     if (page === 'consumptions.html') {
                         window.initConsumptions = undefined;
                     }
                     if (page === 'users.html') {
                         window.initUsers = undefined;
+                    }
+                    if (page === 'resources.html') {
+                        window.initResources = undefined;
                     }
                     fetch(scriptName)
                         .then(res => {
@@ -80,22 +82,25 @@ document.addEventListener('DOMContentLoaded', function () {
                                     if (page === 'users.html' && typeof initUsers === 'function') {
                                         initUsers();
                                     }
+                                    if (page === 'resources.html' && typeof initResources === 'function') {
+                                        initResources();
+                                    }
                                 };
                                 document.body.appendChild(script);
                             }
                         });
-                    // Aplica fade-in después de un pequeño delay
+                    /// Aplicacion de fade-in después de un pequeño delay de 300 milisegundos
                     setTimeout(() => {
                         mainContent.classList.remove('fade-out');
                         mainContent.classList.add('fade-in');
-                        // Quita la clase fade-in después de la animación para que funcione la próxima vez
+                        /// Quita la clase fade-in después de la animación para que funcione la próxima vez
                         setTimeout(() => mainContent.classList.remove('fade-in'), 300);
                     }, 10);
                 });
-        }, 300); // Debe coincidir con el tiempo de transición en CSS
+        }, 300); 
     }
 
-    // Asigna evento a cada enlace del sidebar
+    /// Asigna evento a cada enlace del sidebar
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function (e) {
             const label = this.querySelector('.nav-label')?.textContent.trim().toLowerCase();
@@ -106,6 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Carga el dashboard por defecto
+    /// Carga el dashboard por defecto
     loadContent('dashboard.html');
 });

@@ -128,7 +128,7 @@ function initConsumptions() {
   // Datos de ejemplo
   const tabsData = [
     {
-      id: 'agua',
+      id: '1',
       name: 'Agua',
       data: Array.from({ length: 23 }, (_, i) => ({
         id: i + 1,
@@ -138,7 +138,7 @@ function initConsumptions() {
       }))
     },
     {
-      id: 'luz',
+      id: '2',
       name: 'Luz',
       data: Array.from({ length: 12 }, (_, i) => ({
         id: i + 1,
@@ -148,7 +148,7 @@ function initConsumptions() {
       }))
     },
     {
-      id: 'gasolina',
+      id: '3',
       name: 'Gasolina',
       data: Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
@@ -158,7 +158,7 @@ function initConsumptions() {
       }))
     },
     {
-      id: '1',
+      id: '4',
       name: 'Gasolina',
       data: Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
@@ -255,14 +255,14 @@ function initConsumptions() {
       pagination.innerHTML = '';
 
       for (let i = 1; i <= totalPages; i++) {
-        const list = document.createElement('li');
+        const list = document.createElement('list');
         list.className = `page-item${i === currentPage ? ' active' : ''}`;
         list.innerHTML = `<button class="page-link">${i}</button>`;
         list.querySelector('button').addEventListener('click', () => {
           renderTablePage(i);
           renderPagination();
         });
-        pagination.appendChild(li);
+        pagination.appendChild(list);
       }
     }
 
