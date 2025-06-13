@@ -68,61 +68,6 @@ function renderTabs(tabsData) {
   });
 }
 
-function setupPagination(tabId, data) {
-  const tabPane = document.getElementById(tabId);
-  const tableBody = tabPane.querySelector('tbody');
-  const pagination = tabPane.querySelector('.pagination');
-  const itemsPerPageSelect = tabPane.querySelector('.itemsPerPage');
-
-  let currentPage = 1;
-  let itemsPerPage = parseInt(itemsPerPageSelect.value);
-
-  function renderTablePage(page) {
-    currentPage = page;
-    const start = (page - 1) * itemsPerPage;
-    const paginatedItems = data.slice(start, start + itemsPerPage);
-
-    tableBody.innerHTML = paginatedItems.map(item => `
-      <tr>
-        <td>${item.id}</td>
-        <td>${item.nombre}</td>
-        <td>${item.usuario}</td>
-        <td>${item.correoElectronico}</td>
-        <td>
-          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
-          <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  function renderPagination() {
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    pagination.innerHTML = '';
-
-    for (let i = 1; i <= totalPages; i++) {
-      const li = document.createElement('li');
-      li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-      li.innerHTML = `<button class="page-link">${i}</button>`;
-      li.querySelector('button').addEventListener('click', () => {
-        renderTablePage(i);
-        renderPagination();
-      });
-      pagination.appendChild(li);
-    }
-  }
-
-  itemsPerPageSelect.addEventListener('change', () => {
-    itemsPerPage = parseInt(itemsPerPageSelect.value);
-    renderTablePage(1);
-    renderPagination();
-  });
-
-  renderTablePage(currentPage);
-  renderPagination();
-}
-
-
 
 function initUsers() {
   // Datos de ejemplo
@@ -152,25 +97,27 @@ function initUsers() {
   ];
   renderTabs(tabsData);
 
-  function renderTabs(tabsData) {
-    const tabList = document.getElementById('tabList');
-    const tabContent = document.getElementById('tabContent');
-    tabList.innerHTML = '';
-    tabContent.innerHTML = '';
 
-    tabsData.forEach((tab, idx) => {
-      const tabItem = document.createElement('li');
-      tabItem.className = 'nav-item';
-      tabItem.innerHTML = `
+}
+function renderTabs(tabsData) {
+  const tabList = document.getElementById('tabList');
+  const tabContent = document.getElementById('tabContent');
+  tabList.innerHTML = '';
+  tabContent.innerHTML = '';
+
+  tabsData.forEach((tab, idx) => {
+    const tabItem = document.createElement('li');
+    tabItem.className = 'nav-item';
+    tabItem.innerHTML = `
                 <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
             `;
-      tabList.appendChild(tabItem);
+    tabList.appendChild(tabItem);
 
-      // Tab content
-      const tabPane = document.createElement('div');
-      tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
-      tabPane.id = tab.id;
-      tabPane.innerHTML = `
+    // Tab content
+    const tabPane = document.createElement('div');
+    tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
+    tabPane.id = tab.id;
+    tabPane.innerHTML = `
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -185,39 +132,29 @@ function initUsers() {
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div>
-                        <span>Items por página</span>
-                        <select class="form-select d-inline w-auto itemsPerPage ms-2">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </div>
-                    <nav>
+                <div>
+                    <nav style="display: flex; justify-content: center;">
                         <ul class="pagination mb-0"></ul>
                     </nav>
                 </div>
             `;
-      tabContent.appendChild(tabPane);
+    tabContent.appendChild(tabPane);
 
-      setupPagination(tabPane, tab.data);
-    });
-  }
+    setupPagination(tabPane, tab.data);
+  });
+}
 
-  function setupPagination(tabPane, data) {
-    const tableBody = tabPane.querySelector('tbody');
-    const pagination = tabPane.querySelector('.pagination');
-    const itemsPerPageSelect = tabPane.querySelector('.itemsPerPage');
-    let currentPage = 1;
-    let itemsPerPage = parseInt(itemsPerPageSelect.value);
+function setupPagination(tabPane, data) {
+  const tableBody = tabPane.querySelector('tbody');
+  const pagination = tabPane.querySelector('.pagination');
+  let currentPage = 1;
+  let itemsPerPage = 10;
 
-    function renderTablePage(page) {
-      currentPage = page;
-      const start = (page - 1) * itemsPerPage;
-      const paginatedItems = data.slice(start, start + itemsPerPage);
-
-      tableBody.innerHTML = paginatedItems.map(item => `
+  function renderTablePage(page) {
+    currentPage = page;
+    const start = (page - 1) * itemsPerPage;
+    const paginatedItems = data.slice(start, start + itemsPerPage);
+    tableBody.innerHTML = paginatedItems.map(item => `
                 <tr>
                     <td>${item.id}</td>
                     <td>${item.nombre}</td>
@@ -229,31 +166,79 @@ function initUsers() {
                     </td>
                 </tr>
             `).join('');
+  }
+
+  function renderPagination() {
+    const totalPages = Math.max(1, Math.ceil(data.length / itemsPerPage));
+    const start = (currentPage - 1) * itemsPerPage + 1;
+    const end = Math.min(currentPage * itemsPerPage, data.length);
+
+    pagination.innerHTML = '';
+
+    // Contenedor principal: paginación centrada con info a la izquierda
+    const paginationControls = document.createElement('div');
+    paginationControls.className = 'd-flex justify-content-center align-items-center gap-3 mt-3 w-100';
+
+    // Izquierda: Info
+    const info = document.createElement('div');
+    info.className = 'pagination-info text-muted';
+    info.textContent = `Mostrando ${start}-${end} de ${data.length}`;
+
+    // Centro: Paginación
+    const nav = document.createElement('nav');
+    const ul = document.createElement('ul');
+    ul.className = 'pagination mb-0';
+
+    // Flecha izquierda
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
+    prevLi.innerHTML = `<span class="page-link">&lt;</span>`;
+    if (currentPage > 1) {
+      prevLi.addEventListener('click', () => {
+        renderTablePage(currentPage - 1);
+        currentPage = currentPage - 1;
+        renderPagination();
+      });
     }
+    ul.appendChild(prevLi);
 
-    function renderPagination() {
-      const totalPages = Math.ceil(data.length / itemsPerPage);
-      pagination.innerHTML = '';
-
-      for (let i = 1; i <= totalPages; i++) {
-        const list = document.createElement('list');
-        list.className = `page-item${i === currentPage ? ' active' : ''}`;
-        list.innerHTML = `<button class="page-link">${i}</button>`;
-        list.querySelector('button').addEventListener('click', () => {
+    // Números de página
+    for (let i = 1; i <= totalPages; i++) {
+      const li = document.createElement('li');
+      li.className = `page-item${i === currentPage ? ' active' : ''}`;
+      li.innerHTML = `<button class="page-link">${i}</button>`;
+      if (i !== currentPage) {
+        li.querySelector('button').addEventListener('click', () => {
           renderTablePage(i);
+          currentPage = i;
           renderPagination();
         });
-        pagination.appendChild(list);
       }
+      ul.appendChild(li);
     }
 
-    itemsPerPageSelect.addEventListener('change', () => {
-      itemsPerPage = parseInt(itemsPerPageSelect.value);
-      renderTablePage(1);
-      renderPagination();
-    });
+    // Flecha derecha
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
+    nextLi.innerHTML = `<span class="page-link">&gt;</span>`;
+    if (currentPage < totalPages) {
+      nextLi.addEventListener('click', () => {
+        renderTablePage(currentPage + 1);
+        currentPage = currentPage + 1;
+        renderPagination();
+      });
+    }
+    ul.appendChild(nextLi);
 
-    renderTablePage(currentPage);
-    renderPagination();
+    nav.appendChild(ul);
+
+    // Ensamblar: info a la izquierda, paginación al centro
+    paginationControls.appendChild(info);
+    paginationControls.appendChild(nav);
+
+    pagination.appendChild(paginationControls);
   }
+
+  renderTablePage(currentPage);
+  renderPagination();
 }
