@@ -1,6 +1,123 @@
-<!-- Consumptions Section -->
 <div class="container py-4">
-    <h2 class="general-title">
-        Reportes
-    </h2>
+    <h2 class="general-title">Reportes</h2>
+    <div class="advanced-filters-container p-4">
+        <h3 class="mb-4">Filtros avanzados</h3>
+        <div class="d-flex flex-wrap justify-content-start align-items-end gap-4 mb-3">
+            <div>
+                <label class="form-label">Recurso</label>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 rounded-3"
+                        type="button" id="dropdownRecurso" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-box"></i> Recurso
+                        <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownRecurso">
+                        <li><a class="dropdown-item" href="#">Agua</a></li>
+                        <li><a class="dropdown-item" href="#">Electricidad</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <label class="form-label">Tipo de documento</label>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 rounded-3"
+                        type="button" id="dropdownDocumento" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-file-earmark"></i> Tipo de documento
+                        <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownDocumento">
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                        <li><a class="dropdown-item" href="#">Excel</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
+                    <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaInicio"
+                        style="min-width: 140px; font-size: 0.9rem;">
+                </div>
+            </div>
+            <div>
+                <label for="fechaFin" class="form-label">Fecha de Finalización</label>
+                <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
+                    <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaFin"
+                        style="min-width: 140px; font-size: 0.9rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="advanced-filters-container mt-4">
+        <h3 class="mb-4">Resumen</h3>
+
+        <!-- Usamos row para estructura de grilla -->
+        <div class="row">
+            <!-- Primera columna: Recursos -->
+            <div class="col-md-3 d-flex flex-column gap-2">
+                <h5 class="fw-bold">Recursos:</h5>
+                <div>
+                    <p>Agua</p>
+                    <p>Gasolina</p>
+                    <p>Gasolina</p>
+                    <p>Diesel</p>
+                </div>
+            </div>
+
+            <!-- Segunda columna: Cantidad -->
+            <div class="col-md-3 d-flex flex-column gap-2">
+                <h5 class="fw-bold">Cantidad:</h5>
+                <div>
+                    <p>Agua</p>
+                    <p>Gasolina</p>
+                    <p>Gasolina</p>
+                    <p>Diesel</p>
+                </div>
+            </div>
+
+            <!-- Tercera columna: Opciones de creación -->
+            <div class="col-md-6 d-flex flex-column gap-2">
+                <h5 class="fw-bold">Opciones de creación:</h5>
+                <div class="row">
+                    <!-- Primera columna de checkboxes -->
+                    <div class="col-6 d-flex flex-column gap-2">
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" id="gastosMonetarios">
+                            <label class="form-check-label" for="gastosMonetarios">
+                                Incluir gastos monetarios
+                            </label>
+                        </div>
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" id="co2">
+                            <label class="form-check-label" for="co2">
+                                Incluir toneladas de CO2 producidas
+                            </label>
+                        </div>
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" id="totales">
+                            <label class="form-check-label" for="totales">
+                                Incluir totales
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Segunda columna de checkboxes -->
+                    <div class="col-6 d-flex flex-column gap-2">
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" id="agrupar">
+                            <label class="form-check-label" for="agrupar">
+                                Agrupar registros de un mismo recurso
+                            </label>
+                        </div>
+                        <div class="form-check custom-checkbox checkbox-danger">
+                            <input class="form-check-input" type="checkbox" id="grafico">
+                            <label class="form-check-label" for="grafico">
+                                Presentar como gráfico de barras
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="kz-button-create">Generar reporte</button>
+    </div>
 </div>
