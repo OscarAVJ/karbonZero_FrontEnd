@@ -1,44 +1,64 @@
+
+function initUsers() {
+  const tabsData = [
+    {
+      id: 'usuarios',
+      name: 'Usuarios',
+      columns: [
+        { label: 'ID', field: 'id' },
+        { label: 'Nombre', field: 'nombre' },
+        { label: 'Usuario', field: 'usuario' },
+        { label: 'Correo', field: 'correoElectronico' }
+      ],
+      data: Array.from({ length: 30 }, (_, i) => ({
+        id: i + 1,
+        nombre: `Nombre ${i + 1}`,
+        usuario: `user${i + 1}`,
+        correoElectronico: `user${i + 1}@mail.com`
+      }))
+    }
+  ];
+
+  renderTabs(tabsData);
+}
 function renderTabs(tabsData) {
-  const tabList = document.getElementById('tabList');
+  const tabList    = document.getElementById('tabList');
   const tabContent = document.getElementById('tabContent');
 
-  tabList.innerHTML = '';
+  tabList.innerHTML    = '';
   tabContent.innerHTML = '';
 
-  tabsData.forEach((tab, index) => {
-    const isActive = index === 0;
-
-    ///Creación de tabs
-    const tabItem = document.createElement('li');
-    tabItem.className = 'nav-item';
-    tabItem.innerHTML = `
-      <a class="nav-link ${isActive ? 'tab-active' : 'tab-inactive'}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
+  tabsData.forEach((tab, idx) => {
+    // Crear pestaña (li > a)
+    const li = document.createElement('li');
+    li.className = 'nav-item';
+    li.innerHTML = `
+      <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">
+        ${tab.name}
+      </a>
     `;
-    tabList.appendChild(tabItem);
+    tabList.appendChild(li);
 
-    ///Crear contenido de cada tab
-    const tabPane = document.createElement('div');
-    tabPane.className = `tab-pane fade ${isActive ? 'show active' : ''}`;
-    tabPane.id = tab.id;
-    tabPane.innerHTML = `
-      <div class="table-container table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="theadPosition">
+    // Crear contenido de la pestaña
+    const pane = document.createElement('div');
+    pane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
+    pane.id = tab.id;
+    pane.innerHTML = `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
             <tr>
-              <th class="th_header">ID</th>
-              <th class="th_header">Nombre</th>
-              <th class="th_header">Usuario</th>
-              <th class="th_header">Correo</th>
-              <th class="th_header">Acciones</th>
+              ${tab.columns.map(c => `<th>${c.label}</th>`).join('')}
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-      <div class="pagination-controls mt-3 d-flex justify-content-between align-items-center">
-        <div>
-          <span class="me-2">Items por página</span>
-          <select class="form-select d-inline w-auto itemsPerPage">
+      <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <span>Items por página</span>
+          <select class="form-select form-select-sm itemsPerPage w-auto">
             <option value="5">5</option>
             <option value="10" selected>10</option>
             <option value="15">15</option>
@@ -49,196 +69,76 @@ function renderTabs(tabsData) {
         </nav>
       </div>
     `;
-    tabContent.appendChild(tabPane);
+    tabContent.appendChild(pane);
 
-    ///Inicializar paginación
-    setupPagination(tab.id, tab.data);
+    setupPagination(pane, tab.data, tab.columns);
   });
 
-  ///Agregar evento para cambiar colores dinámicamente
-  document.querySelectorAll('#tabList .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      document.querySelectorAll('#tabList .nav-link').forEach(l => {
-        l.classList.remove('tab-active');
-        l.classList.add('tab-inactive');
-      });
-      link.classList.remove('tab-inactive');
-      link.classList.add('tab-active');
-    });
+}
+
+function setupPagination(pane, data, columns) {
+  const tbody      = pane.querySelector('tbody');
+  const pagination = pane.querySelector('.pagination');
+  const selector   = pane.querySelector('.itemsPerPage');
+
+  let currentPage   = 1;
+  let itemsPerPage  = Number(selector.value);
+
+  selector.addEventListener('change', () => {
+    itemsPerPage = Number(selector.value);
+    currentPage  = 1;
+    renderTablePage();
+    renderPagination();
   });
-}
 
+  function renderTablePage() {
+    const start = (currentPage - 1) * itemsPerPage;
+    const rows  = data.slice(start, start + itemsPerPage);
 
-function initUsers() {
-  // Datos de ejemplo
-  const tabsData = [
-    {
-      id: '1',
-      name: 'Usuarios',
-      data: [
-        { id: 1, nombre: '100L', usuario: '2024-01-01', correoElectronico: '$10' },
-        { id: 2, nombre: '150L', usuario: '2024-01-02', correoElectronico: '$15' },
-        { id: 3, nombre: '200L', usuario: '2024-01-03', correoElectronico: '$20' },
-        { id: 4, nombre: '250L', usuario: '2024-01-04', correoElectronico: '$25' },
-        { id: 5, nombre: '300L', usuario: '2024-01-05', correoElectronico: '$30' },
-        { id: 6, nombre: '350L', usuario: '2024-01-06', correoElectronico: '$35' },
-        { id: 7, nombre: '400L', usuario: '2024-01-07', correoElectronico: '$40' },
-        { id: 8, nombre: '450L', usuario: '2024-01-08', correoElectronico: '$45' },
-        { id: 9, nombre: '500L', usuario: '2024-01-09', correoElectronico: '$50' },
-        { id: 10, nombre: '550L', usuario: '2024-01-10', correoElectronico: '$55' },
-        { id: 11, nombre: '600L', usuario: '2024-01-11', correoElectronico: '$60' },
-        { id: 1, nombre: '100L', usuario: '2024-01-01', correoElectronico: '$10' },
-        { id: 2, nombre: '150L', usuario: '2024-01-02', correoElectronico: '$15' },
-        { id: 3, nombre: '200L', usuario: '2024-01-03', correoElectronico: '$20' },
-        { id: 4, nombre: '250L', usuario: '2024-01-04', correoElectronico: '$25' },
-        { id: 5, nombre: '300L', usuario: '2024-01-05', correoElectronico: '$30' },
-      ]
-    },
-  ];
-  renderTabs(tabsData);
-
-
-}
-function renderTabs(tabsData) {
-  const tabList = document.getElementById('tabList');
-  const tabContent = document.getElementById('tabContent');
-  tabList.innerHTML = '';
-  tabContent.innerHTML = '';
-
-  tabsData.forEach((tab, idx) => {
-    const tabItem = document.createElement('li');
-    tabItem.className = 'nav-item';
-    tabItem.innerHTML = `
-                <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
-            `;
-    tabList.appendChild(tabItem);
-
-    // Tab content
-    const tabPane = document.createElement('div');
-    tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
-    tabPane.id = tab.id;
-    tabPane.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Usuario</th>
-                                <th>Correo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div>
-                    <nav style="display: flex; justify-content: center;">
-                        <ul class="pagination mb-0"></ul>
-                    </nav>
-                </div>
-            `;
-    tabContent.appendChild(tabPane);
-
-    setupPagination(tabPane, tab.data);
-  });
-}
-
-function setupPagination(tabPane, data) {
-  const tableBody = tabPane.querySelector('tbody');
-  const pagination = tabPane.querySelector('.pagination');
-  let currentPage = 1;
-  let itemsPerPage = 10;
-
-  function renderTablePage(page) {
-    currentPage = page;
-    const start = (page - 1) * itemsPerPage;
-    const paginatedItems = data.slice(start, start + itemsPerPage);
-    tableBody.innerHTML = paginatedItems.map(item => `
-                <tr>
-                    <td>${item.id}</td>
-                    <td>${item.nombre}</td>
-                    <td>${item.usuario}</td>
-                    <td>${item.correoElectronico}</td>
-                    <td>
-                        <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        ${columns.map(c => `<td>${r[c.field] ?? ''}</td>`).join('')}
+        <td>
+          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
+          <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+        </td>
+      </tr>
+    `).join('');
   }
 
   function renderPagination() {
     const totalPages = Math.max(1, Math.ceil(data.length / itemsPerPage));
     const start = (currentPage - 1) * itemsPerPage + 1;
-    const end = Math.min(currentPage * itemsPerPage, data.length);
+    const end   = Math.min(currentPage * itemsPerPage, data.length);
 
     pagination.innerHTML = '';
 
-    // Contenedor principal: paginación centrada con info a la izquierda
-    const paginationControls = document.createElement('div');
-    paginationControls.className = 'd-flex justify-content-center align-items-center gap-3 mt-3 w-100';
-
-    // Izquierda: Info
-    const info = document.createElement('div');
-    info.className = 'pagination-info text-muted';
+    const info = document.createElement('span');
+    info.className = 'text-muted me-3';
     info.textContent = `Mostrando ${start}-${end} de ${data.length}`;
+    pagination.appendChild(info);
 
-    // Centro: Paginación
-    const nav = document.createElement('nav');
     const ul = document.createElement('ul');
     ul.className = 'pagination mb-0';
+    pagination.appendChild(ul);
 
-    // Flecha izquierda
-    const prevLi = document.createElement('li');
-    prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
-    prevLi.innerHTML = `<span class="page-link">&lt;</span>`;
-    if (currentPage > 1) {
-      prevLi.addEventListener('click', () => {
-        renderTablePage(currentPage - 1);
-        currentPage = currentPage - 1;
-        renderPagination();
-      });
-    }
-    ul.appendChild(prevLi);
-
-    // Números de página
-    for (let i = 1; i <= totalPages; i++) {
+    const addBtn = (label, page, disabled = false, active = false) => {
       const li = document.createElement('li');
-      li.className = `page-item${i === currentPage ? ' active' : ''}`;
-      li.innerHTML = `<button class="page-link">${i}</button>`;
-      if (i !== currentPage) {
-        li.querySelector('button').addEventListener('click', () => {
-          renderTablePage(i);
-          currentPage = i;
-          renderPagination();
-        });
-      }
-      ul.appendChild(li);
-    }
-
-    // Flecha derecha
-    const nextLi = document.createElement('li');
-    nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
-    nextLi.innerHTML = `<span class="page-link">&gt;</span>`;
-    if (currentPage < totalPages) {
-      nextLi.addEventListener('click', () => {
-        renderTablePage(currentPage + 1);
-        currentPage = currentPage + 1;
+      li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+      li.innerHTML = `<button class="page-link">${label}</button>`;
+      if (!disabled && !active) li.firstChild.addEventListener('click', () => {
+        currentPage = page;
+        renderTablePage();
         renderPagination();
       });
-    }
-    ul.appendChild(nextLi);
+      ul.appendChild(li);
+    };
 
-    nav.appendChild(ul);
-
-    // Ensamblar: info a la izquierda, paginación al centro
-    paginationControls.appendChild(info);
-    paginationControls.appendChild(nav);
-
-    pagination.appendChild(paginationControls);
+    addBtn('«', currentPage - 1, currentPage === 1);
+    for (let i = 1; i <= totalPages; i++) addBtn(i, i, false, i === currentPage);
+    addBtn('»', currentPage + 1, currentPage === totalPages);
   }
 
-  renderTablePage(currentPage);
+  renderTablePage();
   renderPagination();
 }

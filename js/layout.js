@@ -1,19 +1,26 @@
 const sidebar = document.querySelector(".sidebar");
 const sidebarToggler = document.querySelector(".sidebar-toggler");
-const mainContent = document.querySelector(".main-content");
+const mainWrapper = document.querySelector(".main-content");
 const sideBarLabels = document.querySelectorAll(".nav-label-info");
 
+//!Aca definimos las rutasl ../css y js para no escribirlas nuevamente, que hueva
+const CSS_PATH = "../css/";
+const JS_PATH = "../js/";
+
+
+///Evento para cuando se colapsa el banner
 sidebarToggler.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
-    sideBarLabels.forEach(label => label.classList.toggle("collapsed"));
-    if (mainContent) {
-        mainContent.classList.toggle("collapsed");
+    sideBarLabels.forEach(label => label.classList.toggle("collapsed")); 
+    if (mainWrapper) {
+        mainWrapper.classList.toggle("collapsed"); ///Ajustamos el contenido principal
     }
 });
 
-///DOMContentLoaded nos ayuda a asegurarnos de que el DOM esté completamente cargado antes de ejecutar el código
+///asegurarnos de que el DOM esté completamente cargado antes de ejecutar el código
 document.addEventListener('DOMContentLoaded', function () {
-    /// Acarelacionamos cada enlace del sideBar con su respectivo HTML
+
+    /// Aqui hermanos carboneros relacionamos los nombre que estan en el menu con su archivo html respectivo
     const routes = {
         'dashboard': 'dashboard.html',
         'consumos': 'consumptions.html',
@@ -23,24 +30,40 @@ document.addEventListener('DOMContentLoaded', function () {
         'usuarios': 'users.html'
     };
 
-    // Función para cargar el contenido en el main
+    ///las páginas con sus funciones de inicialización
+    const initializers = {
+        'consumptions.html': 'initConsumptions',
+        'users.html': 'initUsers',
+        'resources.html': 'initResources'
+    };
+
     function loadContent(page) {
-        const mainContent = document.getElementById('main-content');
-        ///Aplicacion de animacion
-        mainContent.classList.add('fade-out');
+        /// aca es donde se insertará el contenido principal
+        const container = document.getElementById('main-content');
+        if (!container) return;
+
+        /// AQUI METEMOS LA ANIMACION DEL FADE por que si no se ve muy simple jsjsjsj
+        container.classList.add('fade-out');
+
+        /// esperamos un momento para aplicar animación antes de cambiar el contenido
         setTimeout(() => {
+            /// buscamos el contenido de la página HTML correspondiente
             fetch(page)
-                .then(res => res.text())
+                .then(res => res.text()) /// Lo convertimos a texto para poder manipularlo
                 .then(html => {
+                    /// Creamos un contenedor temporal para insertar el HTML recibido
                     const temp = document.createElement('div');
                     temp.innerHTML = html;
                     const body = temp.querySelector('body');
-                    mainContent.innerHTML = body ? body.innerHTML : html;
+
+                    /// En caso de que no exista un body, se usa el HTML completo
+                    container.innerHTML = body ? body.innerHTML : html;
 
                     //! Cargar CSS específico si existe
-                    const cssName = '../css/' + page.replace('.html', '.css');
+                    const cssName = CSS_PATH + page.replace('.html', '.css');
                     const oldCss = document.querySelector(`link[data-dynamic-css="${cssName}"]`);
-                    if (oldCss) oldCss.remove();
+                    if (oldCss) oldCss.remove(); /// Eliminamos el CSS anterior
+
                     fetch(cssName)
                         .then(res => {
                             if (res.ok) {
@@ -48,62 +71,63 @@ document.addEventListener('DOMContentLoaded', function () {
                                 link.rel = 'stylesheet';
                                 link.href = cssName;
                                 link.setAttribute('data-dynamic-css', cssName);
-                                document.head.appendChild(link);
+                                document.head.appendChild(link); /// Agregamos el nuevo CSS
                             }
                         });
 
-                    //!~Cargar javascript asociado a la página
-                    const scriptName = '../js/' + page.replace('.html', '.js');
+                    //!~ Cargar JavaScript asociado a la página
+                    const scriptName = JS_PATH + page.replace('.html', '.js');
                     const oldScript = document.querySelector(`script[src="${scriptName}"]`);
-                    if (oldScript) oldScript.remove();
+                    if (oldScript) oldScript.remove(); /// Eliminamos el script anterior si ya estaba
 
-                    ///Limpia la función global antes de cargar el nuevo script
-                    //TODO: Aca iran las demas paginas a ingresar
-                    if (page === 'consumptions.html') {
-                        window.initConsumptions = undefined;
-                    }
-                    if (page === 'users.html') {
-                        window.initUsers = undefined;
-                    }
-                    if (page === 'resources.html') {
-                        window.initResources = undefined;
-                    }
+                    /// Limpiamos la función global antes de cargar el nuevo script
+                    const initFn = initializers[page];
+                    if (initFn) window[initFn] = undefined;
+
                     fetch(scriptName)
                         .then(res => {
                             if (res.ok) {
                                 const script = document.createElement('script');
                                 script.src = scriptName;
                                 script.type = "text/javascript";
-                                //TODO: Aca iran los metodos de inicializacion de las paginas
+                                /// Al cargar el script, ejecutamos su función de inicialización si existe
                                 script.onload = () => {
-                                    if (page === 'consumptions.html' && typeof initConsumptions === 'function') {
-                                        initConsumptions();
-                                    }
-                                    if (page === 'users.html' && typeof initUsers === 'function') {
-                                        initUsers();
-                                    }
-                                    if (page === 'resources.html' && typeof initResources === 'function') {
-                                        initResources();
+                                    if (initFn && typeof window[initFn] === 'function') {
+                                        window[initFn]();
                                     }
                                 };
-                                document.body.appendChild(script);
+
+                                document.body.appendChild(script); /// Insertamos el nuevo script
                             }
                         });
-                    /// Aplicacion de fade-in después de un pequeño delay de 300 milisegundos
+
+                    /// Aplicación de fade-in después de un pequeño delay
                     setTimeout(() => {
-                        mainContent.classList.remove('fade-out');
-                        mainContent.classList.add('fade-in');
-                        /// Quita la clase fade-in después de la animación para que funcione la próxima vez
-                        setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                        container.classList.remove('fade-out');
+                        container.classList.add('fade-in');
+
+                        /// Quitamos la clase fade-in después de la animación para permitir futuras animaciones
+                        setTimeout(() => container.classList.remove('fade-in'), 300);
                     }, 10);
+                })
+                /// En caso de error, mostramos mensaje en consola y contenido de error en pantalla
+                .catch(err => {
+                    console.error(`Error cargando ${page}:`, err);
+                    container.innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> No se pudo cargar la página "${page}".
+                        </div>
+                    `;
                 });
         }, 300); 
     }
 
-    /// Asigna evento a cada enlace del sidebar
+    /// Asignamos evento a cada enlace del sidebar
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function (e) {
+            /// Obtenemos el nombre del ítem de menú
             const label = this.querySelector('.nav-label')?.textContent.trim().toLowerCase();
+            /// Si existe una ruta correspondiente, evitamos comportamiento por defecto y cargamos el contenido
             if (routes[label]) {
                 e.preventDefault();
                 loadContent(routes[label]);
@@ -111,6 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /// Carga el dashboard por defecto
+    /// Cargamos el dashboard por defecto al iniciar
     loadContent('dashboard.html');
 });

@@ -1,121 +1,38 @@
-function renderTabs(tabsData) {
-  const tabList = document.getElementById('tabList');
-  const tabContent = document.getElementById('tabContent');
-
-  tabList.innerHTML = '';
-  tabContent.innerHTML = '';
-
-  tabsData.forEach((tab, index) => {
-    const isActive = index === 0;
-
-    ///Creación de tabs
-    const tabItem = document.createElement('li');
-    tabItem.className = 'nav-item';
-    tabItem.innerHTML = `
-      <a class="nav-link ${isActive ? 'tab-active' : 'tab-inactive'}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
-    `;
-    tabList.appendChild(tabItem);
-
-    ///Crear contenido de cada tab
-    const tabPane = document.createElement('div');
-    tabPane.className = `tab-pane fade ${isActive ? 'show active' : ''}`;
-    tabPane.id = tab.id;
-    tabPane.innerHTML = `
-      <div class="table-container table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="theadPosition">
-            <tr>
-              <th class="th_header">ID</th>
-              <th class="th_header">Cantidad</th>
-              <th class="th_header">Fecha de consumo</th>
-              <th class="th_header">Costo total</th>
-              <th class="th_header">Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="pagination-controls mt-3 d-flex justify-content-between align-items-center">
-        <div>
-          <span class="me-2">Items por página</span>
-          <select class="form-select d-inline w-auto itemsPerPage">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="15">15</option>
-          </select>
-        </div>
-        <nav>
-          <ul class="pagination mb-0"></ul>
-        </nav>
-      </div>
-    `;
-    tabContent.appendChild(tabPane);
-
-    ///Inicializar paginación
-    setupPagination(tab.id, tab.data);
-  });
-
-  ///Agregar evento para cambiar colores dinámicamente
-  document.querySelectorAll('#tabList .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      document.querySelectorAll('#tabList .nav-link').forEach(l => {
-        l.classList.remove('tab-active');
-        l.classList.add('tab-inactive');
-      });
-      link.classList.remove('tab-inactive');
-      link.classList.add('tab-active');
-    });
-  });
-}
-
-
 function initConsumptions() {
-  // Datos de ejemplo
   const tabsData = [
     {
-      id: '1',
+      id: 'agua',
       name: 'Agua',
       data: Array.from({ length: 23 }, (_, i) => ({
         id: i + 1,
         cantidad: `${100 + i * 10}L`,
-        fecha: `2024-01-${(i % 30 + 1).toString().padStart(2, '0')}`,
+        fecha: `2024-01-${String((i % 30) + 1).padStart(2, '0')}`,
         costo: `$${10 + i}`
       }))
     },
     {
-      id: '2',
+      id: 'luz',
       name: 'Luz',
       data: Array.from({ length: 12 }, (_, i) => ({
         id: i + 1,
         cantidad: `${200 + i * 20}kWh`,
-        fecha: `2024-02-${(i % 28 + 1).toString().padStart(2, '0')}`,
+        fecha: `2024-02-${String((i % 28) + 1).padStart(2, '0')}`,
         costo: `$${20 + i}`
       }))
     },
     {
-      id: '3',
+      id: 'gasolina',
       name: 'Gasolina',
-      data: Array.from({ length: 8 }, (_, i) => ({
+      data: Array.from({ length: 100 }, (_, i) => ({
         id: i + 1,
         cantidad: `${20 + i * 2}L`,
-        fecha: `2024-03-${(i % 31 + 1).toString().padStart(2, '0')}`,
-        costo: `$${30 + i}`
-      }))
-    },
-    {
-      id: '4',
-      name: 'Gasolina',
-      data: Array.from({ length: 8 }, (_, i) => ({
-        id: i + 1,
-        cantidad: `${20 + i * 2}L`,
-        fecha: `2024-03-${(i % 31 + 1).toString().padStart(2, '0')}`,
+        fecha: `2024-03-${String((i % 31) + 1).padStart(2, '0')}`,
         costo: `$${30 + i}`
       }))
     }
   ];
 
   renderTabs(tabsData);
-
 }
 
 function renderTabs(tabsData) {
@@ -125,49 +42,51 @@ function renderTabs(tabsData) {
   tabContent.innerHTML = '';
 
   tabsData.forEach((tab, idx) => {
+    /// Aca creamos los tabs
     const tabItem = document.createElement('li');
     tabItem.className = 'nav-item';
     tabItem.innerHTML = `
-                <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
-            `;
+      <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
+    `;
     tabList.appendChild(tabItem);
 
-    // Tab content
+    /// Crear contenido del tab
     const tabPane = document.createElement('div');
     tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
     tabPane.id = tab.id;
     tabPane.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Cantidad</th>
-                                <th>Fecha de consumo</th>
-                                <th>Costo total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div>
-                    <nav style="display: flex; justify-content: center;">
-                        <ul class="pagination mb-0"></ul>
-                    </nav>
-                </div>
-            `;
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Cantidad</th>
+              <th>Fecha de consumo</th>
+              <th>Costo total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <nav style="display: flex; justify-content: center;">
+          <ul class="pagination mb-0"></ul>
+        </nav>
+      </div>
+    `;
     tabContent.appendChild(tabPane);
 
-    setupPagination(tabPane, tab.data);
+    createPagination(tabPane, tab.data);
   });
 }
-function setupPagination(tabPane, data) {
+
+function createPagination(tabPane, data) {
   const tableBody = tabPane.querySelector('tbody');
   const pagination = tabPane.querySelector('.pagination');
 
   let currentPage = 1;
-  let itemsPerPage = 10;
+  const itemsPerPage = 10;
 
   function renderTablePage(page) {
     currentPage = page;
@@ -175,17 +94,17 @@ function setupPagination(tabPane, data) {
     const paginatedItems = data.slice(start, start + itemsPerPage);
 
     tableBody.innerHTML = paginatedItems.map(item => `
-            <tr>
-                <td>${item.id}</td>
-                <td>${item.cantidad}</td>
-                <td>${item.fecha}</td>
-                <td>${item.costo}</td>
-                <td>
-                    <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
-                    <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-                </td>
-            </tr>
-        `).join('');
+      <tr>
+        <td>${item.id}</td>
+        <td>${item.cantidad}</td>
+        <td>${item.fecha}</td>
+        <td>${item.costo}</td>
+        <td>
+          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
+          <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+        </td>
+      </tr>
+    `).join('');
   }
 
   function renderPagination() {
@@ -195,34 +114,30 @@ function setupPagination(tabPane, data) {
 
     pagination.innerHTML = '';
 
-    // Contenedor principal: paginación centrada con info a la izquierda
-    const paginationControls = document.createElement('div');
-    paginationControls.className = 'pagination-controls d-flex justify-content-center align-items-center mt-3 w-100 gap-3';
+    const controls = document.createElement('div');
+    controls.className = 'pagination-controls d-flex justify-content-center align-items-center mt-3 w-100 gap-3';
 
-    // Izquierda: Info
     const info = document.createElement('div');
     info.className = 'pagination-info text-muted';
     info.textContent = `Mostrando ${start}-${end} de ${data.length}`;
 
-    // Centro: Paginación
     const nav = document.createElement('nav');
     const ul = document.createElement('ul');
     ul.className = 'pagination mb-0';
 
-    // Flecha izquierda
+    /// Botón anterior
     const prevLi = document.createElement('li');
     prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
     prevLi.innerHTML = `<span class="page-link">&lt;</span>`;
     if (currentPage > 1) {
       prevLi.addEventListener('click', () => {
         renderTablePage(currentPage - 1);
-        currentPage = currentPage - 1;
         renderPagination();
       });
     }
     ul.appendChild(prevLi);
 
-    // Números de página
+    /// Botones numerados
     for (let i = 1; i <= totalPages; i++) {
       const li = document.createElement('li');
       li.className = `page-item${i === currentPage ? ' active' : ''}`;
@@ -230,33 +145,28 @@ function setupPagination(tabPane, data) {
       if (i !== currentPage) {
         li.querySelector('button').addEventListener('click', () => {
           renderTablePage(i);
-          currentPage = i;
           renderPagination();
         });
       }
       ul.appendChild(li);
     }
 
-    // Flecha derecha
+    /// Botón siguiente
     const nextLi = document.createElement('li');
     nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
     nextLi.innerHTML = `<span class="page-link">&gt;</span>`;
     if (currentPage < totalPages) {
       nextLi.addEventListener('click', () => {
         renderTablePage(currentPage + 1);
-        currentPage = currentPage + 1;
         renderPagination();
       });
     }
     ul.appendChild(nextLi);
 
     nav.appendChild(ul);
-
-    // Ensamblar: info a la izquierda, paginación al centro
-    paginationControls.appendChild(info);
-    paginationControls.appendChild(nav);
-
-    pagination.appendChild(paginationControls);
+    controls.appendChild(info);
+    controls.appendChild(nav);
+    pagination.appendChild(controls);
   }
 
   renderTablePage(currentPage);

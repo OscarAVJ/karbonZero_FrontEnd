@@ -1,140 +1,3 @@
-function renderTabs(tabsData) {
-  const tabList = document.getElementById('tabList');
-  const tabContent = document.getElementById('tabContent');
-  const kzButton = document.getElementById('button-kz');
-  tabList.innerHTML = '';
-  tabContent.innerHTML = '';
-
-  tabsData.forEach((tab, index) => {
-    const isActive = index === 0;
-
-    ///Creación de tabs
-    const tabItem = document.createElement('li');
-    tabItem.className = 'nav-item';
-    tabItem.innerHTML = `
-      <a class="nav-link ${isActive ? 'active tab-active' : 'tab-inactive'}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
-    `;
-    tabList.appendChild(tabItem);
-
-    ///Crear contenido de cada tab
-    const tabPane = document.createElement('div');
-    kzButton.innerHTML = `<i class="bi bi-plus-circle-fill"></i> Agregar recursos`;
-    tabPane.className = `tab-pane fade ${isActive ? 'show active' : ''}`;
-    tabPane.id = tab.id;
-    tabPane.innerHTML = `
-      <div class="table-container table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="theadPosition">
-            <tr>
-              ${tab.columns.map(col => `<th class="th_header">${col.label}</th>`).join('')}
-              <th class="th_header">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tab.data.map(item => `
-              <tr>
-                ${tab.columns.map(col => `<td>${item[col.field] ?? ''}</td>`).join('')}
-                <td>
-                  <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
-                  <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-      <div class="pagination-controls mt-3 d-flex justify-content-between align-items-center">
-        <div>
-          <span class="me-2">Items por página</span>
-          <select class="form-select d-inline w-auto itemsPerPage">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="15">15</option>
-          </select>
-        </div>
-        <nav>
-          <ul class="pagination mb-0"></ul>
-        </nav>
-      </div>
-    `;
-    tabContent.appendChild(tabPane);
-
-    ///Inicializar paginación
-    setupPagination(tab.id, tab.data, tab.columns);
-  });
-
-  ///Agregar evento para cambiar colores dinámicamente
-  document.querySelectorAll('#tabList .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      document.querySelectorAll('#tabList .nav-link').forEach(l => {
-        l.classList.remove('tab-active');
-        l.classList.add('tab-inactive');
-      });
-      link.classList.remove('tab-inactive');
-      link.classList.add('tab-active');
-
-      ///Cambiar texto del botón según el tab activo
-      const activeTab = tabsData.find(tab => `#${tab.id}` === link.getAttribute('href'));
-      if (activeTab) {
-        kzButton.innerHTML = `<i class="bi bi-plus-circle-fill" style="padding-right: 4px;"></i>Agregar ${activeTab.name}`;
-      }
-    });
-  });
-}
-
-function setupPagination(tabId, data, columns) {
-  const tabPane = document.getElementById(tabId);
-  const tableBody = tabPane.querySelector('tbody');
-  const pagination = tabPane.querySelector('.pagination');
-  const itemsPerPageSelect = tabPane.querySelector('.itemsPerPage');
-
-  let currentPage = 1;
-  let itemsPerPage = parseInt(itemsPerPageSelect.value);
-
-  function renderTablePage(page) {
-    currentPage = page;
-    const start = (page - 1) * itemsPerPage;
-    const paginatedItems = data.slice(start, start + itemsPerPage);
-
-    tableBody.innerHTML = paginatedItems.map(item => `
-      <tr>
-        ${columns.map(col => `<td>${item[col.field] ?? ''}</td>`).join('')}
-        <td>
-          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
-          <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  function renderPagination() {
-    const totalPages = Math.max(1, Math.ceil(data.length / itemsPerPage));
-    pagination.innerHTML = '';
-
-    for (let i = 1; i <= totalPages; i++) {
-      const li = document.createElement('li');
-      li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-      li.innerHTML = `<button class="page-link">${i}</button>`;
-      li.querySelector('button').addEventListener('click', () => {
-        renderTablePage(i);
-        renderPagination();
-      });
-      pagination.appendChild(li);
-    }
-  }
-
-  itemsPerPageSelect.addEventListener('change', () => {
-    itemsPerPage = parseInt(itemsPerPageSelect.value);
-    renderTablePage(1);
-    renderPagination();
-  });
-
-  renderTablePage(currentPage);
-  renderPagination();
-}
-
-
-
 function initResources() {
   const tabsData = [
     {
@@ -148,8 +11,8 @@ function initResources() {
         { label: 'Pureza', field: 'pureza' }
       ],
       data: [
-        { id: 1, nombre: 'Agua', unidad_medida: 'Litros', huella_carbono: '0.5 kg CO₂', pureza: '99%' },
-        { id: 2, nombre: 'Gasolina', unidad_medida: 'Litros', huella_carbono: '2.3 kg CO₂', pureza: '95%' }
+        { id: 1, nombre: 'Agua', unidad_medida: 'Litros', huella_carbono: '0.5 kg CO₂', pureza: '99 %' },
+        { id: 2, nombre: 'Gasolina', unidad_medida: 'Litros', huella_carbono: '2.3 kg CO₂', pureza: '95 %' }
       ]
     },
     {
@@ -161,8 +24,8 @@ function initResources() {
         { label: 'Pureza', field: 'pureza' }
       ],
       data: [
-        { id: 1, nombre: 'Agua', pureza: '99%' },
-        { id: 2, nombre: 'Gasolina', pureza: '95%' }
+        { id: 1, nombre: 'Agua', pureza: '99 %' },
+        { id: 2, nombre: 'Gasolina', pureza: '95 %' }
       ]
     },
     {
@@ -178,8 +41,124 @@ function initResources() {
         { id: 2, nombre: 'Gasolina', unidad_medida: 'Litros' }
       ]
     }
-    // Agrega más tabs según necesites
   ];
 
   renderTabs(tabsData);
+}
+///Render de tabs
+function renderTabs(tabsData) {
+  const tabList   = document.getElementById('tabList');
+  const tabContent = document.getElementById('tabContent');
+  const kzButton  = document.getElementById('button-kz');
+
+  tabList.innerHTML   = '';
+  tabContent.innerHTML = '';
+
+  //!Aca se manipulan los tabs
+  tabsData.forEach((tab, idx) => {
+    const tabItem = document.createElement('li');
+    tabItem.className = 'nav-item';
+    tabItem.innerHTML = `
+      <a class="nav-link ${idx === 0 ? 'active' : ''}" data-bs-toggle="tab" href="#${tab.id}">${tab.name}</a>
+    `;
+    tabList.appendChild(tabItem);
+
+    const tabPane = document.createElement('div');
+    tabPane.className = `tab-pane fade${idx === 0 ? ' show active' : ''}`;
+    tabPane.id = tab.id;
+    tabPane.innerHTML = `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              ${tab.columns.map(c => `<th>${c.label}</th>`).join('')}
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="mt-2">
+        <nav class="d-flex justify-content-center">
+          <ul class="pagination mb-0"></ul>
+        </nav>
+      </div>
+    `;
+    tabContent.appendChild(tabPane);
+    setupPagination(tabPane, tab.data, tab.columns);
+  });
+
+  kzButton.innerHTML = `<i class="bi bi-plus-circle-fill me-1"></i>Agregar ${tabsData[0].name}`;
+
+  tabList.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const href = link.getAttribute('href'); 
+      const activeTab = tabsData.find(t => `#${t.id}` === href);
+      ///Aca es donde nosotros ponemos o bueno, cambiamos el nombre del boton en base al tab en el que estemos
+      if (activeTab) {
+        kzButton.innerHTML =
+          `<i class="bi bi-plus-circle-fill me-1"></i>Agregar ${activeTab.name}`;
+      }
+
+      tabList.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+}
+
+function setupPagination(tabPane, data, columns) {
+  const tbody = tabPane.querySelector('tbody');
+  const pagination = tabPane.querySelector('.pagination');
+
+  let currentPage   = 1;
+  const itemsPerPage = 10;
+
+  function renderTablePage(page) {
+    currentPage = page;
+    const start = (page - 1) * itemsPerPage;
+    const items = data.slice(start, start + itemsPerPage);
+
+    tbody.innerHTML = items.map(item => `
+      <tr>
+        ${columns.map(c => `<td>${item[c.field] ?? ''}</td>`).join('')}
+        <td>
+          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
+          <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderPagination() {
+    const totalPages = Math.max(1, Math.ceil(data.length / itemsPerPage));
+    const start = (currentPage - 1) * itemsPerPage + 1;
+    const end   = Math.min(currentPage * itemsPerPage, data.length);
+
+    pagination.innerHTML = '';
+
+    const info = `<div class="text-muted">Mostrando ${start}-${end} de ${data.length}</div>`;
+    const ul   = document.createElement('ul');
+    ul.className = 'pagination mb-0';
+
+    const addButton = (label, page, disabled = false, active = false) => {
+      const li = document.createElement('li');
+      li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+      li.innerHTML = `<button class="page-link" ${disabled ? 'tabindex="-1"' : ''}>${label}</button>`;
+      if (!disabled && !active) li.firstChild.addEventListener('click', () => {
+        renderTablePage(page);
+        renderPagination();
+      });
+      ul.appendChild(li);
+    };
+
+    addButton('«', currentPage - 1, currentPage === 1);
+    for (let p = 1; p <= totalPages; p++) addButton(p, p, false, p === currentPage);
+    addButton('»', currentPage + 1, currentPage === totalPages);
+
+    pagination.insertAdjacentHTML('beforeend', info);
+    pagination.appendChild(ul);
+  }
+
+  renderTablePage(currentPage);
+  renderPagination();
 }
