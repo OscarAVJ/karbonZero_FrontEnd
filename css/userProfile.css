@@ -1,0 +1,45 @@
+/* Panel principal */
+.advanced-filters-container {
+    background: #FFFDFD;
+    box-shadow: 0px 4px 12px rgba(0, 69, 49, 0.25); 
+    border-radius: 20px;
+    padding: 20px 40px 40px 40px;
+}
+
+/* Switch personalizado grande y con color #016045 */
+.custom-switch-xl {
+    width: 4.2rem;
+    height: 2rem;
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 2rem;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* El círculo interior */
+.custom-switch-xl::before {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+/* Activo: fondo verde y círculo deslizado */
+.custom-switch-xl:checked {
+    background-color: #016045;
+    border-color: #016045;
+}
+
+.custom-switch-xl:checked::before {
+    transform: translateX(2rem);
+}

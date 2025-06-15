@@ -1,0 +1,43 @@
+<div class="container py-4">
+    <h2 class="general-title">
+        Perfil de usuario
+    </h2>
+    <div class="advanced-filters-container p-4 mb-3">
+        <div class="profile-card row align-items-center g-3">
+            <div class="col-12 col-md-auto text-center">
+                <img id="profile-img"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1__nUveMs5K4VA2cdLheJMT6C-tqFQveppg&s"
+                    alt="Foto de perfil" class="rounded-circle img-fluid"
+                    style="width: 100px; height: 100px; object-fit: cover;" />
+            </div>
+            <div class="col-12 col-md">
+                <div class="text-md-start text-center">
+                    <h4 class="fw-bold m-0" id="profile-name">Nombre Apellido</h4>
+                    <p class="text-muted mb-1" id="profile-username">@usuario</p>
+                    <p class="fw-semibold mb-2" id="profile-email">usuario@email.com</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto text-md-end text-center">
+                <button class="btn btn-success kz-button-create px-4 w-100 w-md-auto">Editar perfil</button>
+            </div>
+        </div>
+    </div>
+    <div class="advanced-filters-container p-4">
+        <h4 class="fw-bold mb-3">Apariencia</h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="fw-semibold">Modo oscuro</span>
+            <div class="form-check form-switch m-0">
+                <input type="checkbox" id="darkModeToggle" class="custom-switch-xl">
+            </div>
+        </div>
+        <div class="mb-4">
+            <label for="languageSelect" class="fw-semibold mb-1">Idioma</label>
+            <select id="languageSelect" class="form-select">
+                <option value="es">Español</option>
+                <option value="en">Inglés</option>
+            </select>
+        </div>
+        <button class="btn btn-success kz-button-create w-100">Cambiar contraseña</button>
+    </div>
+
+</div>
