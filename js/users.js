@@ -55,16 +55,7 @@ function renderTabs(tabsData) {
           <tbody></tbody>
         </table>
       </div>
-      <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-2">
-          <span>Items por página</span>
-          <select class="form-select form-select-sm itemsPerPage w-auto">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="15">15</option>
-          </select>
-        </div>
-        <nav>
+        <nav class="d-flex justify-content-center mt-2">
           <ul class="pagination mb-0"></ul>
         </nav>
       </div>
@@ -79,17 +70,9 @@ function renderTabs(tabsData) {
 function setupPagination(pane, data, columns) {
   const tbody      = pane.querySelector('tbody');
   const pagination = pane.querySelector('.pagination');
-  const selector   = pane.querySelector('.itemsPerPage');
 
   let currentPage   = 1;
-  let itemsPerPage  = Number(selector.value);
-
-  selector.addEventListener('change', () => {
-    itemsPerPage = Number(selector.value);
-    currentPage  = 1;
-    renderTablePage();
-    renderPagination();
-  });
+  let itemsPerPage  = 10;
 
   function renderTablePage() {
     const start = (currentPage - 1) * itemsPerPage;
