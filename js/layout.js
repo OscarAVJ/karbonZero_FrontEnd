@@ -27,13 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
         'reportes': 'reports.html',
         'mapa': 'map.html',
         'recursos': 'resources.html',
-        'usuarios': 'users.html'
+        'usuarios': 'users.html',
+        'cuenta': 'userProfile.html'
     };
     //!Lo mismo con los inicializadores, si no tiene pues no lo pongas
     const initializers = {
         'consumptions.html': 'initConsumptions',
         'users.html': 'initUsers',
         'resources.html': 'initResources',
+        'userProfile.html': 'initUserProfile',
     };
 
     function loadCSSIfExists(path) {
