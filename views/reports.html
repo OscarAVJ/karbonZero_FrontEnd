@@ -1,6 +1,58 @@
-<!-- Consumptions Section -->
 <div class="container py-4">
-    <h2 class="general-title">
-        Reportes
-    </h2>
+    <h2 class="general-title">Reportes</h2>
+    <div class="advanced-filters-container p-4">
+        <h3 class="mb-4">Filtros avanzados</h3>
+        <div class="d-flex flex-wrap justify-content-start align-items-end gap-4 mb-3">
+            <div>
+                <label class="form-label">Recurso</label>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 rounded-3"
+                        type="button" id="dropdownRecurso" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-box"></i> Recurso
+                        <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownRecurso">
+                        <li><a class="dropdown-item" href="#">Agua</a></li>
+                        <li><a class="dropdown-item" href="#">Electricidad</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <label class="form-label">Tipo de documento</label>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 rounded-3"
+                        type="button" id="dropdownDocumento" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-file-earmark"></i> Tipo de documento
+                        <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownDocumento">
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                        <li><a class="dropdown-item" href="#">Excel</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
+                    <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaInicio"
+                        style="min-width: 140px; font-size: 0.9rem;">
+                </div>
+            </div>
+            <div>
+                <label for="fechaFin" class="form-label">Fecha de Finalización</label>
+                <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
+                    <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaFin"
+                        style="min-width: 140px; font-size: 0.9rem;">
+                </div>
+            </div>
+        </div>
+        <button type="button" class="kz-button-create">Previsualizar</button>
+    </div>
+    <div class="advanced-filters-container" style="margin-top: 20px;">
+        <h3 class="mb-4">Resumen</h3>
+        <div class="d-flex flex-wrap justify-content-start align-items-end gap-4 mb-3">
+
+        </div>
+        <button type="button" class="kz-button-create">Previsualizar</button>
+    </div>
 </div>
