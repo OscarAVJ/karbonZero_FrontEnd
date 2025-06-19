@@ -172,3 +172,14 @@ function createPagination(tabPane, data) {
   renderTablePage(currentPage);
   renderPagination();
 }
+
+///Obtener el objeto desde el DOM
+const modalCon = document.getElementById('comsumptionsFormModal');
+///Algo mal tenia que tener bootstrap :(, se hace asi puesto que no creamos un modal como tal entonces tenemos que crear un objeto de bootstrap
+const consumptionsModal = new bootstrap.Modal(modalCon);
+
+document.getElementById('consumptionsForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    //TODO: Futuro POST
+    consumptionsModal.hide();
+});
