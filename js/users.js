@@ -18,9 +18,21 @@ function initUsers() {
       }))
     }
   ];
-
+  initUserModal();
   renderTabs(tabsData);
 }
+
+function initUserModal(){
+  const modal = document.querySelector('#usersModal');
+  if(!modal) return;
+  window.userModal = bootstrap.Modal.getOrCreateInstance(modal);
+}
+
+document.getElementById('userForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+
+  window.userModal.hide();
+})
 function renderTabs(tabsData) {
   const tabList    = document.getElementById('tabList');
   const tabContent = document.getElementById('tabContent');
