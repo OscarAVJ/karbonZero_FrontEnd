@@ -18,7 +18,44 @@
                 </div>
             </div>
             <div class="col-12 col-md-auto text-md-end text-center">
-                <button class="btn btn-success kz-button-create px-4 w-100 w-md-auto">Editar perfil</button>
+                <button class="btn btn-success kz-button-create px-4 w-100 w-md-auto" data-bs-target="#profileModal"
+                    data-bs-toggle="modal">Editar perfil</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Perfil</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userPForm">
+                    <div class="modal-body mx-3">
+                        <div class="col mb-2">
+                            <label for="nombretxt" class="form-label">Nombre</label>
+                            <input id="nombretxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                        <div class="col mb-2">
+                            <label for="usuariotxt" class="form-label">Apellido</label>
+                            <input type="usuariotxt" id="costotxt" class="form-control" placeholder="Apellido">
+                        </div>
+                        <div class="col mb-2">
+                            <label for="correoElectronico" class="form-label">Correo electrónico</label>
+                            <input type="correoElectronico" id="fecha" class="form-control" placeholder="Correo">
+                        </div>
+                        <div class="col mb-2">
+                            <label for="fileImg" class="form-label">Foto de perfil</label>
+                            <input type="file" id="imagen-file" accept="image/*" />
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
