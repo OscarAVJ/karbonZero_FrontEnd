@@ -45,20 +45,24 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content kz-modal-mongo border-0">
                 <div class="modal-header" style="justify-content: center; position: relative;">
-                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Recursos</h4>
-                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;" data-bs-dismiss="modal" aria-label="Close">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Consumos</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
                 <form id="consumptionsForm">
                     <div class="modal-body mx-3">
                         <div class="mb-3">
-                            <label for="consumptionsSelect">Consumos</label>
-                            <select class="form-control" id="resourceSelect">
-                                <option>Agua</option>
-                                <option>Gasolina</option>
-                                <option>Diesel</option>
-                                <option>Luz</option>
-                            </select>
+                            <label for="consumostxt" class="form-label">Consumos</label>
+                            <input class="form-control" list="datalistOptions" id="consumostxt"
+                                placeholder="Consumos...">
+                            <datalist id="datalistOptions">
+                                <option value="Diesel">
+                                <option value="Agua">
+                                <option value="Luz">
+                                <option value="Gasolina">
+                                <option value="Pintura">
+                            </datalist>
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-sm-3">
