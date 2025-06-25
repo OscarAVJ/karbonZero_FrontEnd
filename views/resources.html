@@ -10,8 +10,8 @@
         </div>
         <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
             <div class="dropdown">
-                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button" id="dropdownMes"
-                    data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
+                    id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-calendar"></i> Mes
                     <i class="bi bi-chevron-down"></i>
                 </button>
@@ -34,11 +34,200 @@
                 </ul>
             </div>
             <button class="kz-button-create" id="button-kz">
-                
+
             </button>
         </div>
     </div>
-
+    <!--!MODAL RECURSOS -->
+    <div class="modal fade" id="recursosModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Recursos</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-3 ">
+                            <label for="unidadtxt" class="form-label">Unidad de medida</label>
+                            <select id="unidadtxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <label for="nombreRtxt" class="form-label">Nombre</label>
+                            <input id="nombreRtxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <label for="huellaRtxt" class="form-label">Huella de carbono</label>
+                            <input id="huellaRtxt" type="number" class="form-control" placeholder="Huella de carbono">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <label for=""></label>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--! MODAL PUREZA -->
+    <div class="modal fade" id="purezaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Pureza</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-3 ">
+                            <label for="recursoPtxt" class="form-label">Recurso</label>
+                            <select id="recursoPtxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <label for="purezaPtxt" class="form-label">Pureza</label>
+                            <input id="purezaPtxt" type="number" class="form-control" placeholder="Pureza">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--! MODAL MEDIDAS -->
+    <div class="modal fade" id="medidasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Medidas</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-3">
+                            <label for="nombreMEtxt" class="form-label">Medida</label>
+                            <input id="nombreMEtxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="unidadesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Unidad de medida</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-3">
+                            <label for="medidasUtxt" class="form-label">Medida</label>
+                            <select id="medidasUtxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <label for="nombreUtxt" class="form-label">Unidad</label>
+                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="conversionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Conversión de unidades</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-2">
+                            <label for="medidasCtxt" class="form-label">Medidas</label>
+                            <select id="medidasCtxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <label for="recursoCtxt" class="form-label">Recurso</label>
+                            <select id="recursoCtxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label for="unidadItxt" class="form-label">Unidad inicial</label>
+                                <select id="unidadItxt" class="form-select">
+                                    <option>...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="unidadFtxt" class="form-label">Unidad final</label>
+                                <select id="unidadFtxt" class="form-select">
+                                    <option>...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label for="operacionCtxt" class="form-label">Operación</label>
+                                <select id="operacionCtxt" class="form-select">
+                                    <option>...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="constanteCtxt" class="form-label">Constante</label>
+                                <input id="constanteCtxt" type="text" class="form-control" placeholder="Constante">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <ul class="nav nav-tabs mb-3" id="tabList"></ul>
     <div class="tab-content" id="tabContent"></div>
 </div>
