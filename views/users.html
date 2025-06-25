@@ -10,8 +10,8 @@
         </div>
         <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
             <div class="dropdown">
-                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button" id="dropdownMes"
-                    data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
+                    id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-calendar"></i> Mes
                     <i class="bi bi-chevron-down"></i>
                 </button>
@@ -33,12 +33,51 @@
                     <li><a class="dropdown-item" href="#">Q3</a></li>
                 </ul>
             </div>
-            <button class="kz-button-create">
+            <button class="kz-button-create" data-bs-toggle="modal" data-bs-target="#usersModal">
                 <i class="bi bi-plus-circle"></i> Crear usuario
             </button>
         </div>
     </div>
-
+    <div class="modal fade" id="usersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Usuarios</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-6">
+                                <label for="nombretxt" class="form-label">Nombre</label>
+                                <input id="nombretxt" type="text" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="apellidotxt" class="form-label">Apellido</label>
+                                <input id="apellidotxt" type="text" class="form-control" placeholder="Apellido">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-6">
+                                <label for="usuariotxt" class="form-label">Usuario</label>
+                                <input type="usuariotxt" id="costotxt" class="form-control" placeholder="Usuario">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="correoElectronico" class="form-label">Correo electrónico</label>
+                                <input type="correoElectronico" id="fecha" class="form-control" placeholder="Correo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <ul class="nav nav-tabs mb-3" id="tabList"></ul>
     <div class="tab-content" id="tabContent"></div>
 </div>

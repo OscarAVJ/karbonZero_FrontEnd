@@ -1,3 +1,4 @@
+
 function initConsumptions() {
   const tabsData = [
     {
@@ -31,9 +32,24 @@ function initConsumptions() {
       }))
     }
   ];
-
+  ///Por que inicializamos un modal?, bueno pues es por que esta cosa al no estar creando en si un dialog con html si no con bootstrap, entonces tenemos que crear una instancia y luego verificar y aja, abajo esta el metodo
+  initConsumptionModal();  
   renderTabs(tabsData);
 }
+
+function initConsumptionModal() {
+  const modalEl = document.getElementById('comsumptionsFormModal');
+  if (!modalEl) return;
+  /// si ya existía, getOrCreateInstance no crea una nueva
+  window.consumptionsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+}
+///TODO: ACA IRA LA LOGICA DEL POST 
+document.getElementById('consumptionsForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const text = document.getElementById('purezatxt');
+  console.log(text)
+  window.consumptionsModal.hide();
+});
 
 function renderTabs(tabsData) {
   const tabList = document.getElementById('tabList');
@@ -172,3 +188,11 @@ function createPagination(tabPane, data) {
   renderTablePage(currentPage);
   renderPagination();
 }
+
+// ///Algo mal tenia que tener bootstrap :(, se hace asi puesto que no creamos un modal como tal entonces tenemos que crear un objeto de bootstrap
+// //TODO: Solucionar el maldito erro de que no se elimina esta instancia "Creo que es eso"
+// document.getElementById('consumptionsForm').addEventListener('submit', function (e) {
+//   e.preventDefault();
+//   // TODO: enviar datos al servidor
+//   modal.hide();
+// });

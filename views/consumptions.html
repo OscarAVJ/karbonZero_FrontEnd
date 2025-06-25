@@ -10,8 +10,8 @@
         </div>
         <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
             <div class="dropdown">
-                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button" id="dropdownMes"
-                    data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
+                    id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-calendar"></i> Mes
                     <i class="bi bi-chevron-down"></i>
                 </button>
@@ -33,11 +33,66 @@
                     <li><a class="dropdown-item" href="#">Q3</a></li>
                 </ul>
             </div>
-            <button class="kz-button-create">
+            <button type="button" class="kz-button-create" data-bs-toggle="modal"
+                data-bs-target="#comsumptionsFormModal">
                 <i class="bi bi-plus-circle"></i> Crear consumo
             </button>
         </div>
     </div>
-    <ul class="nav nav-tabs mb-3" id="tabList"></ul>
-    <div class="tab-content" id="tabContent"></div>
+    <!-- //Modal  -->
+    <div class="modal fade" id="comsumptionsFormModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Consumos</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="consumptionsForm">
+                    <div class="modal-body mx-3">
+                        <div class="row g-2 mb-2">
+                            <label for="recursotxt" class="form-label">Recurso</label>
+                            <select id="recursotxt" class="form-select">
+                                <option>...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-3">
+                                <label for="purezatxt" class="form-label">Pureza</label>
+                                <input id="purezatxt" type="text" class="form-control" placeholder="Pureza">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="unidadtxt" class="form-label">Unidad de medida</label>
+                                <input id="unidadtxt" type="text" class="form-control" placeholder="Unidad de medida">
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="cantidadtxt" class="form-label">Cantidad</label>
+                                <input id="cantidadtxt" type="number" class="form-control" placeholder="Cantidad">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-6">
+                                <label for="costotxt" class="form-label">Costo</label>
+                                <input type="number" id="costotxt" class="form-control" placeholder="Costo">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="fecha" class="form-label">Fecha</label>
+                                <input type="date" id="fecha" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<ul class="nav nav-tabs mb-3" id="tabList"></ul>
+<div class="tab-content" id="tabContent"></div>
+
 </div>
