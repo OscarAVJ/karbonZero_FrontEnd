@@ -41,15 +41,15 @@
                         </div>
                         <div class="col mb-2">
                             <label for="usuariotxt" class="form-label">Apellido</label>
-                            <input type="usuariotxt" id="costotxt" class="form-control" placeholder="Apellido">
+                            <input type="text" id="usuariotxt" class="form-control" placeholder="Apellido">
                         </div>
                         <div class="col mb-2">
-                            <label for="correoElectronico" class="form-label">Correo electrónico</label>
-                            <input type="correoElectronico" id="fecha" class="form-control" placeholder="Correo">
+                            <label for="correoElectronicotxt" class="form-label">Correo electrónico</label>
+                            <input type="email" id="correoElectronicotxt" class="form-control" placeholder="Correo">
                         </div>
                         <div class="col mb-2">
                             <label for="fileImg" class="form-label">Foto de perfil</label>
-                            <input type="file" id="imagen-file" accept="image/*" />
+                            <input type="file" id="fileImg" accept="image/*" />
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
@@ -74,7 +74,41 @@
                 <option value="en">Inglés</option>
             </select>
         </div>
-        <button class="btn btn-success kz-button-create w-100">Cambiar contraseña</button>
+        <button class="btn btn-success kz-button-create w-100" data-bs-toggle="modal"
+            data-bs-target="#contraseñaModal">Cambiar contraseña</button>
     </div>
-
+    <div class="modal fade" id="contraseñaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content kz-modal-mongo border-0">
+                <div class="modal-header" style="justify-content: center; position: relative;">
+                    <h4 class="kz-modal-title" id="exampleModalLongTitle">Cambiar contraseña</h4>
+                    <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                        data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form id="contraseñaForm">
+                    <div class="modal-body mx-3">
+                        <div class="col mb-2">
+                            <label for="nombretxt" class="form-label">Contraseña actual</label>
+                            <input id="nombretxt" type="text" class="form-control" placeholder="Contraseña actual">
+                        </div>
+                        <div class="col mb-2">
+                            <label for="nuevaContratxt" class="form-label">Nueva contraseña</label>
+                            <input type="text" id="nuevaContratxt" class="form-control" placeholder="Nueva contraseña"
+                                disabled>
+                        </div>
+                        <div class="col mb-2">
+                            <label for="correoElectronicotxt" class="form-label">Confirmar contraseña</label>
+                            <input type="email" id="correoElectronicotxt" class="form-control"
+                                placeholder="Confirmar contraseña" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn kz-button-create">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

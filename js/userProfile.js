@@ -5,9 +5,12 @@ function initUserProfile(){
 }
 function initModalProfile() {
   const modalEl = document.getElementById('profileModal');
-  if (!modalEl) return;
+  const modalContra = document.getElementById('contraseñaModal')
+  if (!modalEl || !modalContra) return;
   /// si ya existía, getOrCreateInstance no crea una nueva
   window.consumptionsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+  window.contraModal = bootstrap.Modal.getOrCreateInstance(modalContra);
+
 }
 ///TODO: ACA IRA LA LOGICA DEL POST 
 document.getElementById('userPForm').addEventListener('submit', (e) => {
