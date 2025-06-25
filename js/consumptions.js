@@ -116,7 +116,7 @@ function createPagination(tabPane, data) {
         <td>${item.fecha}</td>
         <td>${item.costo}</td>
         <td>
-          <button class="btn btn-sm btn-success me-1"><i class="bi bi-pencil-fill"></i></button>
+          <button class="btn btn-sm btn-success me-1" data-bs-toggle="modal" data-bs-target="#comsumptionsFormModal"><i class="bi bi-pencil-fill"></i></button>
           <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
         </td>
       </tr>
