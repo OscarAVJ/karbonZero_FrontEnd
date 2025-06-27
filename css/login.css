@@ -45,8 +45,16 @@ body::after {
     font-weight: 500;
 }
 
-.login-entry input {
+.login-entry .form-control, #hide-password{
     background-color: #eae7e6;
+}
+
+#hide-password i {
+    color: #000;
+}
+
+#hide-password i:hover {
+    color: #00684A
 }
 
 .login-checkbox {
@@ -74,4 +82,9 @@ body::after {
 
 #right-side button {
     font-size: 1.2em;
+}
+
+#hide-password {
+    border: none;
+
 }

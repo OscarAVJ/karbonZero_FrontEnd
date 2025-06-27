@@ -2,6 +2,8 @@ const sidebar = document.querySelector(".sidebar");
 const sidebarToggler = document.querySelector(".sidebar-toggler");
 const mainWrapper = document.querySelector(".main-content");
 const sideBarLabels = document.querySelectorAll(".nav-label-info");
+const body = document.getElementsByTagName('body')[0];
+
 
 /// Rutas base relativas al layout asi como los archivos CSS y JS
 const HTML_PATH = "views/";
@@ -17,8 +19,36 @@ sidebarToggler.addEventListener("click", () => {
     }
 });
 
+
+function open_login () {
+    window.location.href = "views/login.html";
+};
+
+document.getElementById("logout").addEventListener("click", e => {
+    setTimeout(function(){
+        body.style.opacity = 1;
+           (function fade(){
+                var opacity = parseFloat(body.style.opacity);
+       
+                (body.style.opacity = opacity - 0.01) < 0.1 ? open_login() : setTimeout(fade , 1)
+            })();
+    },100);
+
+})
+
 ///Con DomContentLoaded pues nos ayuda a que esperemos hasat que el DOM este listo y asi evitar errores de que no se cargaron los elementos
 document.addEventListener('DOMContentLoaded', function () {
+    body.style.opacity = 0;
+
+    (function fadeIn() {
+        var opacity = parseFloat(body.style.opacity);
+
+        if (opacity == 1) return;
+
+        body.style.opacity = opacity + 0.01;
+        setTimeout(fadeIn, 1);
+    })();
+
     ///Dfinimos las rutas y las hacemos un MAP donde su key seria el texto y ya despues su valor que es el nombre del archivo HTML
     //! Cuidado por que los nombres si tienen que ser iguales ehh
     const routes = {
