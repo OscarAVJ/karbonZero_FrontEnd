@@ -1,5 +1,5 @@
 function initDashboard () {
-    const tabData = [
+    const chartsData = [
         {
             id: 'general',
             name: 'General',
@@ -69,7 +69,7 @@ function initDashboard () {
         }
     ]
 
-    renderTabs(tabData)
+    renderTabs(chartsData)
 }
 
 function loadMainChart (json) {
@@ -133,13 +133,16 @@ function renderTabs(tabsData) {
             tabPane.innerHTML += `
             <div id="consumption-chart-${tab.id}">
             </div>`;
+            tabContent.appendChild(tabPane);
         } 
         else {
+            tabPane.innerHTML += `
+                <div id="main-chart" class="mx-auto" style="max-width: 1000px">
+                </div>`
+            tabContent.appendChild(tabPane);
             loadMainChart(tab.data)
             return;
         }
-
-        tabContent.appendChild(tabPane);
 
         var options = {
             series: [{
