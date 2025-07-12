@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //!Lo mismo con los inicializadores, si no tiene pues no lo pongas
     const initializers = {
         'consumptions.html': 'initConsumptions',
+        'dashboard.html': 'initDashboard',
         'users.html': 'initUsers',
         'resources.html': 'initResources',
         'userProfile.html': 'initUserProfile',
