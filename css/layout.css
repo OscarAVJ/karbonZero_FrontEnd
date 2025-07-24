@@ -135,9 +135,9 @@ body {
     display: none;
     pointer-events: none;
     left: calc(100% + 25px);
-    color: #016045;
+    color: #ffffff;
     padding: 6px 12px;
-    background-color: white;
+    background-color: #016045;
     border-radius: 8px;
     white-space: nowrap;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
