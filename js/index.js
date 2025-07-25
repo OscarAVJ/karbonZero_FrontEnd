@@ -15,18 +15,20 @@ sidebarToggler.addEventListener("click", () => {
 });
 
 
-function open_login () {
+function open_login() {
     window.location.href = "login.html";
 };
 
-document.getElementById("logout").addEventListener("click", e => {
-    setTimeout(function(){
+document.getElementById('logout').addEventListener('click', () => {
+    setTimeout(function () {
         body.style.opacity = 1;
-           (function fade(){
-                var opacity = parseFloat(body.style.opacity);
-       
-                (body.style.opacity = opacity - 0.01) < 0.1 ? open_login() : setTimeout(fade , 1)
-            })();
-    },100);
+        (function fade() {
+            var opacity = parseFloat(body.style.opacity);
 
-})
+            (body.style.opacity = opacity - 0.01) < 0.1 ? open_login() : setTimeout(fade, 1)
+        })();
+    }, 100);
+    localStorage.removeItem('isAuthenticated');
+    window.location.href = 'login.html';
+});
+

@@ -31,9 +31,13 @@ document.getElementById('login-button').addEventListener('click', () => {
   const contraseña = document.getElementById('contraseñatxt').value;
     window.location.href = 'index.html';
 
-//   if (usuario === 'admin' && contraseña === '1234') {
-//     localStorage.setItem('isAuthenticated', 'true');
-//   } else {
-//     alert('Usuario o contraseña incorrectos');
-//   }
+  if (usuario === 'admin' && contraseña === '1234') {
+    localStorage.setItem('isAuthenticated', 'true');
+  } else {
+    alert('Usuario o contraseña incorrectos');
+  }
 });
+// document.getElementById('login-button').addEventListener('click', () => {
+//   // A futuro podrías validar aquí
+//   window.location.href = 'index.html';
+// });

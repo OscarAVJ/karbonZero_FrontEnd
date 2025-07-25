@@ -9,23 +9,19 @@ const routes = {
 }
 
 export async function startRouter() {
-    const routeName = location.hash.slice(1) || 'dashboard';
+    const routeName = location.hash.slice(1) || 'dashboard'; // ¡esto se usa solo desde index.html!
     const app = document.getElementById('app');
     const viewLoader = routes[routeName];
+
     if (viewLoader) {
         const module = await viewLoader();
         app.innerHTML = await module.render();
-
         if (module.afterRender) module.afterRender();
-
     } else {
-        app.innerHTML = `<h1>404 Pagina no encontrada</h1>`
+        app.innerHTML = `<h1>404 Página no encontrada</h1>`;
     }
 }
-// if (localStorage.getItem('isAuthenticated') !== 'true') {
-//     window.location.href = 'login.html';
-// }
-// document.getElementById('logout-btn')?.addEventListener('click', () => {
-//     localStorage.removeItem('isAuthenticated');
-//     window.location.href = 'login.html';
-// });
+
+if (localStorage.getItem('isAuthenticated') !== 'true') {
+    window.location.href = 'login.html';
+}
