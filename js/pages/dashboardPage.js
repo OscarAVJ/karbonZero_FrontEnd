@@ -1,5 +1,5 @@
 export async function render() {
-    loadCSS(); // Carga dinámica del CSS si existe
+    loadCSS();
     return `
     <!-- Consumptions Section -->
     <div class="py-4">
