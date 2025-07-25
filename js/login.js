@@ -1,7 +1,7 @@
 const button = document.getElementById("login-button");
 
 function open_layout () {
-    window.location.href = "../layout.html";
+    window.location.href = "index.html";
 };
 
 button.addEventListener("click", e => {
@@ -24,4 +24,16 @@ hide_password.addEventListener("click", e => {
         password_input.setAttribute("type", "password");
 
     };
+});
+
+document.getElementById('login-button').addEventListener('click', () => {
+  const usuario = document.getElementById('usuariotxt').value;
+  const contraseña = document.getElementById('contraseñatxt').value;
+    window.location.href = 'index.html';
+
+//   if (usuario === 'admin' && contraseña === '1234') {
+//     localStorage.setItem('isAuthenticated', 'true');
+//   } else {
+//     alert('Usuario o contraseña incorrectos');
+//   }
 });
