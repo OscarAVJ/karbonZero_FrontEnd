@@ -34,5 +34,22 @@ export async function updateUser(payload) {
     })
     if(!response.ok) throw new Error('Error creando usuario');
     return response.json();
-
+}
+export async function deleteUser(id) {
+    Swal.fire({
+        title: "Estas seguro de que quieres eliminar a este usuario?",
+        showDenyButton: true,
+        confirmButtonText: "Eliminar",
+        confirmButtonColor: "#DF4646",
+        denyButtonColor: "#6d6c6c",
+        denyButtonText: `Cancelar`
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await fetch(`${API_URL}apiUser/deleteUser/${id}`, {
+                method: 'DELETE'
+            });
+        } else if (result.isDenied) {
+            return;
+        }
+    });
 }

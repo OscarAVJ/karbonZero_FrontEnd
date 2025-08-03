@@ -1,5 +1,5 @@
 import * as UserController from '../controllers/userController.js';
-
+import * as Alerts from '../../utils/alerts.js'
 
 export function render() {
     return `
@@ -151,22 +151,9 @@ export function render() {
     </div>
   `;
 }
-const modal = document.querySelector('#usersModal');
-function initUserModal() {
-    if (!modal) return;
-    window.userModal = bootstrap.Modal.getOrCreateInstance(modal);
 
-    const form = document.getElementById('userForm');
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            window.userModal.hide();
-        });
-    }
-}
 export function afterRender() {
     const container = document.getElementById('users-root');
-    initUserModal();
     UserController.init(container);
     const addUserBtn = document.querySelector('#addUser-kz');
     const nametxt = document.querySelector('#nombretxt');
@@ -174,6 +161,8 @@ export function afterRender() {
     const usernametxt = document.querySelector('#usuariotxt');
     const emailtxt = document.querySelector('#correoElectronicotxt');
     const usersForm = document.querySelector('#userForm');
+    const modalEl = document.getElementById('usersModal')
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl)
 
     if (addUserBtn) {
         addUserBtn.addEventListener('click', () => {
@@ -183,8 +172,11 @@ export function afterRender() {
             emailtxt.value = '';
         });
     }
+
     usersForm.addEventListener('submit', () => {
         UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, usersForm);
+        Alerts.showInfo("Usuario agregado exitosamente","", "success")
+        bsModal.hide()
     })
 }
 
