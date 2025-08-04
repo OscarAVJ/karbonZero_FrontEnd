@@ -1,8 +1,10 @@
 import * as UserController from '../controllers/userController.js';
-import * as Alerts from '../../utils/alerts.js'
+import { getRoles } from '../services/rolService.js';
 
+///Esto es lo que va suceder al ingresar a la pagina, lo definimos en routes.js
+///Aca mas que todo mandamos el html, titulos, contenedores, y modales
 export function render() {
-    return `
+  return `
     <div class="py-4" id="users-root">
       <h2 class="general-title">Usuarios</h2>
       <div
@@ -116,6 +118,7 @@ export function render() {
                   >
                 </div>
               </div>
+              
               <div class="row g-2 mb-3">
                 <div class="col-sm-6">
                   <label for="usuariotxt" class="form-label">Usuario</label>
@@ -126,6 +129,7 @@ export function render() {
                     placeholder="Usuario"
                   >
                 </div>
+                
                 <div class="col-sm-6">
                   <label
                     for="correoElectronicotxt"
@@ -138,7 +142,24 @@ export function render() {
                     placeholder="Correo"
                   >
                 </div>
+                <div class="col-sm-6 d-none">
+                  <label
+                    for="idtxt"
+                    class="form-label"
+                  >id</label>
+                  <input
+                    id="idtxt"
+                    type="text"
+                    class="form-control"
+                    placeholder="id"
+                  >
+                </div>
               </div>
+               <div class="row g-2 mb-3 ">
+                  <label for="roltxt" class="form-label">Rol</label>
+                    <select id="roltxt" class="form-select">
+                  </select>
+                </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
               <button type="submit" class="btn kz-button-create">
@@ -152,31 +173,48 @@ export function render() {
   `;
 }
 
-export function afterRender() {
-    const container = document.getElementById('users-root');
-    UserController.init(container);
-    const addUserBtn = document.querySelector('#addUser-kz');
-    const nametxt = document.querySelector('#nombretxt');
-    const lastNametxt = document.querySelector('#apellidotxt');
-    const usernametxt = document.querySelector('#usuariotxt');
-    const emailtxt = document.querySelector('#correoElectronicotxt');
-    const usersForm = document.querySelector('#userForm');
-    const modalEl = document.getElementById('usersModal')
-    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl)
+///Esto es lo que pasa cuando ya hemos renderizado nuestra pagina
+export async function afterRender() {
+  ///Obtenemos roles
+  let roles = await getRoles();
+  ///Aca mandamos a llamar el init de userController que es el que llena la tabla, por eso le pasamos container
+  const container = document.getElementById('users-root');
+  UserController.init(container);
 
-    if (addUserBtn) {
-        addUserBtn.addEventListener('click', () => {
-            nametxt.value = '';
-            lastNametxt.value = '';
-            usernametxt.value = '';
-            emailtxt.value = '';
-        });
+  ///Obtenemos nuestros elementos
+  const addUserBtn = document.querySelector('#addUser-kz');
+  const nametxt = document.querySelector('#nombretxt');
+  const lastNametxt = document.querySelector('#apellidotxt');
+  const usernametxt = document.querySelector('#usuariotxt');
+  const emailtxt = document.querySelector('#correoElectronicotxt');
+  const usersForm = document.querySelector('#userForm');
+  const modalEl = document.getElementById('usersModal')
+  const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl)
+  const idHideen = document.querySelector('#idtxt');
+  const rolesSelect = document.querySelector('#roltxt');
+
+  ///Aca mandamos a llenar el loadRoles y le pasamos los roles que hemos obtenido asi como el formselect
+  UserController.loadRoles(roles, rolesSelect);
+
+  ///Aca definimos que si el boton existe, al hacerle click vamos a limpiar los campos al cargar
+  if (addUserBtn) {
+    addUserBtn.addEventListener('click', () => {
+      nametxt.value = '';
+      lastNametxt.value = '';
+      usernametxt.value = '';
+      emailtxt.value = '';
+    });
+  }
+
+  ///Aca ya vinculamos la parte del insert/update con el submit de nuestro formulario, pasamos datos segun sean solicitados
+  usersForm.addEventListener('submit', () => {
+    if (idHideen.value) {
+      UserController.updateUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm,idHideen);
+      bsModal.hide()
+    } else {
+      UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect ,usersForm);
+      bsModal.hide()
     }
 
-    usersForm.addEventListener('submit', () => {
-        UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, usersForm);
-        Alerts.showInfo("Usuario agregado exitosamente","", "success")
-        bsModal.hide()
-    })
+  })
 }
-
