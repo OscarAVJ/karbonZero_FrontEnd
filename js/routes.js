@@ -9,7 +9,7 @@ const routes = {
 }
 
 export async function startRouter() {
-    const routeName = location.hash.slice(1) || 'dashboard'; // ¡esto se usa solo desde index.html!
+    const routeName = location.hash.slice(1) || 'dashboard';
     const app = document.getElementById('app');
     const viewLoader = routes[routeName];
 
