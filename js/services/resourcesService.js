@@ -2,10 +2,10 @@ import { APIURL as API_URL } from "../../utils/api_url";
 import * as Alerts from '../../utils/alerts.js'
 
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getUsers() {
+export async function getResources() {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
-        const response = await fetch(`${API_URL}apiUser/getAllUsers`);
+        const response = await fetch(`${API_URL}apiResource/getAllResources`);
         ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
         if (!response.ok) {
             throw new Error(`Error fetching users: ${response.status}`);
@@ -20,16 +20,16 @@ export async function getUsers() {
 }
 
 ///Aca pues este es Muy Importante para el put, asi que si su CRUD no lo tiene, haganlo.
-export async function getUserById(id) {
+export async function getResourcesById(id) {
     ///Try para intentar
     try {
         ///Hacemos la peticion a la api
-        const response = await fetch(`${API_URL}apiUser/getUserById/${id}`);
+        const response = await fetch(`${API_URL}apiResource/getResourceById/${id}`);
         ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
         const u = await response.json();
         ///lo mismo de arriba
         if (!response.ok) {
-            throw new Error(`Error fetching users: ${response.status}`);
+            throw new Error(`Error fetching resources: ${response.status}`);
         }
         return u;
     ///Ya lo saben
@@ -40,11 +40,11 @@ export async function getUserById(id) {
 }
 
 ///Funcion para insertar usuarios, (Peticion)
-export async function insertUser(payload) {
+export async function insertResource(payload) {
     ///Try
     try {
         ///Peticion para el insert y como lo queremos asi como su metodo
-        const response = await fetch(`${API_URL}apiUser/insertUser`, {
+        const response = await fetch(`${API_URL}apiResource/insertResource`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             ///Convertimos la respuesta a json
@@ -65,36 +65,36 @@ export async function insertUser(payload) {
     }
 }
 
-///Peticion para actualizar Usuario
+///Peticion para actualizar Recurso
 ///IMPORTANTE: QUE EN LA PETICION EL ID.VALUE 
-export async function updateUser(payload, id) {
+export async function updateResource(payload, id) {
     ///Try
     try {
-        ///Peticion para actualizar usuario
-        const response = await fetch(`${API_URL}apiUser/updateUser/${id.value}`, {
+        ///Peticion para actualizar recurso
+        const response = await fetch(`${API_URL}apiResource/updateResource/${id.value}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             ///lo hacemos json
             body: JSON.stringify(payload)
         })
-        ///Lo mismo que esta en insertUser, suban
+        ///Lo mismo que esta en insertResource, suban
         if (response.ok) {
-            Alerts.showToastCloseSuccess("Usuario actualizado exitosamente")
+            Alerts.showToastCloseSuccess("Recurso actualizado exitosamente")
         }
         else {
-            Alerts.showToastCloseError(`Error actualizando usuario`)
+            Alerts.showToastCloseError(`Error actualizando recurso`)
         }
         return response.json();
     } catch (err) {
-        Alerts.showToastCloseError(`Error actualizando usuario ${err}`)
+        Alerts.showToastCloseError(`Error actualizando recurso ${err}`)
     }
 
 }
 ///Aca esta el delete
-export async function deleteUser(id) {
+export async function deleteResource(id) {
     ///Le pedimos una confirmacion al usuario 
     Swal.fire({
-        title: "Estas seguro de que quieres eliminar a este usuario?",
+        title: "¿Estas seguro de que quieres eliminar a este recurso?",
         showDenyButton: true,
         confirmButtonText: "Eliminar",
         confirmButtonColor: "#DF4646",
@@ -103,10 +103,10 @@ export async function deleteUser(id) {
     }).then(async (result) => {
         ///Si el usuario acepta hacemos la peticion
         if (result.isConfirmed) {
-            await fetch(`${API_URL}apiUser/deleteUser/${id}`, {
+            await fetch(`${API_URL}apiResource/deleteResource/${id}`, {
                 method: 'DELETE'
             });
-            Alerts.showToastCloseSuccess("Usuario eliminado exitosamente")
+            Alerts.showToastCloseSuccess("Recurso eliminado exitosamente")
         } else if (result.isDenied) {
             Alerts.showToastCloseError("Proceso cancelado")
             return;
