@@ -8,7 +8,7 @@ export async function init(container) {
 
 ///Renderizado de elementos
 async function renderResourceData(container) {
-    
+
     const $tabListR = container.querySelector('#tabList-resource');
     const $tabContainerR = container.querySelector('#tabContent-resource');
 
