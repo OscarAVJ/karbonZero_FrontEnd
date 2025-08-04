@@ -215,6 +215,5 @@ export async function afterRender() {
       UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect ,usersForm);
       bsModal.hide()
     }
-
   })
 }

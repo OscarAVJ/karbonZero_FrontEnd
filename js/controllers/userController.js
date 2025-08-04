@@ -54,7 +54,7 @@ async function renderData(container) {
         document.getElementById('correoElectronicotxt').value = user.email;
         document.getElementById('roltxt').value = user.idRol;
       } catch (err) {
-        Alerts.showInfo('Error', 'No se pudo cargar el usuario', 'error');
+        Alerts.showToastCloseError('No se pudo cargar el usuario');
         console.error(err);
       }
       return;
@@ -120,7 +120,7 @@ export async function insertUser(usertxt, nametxt, lastNametxt, emailtxt, rolId,
   try {
     UserService.insertUser(payload);
   } catch (err) {
-    Alerts.showToastClose(`No se pudo agregar al usuario ${err}`, "error")
+    Alerts.showToastCloseError(`No se pudo agregar al usuario ${err}`)
   }
   form.reset();
 }
@@ -138,7 +138,7 @@ export async function updateUser(usertxt, nametxt, lastNametxt, emailtxt,roltxt,
   try {
     UserService.updateUser(payload, id);
   } catch (err) {
-    console.error("No se pudo insertar el usuario")
+    console.error("No se pudo actualizar el usuario")
   }
   form.reset();
 }
