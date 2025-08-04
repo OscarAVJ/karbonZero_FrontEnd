@@ -56,7 +56,7 @@ export async function insertUser(payload) {
         }
         ///Si no pues una mala
         else {
-            Alerts.showToastCloseError(`Error creando usuario`)
+            Alerts.showToastCloseError(`Error creando usuario ${response.status}`)
         }
         ///Retornamos nuestra respuesta
         return response.json();
