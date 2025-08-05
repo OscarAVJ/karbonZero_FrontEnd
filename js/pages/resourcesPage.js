@@ -1,6 +1,6 @@
+import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/resourceInitController.js';
 import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
 import { getMeasureUnits } from '../services/measureService.js';
-import { getResources } from '../services/resourcesService.js';
 
 export async function render() {
     return `
@@ -200,7 +200,15 @@ export async function render() {
         Recursos
     </h2>
     <ul class="nav nav-tabs mb-3" id="tabList-resource"></ul>
-    <div class="tab-content" id="tabContent-resource"></div>
+    <div class="tab-content" id="tabContent-resource">
+        <div id="resources" class="tab-pane fade show active">
+            <!-- contenido de recursos -->
+        </div>
+        <div id="purity" class="tab-pane fade">
+            <!-- contenido de pureza -->
+        </div>
+    </div>
+
 </div>      
 
   `;
@@ -211,12 +219,13 @@ export async function afterRender() {
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
-async function resourceProces(){
+async function resourceProces() {
     let measureUnits = await getMeasureUnits();
 
     const container = document.getElementById('resources-root');
 
-    ResourceController.init(container);
+    ///Llenamos los datos con nuestro archivo de barril
+    initAllResourcesTabs(container);
 
     ///Obtencion de modales recursos
     const addResourceBtn = document.querySelector('#addResource-kz');
@@ -231,20 +240,20 @@ async function resourceProces(){
     ///Llenamos el select de unidades de medida
     ResourceController.loadMeasureUnits(measureUnits, measureUnitSelect);
 
-    if(addResourceBtn){
-        addResourceBtn.addEventListener('click', ()=>{
-            nametxt.value ="";
+    if (addResourceBtn) {
+        addResourceBtn.addEventListener('click', () => {
+            nametxt.value = "";
             resourceCarbonFootprint.value = "";
         });
     }
 
     ///Aca y hacemos el proceso de submit
-    resourceForm.addEventListener('submit', ()=>{
-        if((idResource.value)){
-            ResourceController.updateResource(idResource, nametxt,measureUnitSelect, resourceCarbonFootprint, resourceForm);
+    resourceForm.addEventListener('submit', () => {
+        if ((idResource.value)) {
+            ResourceController.updateResource(idResource, nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
             bdModalResource.hide()
-        }else{
-            ResourceController.insertResource(nametxt, measureUnitSelect,resourceCarbonFootprint,resourceForm);
+        } else {
+            ResourceController.insertResource(nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
             bdModalResource.hide();
         }
     })
