@@ -1,4 +1,6 @@
+import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/resourceInitController.js';
 import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
+import * as PurityController from '../controllers/resourcesPageControllers/puritiesController.js';
 import { getMeasureUnits } from '../services/measureService.js';
 import { getResources } from '../services/resourcesService.js';
 
@@ -56,18 +58,23 @@ export async function render() {
                         data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <form id="userForm">
+                <form id="purityForm">
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3 ">
-                            <label for="recursoPtxt" class="form-label">Recurso</label>
-                            <select id="recursoPtxt" class="form-select">
-                                <option>Agua</option>
-                                <option>Electricidad</option>
+                            <label for="resourceSelect" class="form-label">Recurso</label>
+                            <select id="resourceSelect" class="form-select">
+                              
                             </select>
                         </div>
                         <div class="row g-2 mb-3">
-                            <label for="purezaPtxt" class="form-label">Pureza</label>
-                            <input id="purezaPtxt" type="number" class="form-control" placeholder="Pureza">
+                            <label for="puritytxt" class="form-label">Pureza</label>
+                            <input id="puritytxt" type="number"
+                            min="0" step="0.1"
+                            class="form-control" placeholder="Pureza">
+                        </div>
+                        <div class="row g-2 mb-3 d-none">
+                            <label for="idPurityHidden" class="form-label">idResource</label>
+                            <input id="idPurityHidden" type="text" class="form-control" placeholder="id">
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
@@ -200,7 +207,15 @@ export async function render() {
         Recursos
     </h2>
     <ul class="nav nav-tabs mb-3" id="tabList-resource"></ul>
-    <div class="tab-content" id="tabContent-resource"></div>
+    <div class="tab-content" id="tabContent-resource">
+        <div id="resources" class="tab-pane fade show active">
+            <!-- contenido de recursos -->
+        </div>
+        <div id="purity" class="tab-pane fade">
+            <!-- contenido de pureza -->
+        </div>
+    </div>
+
 </div>      
 
   `;
@@ -208,15 +223,17 @@ export async function render() {
 
 export async function afterRender() {
     resourceProces();
+    purityProces();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
-async function resourceProces(){
+async function resourceProces() {
     let measureUnits = await getMeasureUnits();
 
     const container = document.getElementById('resources-root');
 
-    ResourceController.init(container);
+    ///Llenamos los datos con nuestro archivo de barril
+    initAllResourcesTabs(container);
 
     ///Obtencion de modales recursos
     const addResourceBtn = document.querySelector('#addResource-kz');
@@ -231,23 +248,58 @@ async function resourceProces(){
     ///Llenamos el select de unidades de medida
     ResourceController.loadMeasureUnits(measureUnits, measureUnitSelect);
 
-    if(addResourceBtn){
-        addResourceBtn.addEventListener('click', ()=>{
-            nametxt.value ="";
+    if (addResourceBtn) {
+        addResourceBtn.addEventListener('click', () => {
+            nametxt.value = "";
             resourceCarbonFootprint.value = "";
         });
     }
 
     ///Aca y hacemos el proceso de submit
-    resourceForm.addEventListener('submit', ()=>{
-        if((idResource.value)){
-            ResourceController.updateResource(idResource, nametxt,measureUnitSelect, resourceCarbonFootprint, resourceForm);
+    resourceForm.addEventListener('submit', () => {
+        if ((idResource.value)) {
+            ResourceController.updateResource(idResource, nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
             bdModalResource.hide()
-        }else{
-            ResourceController.insertResource(nametxt, measureUnitSelect,resourceCarbonFootprint,resourceForm);
+        } else {
+            ResourceController.insertResource(nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
             bdModalResource.hide();
         }
     })
 }
+
+async function purityProces() {
+    let resources = await getResources();
+
+    const container = document.getElementById('resources-root');
+
+    initAllResourcesTabs(container);
+
+    const addPuritBtn = document.getElementById('addPurity-kz');
+
+    const resourceSelect = document.querySelector('#resourceSelect');
+    const puritytxt = document.querySelector('#puritytxt');
+    const idPurity = document.querySelector('#idPurityHidden');
+    const modalPurity = document.querySelector('#purezaModal')
+    const purityBsModal = bootstrap.Modal.getOrCreateInstance(modalPurity);
+    const purityForm = document.querySelector('#purityForm')
+
+    PurityController.loadResources(resources, resourceSelect)
+
+    if (addPuritBtn) {
+        addPuritBtn.addEventListener('click', () => {
+            puritytxt.value = ""
+        })
+    }
+    purityForm.addEventListener('submit', () => {
+        if (idPurity.value) {
+            PurityController.updatePurity(resourceSelect, puritytxt, idPurity, purityForm);
+            purityBsModal.hide()
+        } else {
+            PurityController.insertPurity(resourceSelect, puritytxt, purityForm);
+            purityBsModal.hide();
+        }
+    })
+}
+
 
 
