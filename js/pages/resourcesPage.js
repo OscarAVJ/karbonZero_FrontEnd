@@ -1,7 +1,8 @@
 import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/resourceInitController.js';
 import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
 import * as PurityController from '../controllers/resourcesPageControllers/puritiesController.js';
-import { getMeasureUnits } from '../services/measureService.js';
+import * as MeasureController from '../controllers/resourcesPageControllers/measuresController.js'
+import { getMeasureUnits } from '../services/measureUnitsService.js';
 import { getResources } from '../services/resourcesService.js';
 
 export async function render() {
@@ -95,11 +96,17 @@ export async function render() {
                         data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <form id="userForm">
+                <form id="measureForm">
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
-                            <label for="nombreMEtxt" class="form-label">Medida</label>
-                            <input id="nombreMEtxt" type="text" class="form-control" placeholder="Nombre">
+                            <label for="nameMetxt" class="form-label">Medida</label>
+                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                    </div>
+                    <div class="modal-body mx-3 d-none">
+                        <div class="row g-2 mb-3">
+                            <label for="idMeasureHidden" class="form-label">Medida</label>
+                            <input id="idMeasureHidden" type="text" class="form-control" placeholder="Nombre">
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
@@ -214,6 +221,9 @@ export async function render() {
         <div id="purity" class="tab-pane fade">
             <!-- contenido de pureza -->
         </div>
+        <div id="measures" class="tab-pane fade">
+            <!-- contenido de medidas -->
+        </div>
     </div>
 
 </div>      
@@ -224,6 +234,7 @@ export async function render() {
 export async function afterRender() {
     resourceProces();
     purityProces();
+    measureProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
@@ -301,5 +312,34 @@ async function purityProces() {
     })
 }
 
+async function measureProcess() {
+
+    const container = document.getElementById('resources-root');
+
+    initAllResourcesTabs(container);
+
+    const addPuritBtn = document.getElementById('addMeasure-kz');
+
+    const idHidden = document.querySelector('#idMeasureHidden');
+    const nametxt = document.querySelector('#nameMetxt');
+    const measureModal = document.querySelector('#medidasModal')
+    const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
+    const measureForm = document.querySelector('#measureForm')
+
+    if (addPuritBtn) {
+        addPuritBtn.addEventListener('click', () => {
+            nametxt.value = ""
+        })
+    }
+    measureForm.addEventListener('submit', () => {
+        if (idHidden.value) {
+            MeasureController.updateMeasure(idHidden, nametxt, measureForm);
+            measureBsModal.hide()
+        } else {
+            MeasureController.insertMeasure(nametxt, measureForm);
+            measureBsModal.hide();
+        }
+    })
+}
 
 
