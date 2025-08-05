@@ -1,5 +1,6 @@
 import { renderPuritiesData } from "./puritiesController";
 import { initResource } from "./resourcesController";
+import { initMeasure } from "./measuresController";
 
 export async function initAllResourcesTabs(container) {
     const $tabListR = container.querySelector('#tabList-resource');
@@ -11,7 +12,11 @@ export async function initAllResourcesTabs(container) {
         <li class="nav-item d-flex">
             <a class="nav-link" data-bs-toggle="tab" href="#purity">Pureza</a>
         </li>
+        <li class="nav-item d-flex">
+            <a class="nav-link" data-bs-toggle="tab" href="#measures">Medidas</a>
+        </li>
     `;
     initResource(container);
     renderPuritiesData(container);
+    initMeasure(container)
 }
