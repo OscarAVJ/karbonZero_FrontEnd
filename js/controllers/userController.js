@@ -73,6 +73,7 @@ function LoadTable(users, tab) {
                 <th>#</th>
                 <th>Nombre</th>
                 <th>Usuario</th>
+                <th>Rol</th>
                 <th>Correo</th>
                 <th>Acciones</th>
             </tr>
@@ -83,6 +84,7 @@ function LoadTable(users, tab) {
                 <td>${i + 1}</td>
                 <td>${u.firstName} ${u.lastName}</td>
                 <td>${u.username}</td>
+                <td>${u.nameRol}</td>
                 <td>${u.email}</td>
                 <td>
                     <button class="btn btn-sm btn-success me-1 btn-edit-user" data-id="${u.idUser}" data-bs-toggle="modal" data-bs-target="#usersModal"><i class="bi bi-pencil-fill"></i></button>

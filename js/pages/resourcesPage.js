@@ -2,8 +2,11 @@ import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/re
 import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
 import * as PurityController from '../controllers/resourcesPageControllers/puritiesController.js';
 import * as MeasureController from '../controllers/resourcesPageControllers/measuresController.js'
-import { getMeasureUnits } from '../services/measureUnitsService.js';
+import * as MeasureUnitsController from '../controllers/resourcesPageControllers/measureUnitsController.js'
+import { getAllMeasureUnits } from '../services/measureUnitsService.js';
 import { getResources } from '../services/resourcesService.js';
+import { showToastCloseInfo } from '../../utils/alerts.js';
+import { getAllMeasures } from '../services/measuresService.js';
 
 export async function render() {
     return `
@@ -126,18 +129,21 @@ export async function render() {
                         data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <form id="userForm">
+                <form id="measureUnitsForm">
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="medidasUtxt" class="form-label">Medida</label>
                             <select id="medidasUtxt" class="form-select">
-                                <option>Energia</option>
-                                <option>Masa</option>
+
                             </select>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nombreUtxt" class="form-label">Unidad</label>
                             <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                        <div class="row g-2 mb-3 d-none">
+                            <label for="idhiddenMeasureU" class="form-label">Unidad</label>
+                            <input id="idhiddenMeasureU" type="text" class="form-control" placeholder="Nombre">
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
@@ -224,6 +230,12 @@ export async function render() {
         <div id="measures" class="tab-pane fade">
             <!-- contenido de medidas -->
         </div>
+        <div id="measureUnits" class="tab-pane fade">
+            <!-- contenido de pureza -->
+        </div>
+        <div id="conversionUnits" class="tab-pane fade">
+            <!-- contenido de medidas -->
+        </div>
     </div>
 
 </div>      
@@ -235,11 +247,12 @@ export async function afterRender() {
     resourceProces();
     purityProces();
     measureProcess();
+    measureUnitsProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
 async function resourceProces() {
-    let measureUnits = await getMeasureUnits();
+    let measureUnits = await getAllMeasureUnits();
 
     const container = document.getElementById('resources-root');
 
@@ -302,6 +315,10 @@ async function purityProces() {
         })
     }
     purityForm.addEventListener('submit', () => {
+        if (puritytxt.value.trim() > 1 || puritytxt.value.trim() < 0) {
+            showToastCloseInfo("El valor de la pureza no puede ser mayor a 1 ni menor a 0")
+            return;
+        }
         if (idPurity.value) {
             PurityController.updatePurity(resourceSelect, puritytxt, idPurity, purityForm);
             purityBsModal.hide()
@@ -342,4 +359,36 @@ async function measureProcess() {
     })
 }
 
+async function measureUnitsProcess() {
+    let measureUnits = await getAllMeasures();
+
+    const container = document.getElementById('resources-root');
+
+    initAllResourcesTabs(container);
+
+    const addPuritBtn = document.getElementById('addMeasureUnit-kz');
+
+    const idHidden = document.querySelector('#idhiddenMeasureU');
+    const measureSelect = document.querySelector('#medidasUtxt');
+    const nametxt = document.querySelector('#nombreUtxt');
+    const measureUnitsModal = document.querySelector('#unidadesModal')
+    const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureUnitsModal);
+    const measureUnitsForm = document.querySelector('#measureUnitsForm');
+
+    MeasureUnitsController.loadMeasures(measureUnits, measureSelect);
+
+    if (addPuritBtn) {
+        addPuritBtn.addEventListener('click', () => {
+            nametxt.value = ""
+        })
+    }
+    measureUnitsForm.addEventListener('submit', () => {
+        if (idHidden.value) {
+            MeasureUnitsController.updateMeasureUnit(idHidden, measureSelect,nametxt, measureUnitsForm);
+            measureBsModal.hide()
+        } else {
+            MeasureUnitsController.insertMeasureUnit(nametxt, measureSelect ,measureUnitsForm);
+            measureBsModal.hide();
+        }
+    })}
 

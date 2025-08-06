@@ -194,3 +194,7 @@ body {
     opacity: 1;
     transition: opacity 0.3s;
 }
+
+.shadow-toast {
+  box-shadow: 10px 20px 5px 20px rgba(37, 104, 45, 0.637);
+}
