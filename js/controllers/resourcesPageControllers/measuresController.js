@@ -125,7 +125,7 @@ export async function updateMeasure(idMeasure, nametxt, form) {
         name: nametxt.value.trim()
     }
     try {
-        MeasureService.updateMeasure(payload, id);
+        MeasureService.updateMeasure(payload, idMeasure);
     } catch(err) {
         Alerts.showToastCloseError(`No se pudo actualizar la medida ${err}`)
     }
