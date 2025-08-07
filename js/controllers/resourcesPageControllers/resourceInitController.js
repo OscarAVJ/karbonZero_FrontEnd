@@ -2,6 +2,7 @@ import { renderPuritiesData } from "./puritiesController";
 import { initResource } from "./resourcesController";
 import { initMeasure } from "./measuresController";
 import { initMeasureUnits } from "./measureUnitsController";
+import { initConversionUnits } from './conversionUnitsController'
 
 export async function initAllResourcesTabs(container) {
     const $tabListR = container.querySelector('#tabList-resource');
@@ -27,4 +28,5 @@ export async function initAllResourcesTabs(container) {
     renderPuritiesData(container);
     initMeasure(container);
     initMeasureUnits(container);
+    initConversionUnits(container);
 }

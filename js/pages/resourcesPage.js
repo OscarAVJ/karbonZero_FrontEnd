@@ -2,7 +2,8 @@ import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/re
 import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
 import * as PurityController from '../controllers/resourcesPageControllers/puritiesController.js';
 import * as MeasureController from '../controllers/resourcesPageControllers/measuresController.js'
-import * as MeasureUnitsController from '../controllers/resourcesPageControllers/measureUnitsController.js'
+import * as MeasureUnitsController from '../controllers/resourcesPageControllers/measureUnitsController.js';
+import * as ConversionUnitController from '../controllers/resourcesPageControllers/conversionUnitsController.js'
 import { getAllMeasureUnits } from '../services/measureUnitsService.js';
 import { getResources } from '../services/resourcesService.js';
 import { showToastCloseInfo } from '../../utils/alerts.js';
@@ -163,49 +164,46 @@ export async function render() {
                         data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <form id="userForm">
+                <form id="conversionForm">
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-2">
-                            <label for="medidasCtxt" class="form-label">Medidas</label>
-                            <select id="medidasCtxt" class="form-select">
-                                <option>Masa</option>
-                                <option>Volumen</option>
-                            </select>
-                        </div>
-                        <div class="row g-2 mb-2">
-                            <label for="recursoCtxt" class="form-label">Recurso</label>
-                            <select id="recursoCtxt" class="form-select">
-                                <option>Agua</option>
-                                <option>Luz</option>
+                            <label for="resourceMUSelect" class="form-label">Recurso</label>
+                            <select id="resourceMUSelect" class="form-select">
+                               
                             </select>
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label for="unidadItxt" class="form-label">Unidad inicial</label>
-                                <select id="unidadItxt" class="form-select">
-                                    <option>Litros</option>
-                                    <option>Gramos</option>
+                                <label for="initialUnitSelect" class="form-label">Unidad inicial</label>
+                                <select id="initialUnitSelect" class="form-select">
+
                                 </select>
                             </div>
                             <div class="col-6">
-                                <label for="unidadFtxt" class="form-label">Unidad final</label>
-                                <select id="unidadFtxt" class="form-select">
-                                    <option>Mililitros</option>
-                                    <option>Miligramos</option>
+                                <label for="finalUnitSelect" class="form-label">Unidad final</label>
+                                <select id="finalUnitSelect" class="form-select">
+                                  
                                 </select>
                             </div>
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label for="operacionCtxt" class="form-label">Operación</label>
-                                <select id="operacionCtxt" class="form-select">
-                                    <option>Suma</option>
-                                    <option>Multiplicación</option>
+                                <label for="operationSelect" class="form-label">Operación</label>
+                                <select id="operationSelect" class="form-select">
+                                    <option value="SUM">Suma</option>
+                                    <option value="RES">Resta</option>
+                                    <option value="DIV">Divición</option>
+                                    <option value="MUL">Multiplicación</option>
+                                    <option value="PROD">No se que es esto gerardo</option>
                                 </select>
                             </div>
                             <div class="col-6">
-                                <label for="constanteCtxt" class="form-label">Constante</label>
-                                <input id="constanteCtxt" type="number" class="form-control" placeholder="Constante">
+                                <label for="constantxt" class="form-label">Constante</label>
+                                <input id="constantxt" type="number" min="0" step="0.01" class="form-control" placeholder="Constante">
+                            </div>
+                             <div class="col-6 d-none">
+                                <label for="conversionIdHidden" class="form-label">Constante</label>
+                                <input id="conversionIdHidden" type="text" class="form-control" placeholder="Constante">
                             </div>
                         </div>
                     </div>
@@ -248,6 +246,7 @@ export async function afterRender() {
     purityProces();
     measureProcess();
     measureUnitsProcess();
+    conversionUnitProces();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
@@ -335,7 +334,7 @@ async function measureProcess() {
 
     initAllResourcesTabs(container);
 
-    const addPuritBtn = document.getElementById('addMeasure-kz');
+    const addMeasure = document.getElementById('addMeasure-kz');
 
     const idHidden = document.querySelector('#idMeasureHidden');
     const nametxt = document.querySelector('#nameMetxt');
@@ -343,7 +342,7 @@ async function measureProcess() {
     const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
     const measureForm = document.querySelector('#measureForm')
 
-    if (addPuritBtn) {
+    if (addMeasure) {
         addPuritBtn.addEventListener('click', () => {
             nametxt.value = ""
         })
@@ -366,29 +365,70 @@ async function measureUnitsProcess() {
 
     initAllResourcesTabs(container);
 
-    const addPuritBtn = document.getElementById('addMeasureUnit-kz');
+    const addMu = document.getElementById('addMeasureUnit-kz');
 
-    const idHidden = document.querySelector('#idhiddenMeasureU');
+    const idHiddenMU = document.querySelector('#idhiddenMeasureU');
     const measureSelect = document.querySelector('#medidasUtxt');
-    const nametxt = document.querySelector('#nombreUtxt');
+    const nameMUtxt = document.querySelector('#nombreUtxt');
     const measureUnitsModal = document.querySelector('#unidadesModal')
     const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureUnitsModal);
     const measureUnitsForm = document.querySelector('#measureUnitsForm');
 
     MeasureUnitsController.loadMeasures(measureUnits, measureSelect);
 
-    if (addPuritBtn) {
+    if (addMu) {
         addPuritBtn.addEventListener('click', () => {
-            nametxt.value = ""
+            nameMUtxt.value = ""
         })
     }
     measureUnitsForm.addEventListener('submit', () => {
-        if (idHidden.value) {
-            MeasureUnitsController.updateMeasureUnit(idHidden, measureSelect,nametxt, measureUnitsForm);
+        if (idHiddenMU.value) {
+            MeasureUnitsController.updateMeasureUnit(idHiddenMU, measureSelect,nameMUtxt, measureUnitsForm);
             measureBsModal.hide()
         } else {
-            MeasureUnitsController.insertMeasureUnit(nametxt, measureSelect ,measureUnitsForm);
+            MeasureUnitsController.insertMeasureUnit(nameMUtxt, measureSelect ,measureUnitsForm);
             measureBsModal.hide();
         }
-    })}
+    })
+}
+async function conversionUnitProces() {
+    let measureUnitsC = await getAllMeasureUnits();
+    let resources = await getResources()
+    const container = document.getElementById('resources-root');
 
+    initAllResourcesTabs(container);
+
+    const addConversionUnit = document.getElementById('addConversionUnit-kz');
+
+    const idHidden = document.querySelector('#conversionIdHidden');
+    const initialSelect = document.querySelector('#initialUnitSelect');
+    const finalSelect = document.querySelector('#finalUnitSelect');
+    const resourceSelect = document.querySelector('#resourceMUSelect');
+    const operation = document.querySelector('#operationSelect');
+    const constant = document.querySelector('#constantxt')
+    const conversionModa = document.querySelector('#conversionModal')
+    const conversionBsModal = bootstrap.Modal.getOrCreateInstance(conversionModa);
+    const conversionForm = document.querySelector('#conversionForm');
+
+    ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
+    ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);
+    ConversionUnitController.loadResources(resources, resourceSelect)
+
+    if (addConversionUnit) {
+        addConversionUnit.addEventListener('click', () => {
+            ConversionUnitController.loadResources(resources, resourceSelect)
+            constant.value = ""
+            idHidden.value = ""
+            operation.value = "SUM"
+        })
+    }
+    conversionForm.addEventListener('submit', () => {
+        if (idHidden.value) {
+            ConversionUnitController.updateConversionUnit(idHidden, initialSelect, finalSelect, resourceSelect, constant, operation,conversionForm);
+            conversionBsModal.hide()
+        } else {
+            ConversionUnitController.insertConversionUnit(initialSelect, finalSelect, resourceSelect, constant, operation,conversionForm);
+            conversionBsModal.hide()
+        }
+    })
+}
