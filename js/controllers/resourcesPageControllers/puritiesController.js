@@ -20,13 +20,29 @@ export async function renderPuritiesData(container) {
 
     loadResourcesPurityTable(resourcePurities, puritiesTab);
 
-      ///Aca definimos que hace nuestro boton de eliminar
-      container.addEventListener('click', async e => {
+    ///Aca definimos que hace nuestro boton de eliminar
+    container.addEventListener('click', async e => {
         const btn = e.target.closest('.btn-delete-purity');
         if (!btn) return;
         const id = btn.dataset.id;
         await PuritiesService.deleResourcePurity(id);
-      });
+    });
+    container.addEventListener('click', async e => {
+        const editBtn = e.target.closest('.btn-edit-purity');
+        if (editBtn) {
+            const id = editBtn.dataset.id;
+            try {
+                const purity = await PuritiesService.getResourcePurityById(id);
+                document.getElementById('idPurityHidden').value = purity.idResourcePurity;
+                document.getElementById('puritytxt').value = purity.purity;
+                document.querySelector('#resourceSelect').value = purity.idResource;
+            } catch (err) {
+                Alerts.showToastCloseError('No se pudo cargar la medida');
+                console.error(err);
+            }
+            return;
+        }
+    });
 }
 ///Metodo para cargar tabla 
 function loadResourcesPurityTable(puritites, tab) {
@@ -104,27 +120,27 @@ export function loadResources(resources, resourceSelect) {
 }
 
 export async function insertPurity(resourceSelect, puritytxt, form) {
-    const payload= {
+    const payload = {
         idResource: resourceSelect.value,
         purity: puritytxt.value.trim()
     }
-    try{
+    try {
         PuritiesService.insertResourcePurity(payload);
-    }catch{
-            Alerts.showToastCloseError(`No se pudo agregar la pureza ${err}`)
+    } catch {
+        Alerts.showToastCloseError(`No se pudo agregar la pureza ${err}`)
     }
     form.reset();
 }
 export async function updatePurity(resourceSelect, puritytxt, id, form) {
-    const payload= {
+    const payload = {
         idResourcePurity: id.value,
         idResource: resourceSelect.value,
         purity: puritytxt.value.trim()
     }
-    try{
+    try {
         PuritiesService.updateResourcePurity(payload, id);
-    }catch{
-            Alerts.showToastCloseError(`No se pudo actualizar la pureza ${err}`)
+    } catch {
+        Alerts.showToastCloseError(`No se pudo actualizar la pureza ${err}`)
     }
     form.reset();
 }
