@@ -1,16 +1,16 @@
-import { initAllResourcesTabs } from '../controllers/resourcesPageControllers/resourceInitController.js';
-import * as ResourceController from '../controllers/resourcesPageControllers/resourcesController.js';
-import * as PurityController from '../controllers/resourcesPageControllers/puritiesController.js';
-import * as MeasureController from '../controllers/resourcesPageControllers/measuresController.js'
-import * as MeasureUnitsController from '../controllers/resourcesPageControllers/measureUnitsController.js';
-import * as ConversionUnitController from '../controllers/resourcesPageControllers/conversionUnitsController.js'
-import { getAllMeasureUnits } from '../services/measureUnitsService.js';
-import { getResources } from '../services/resourcesService.js';
-import { showToastCloseInfo } from '../../utils/alerts.js';
-import { getAllMeasures } from '../services/measuresService.js';
+import { initAllResourcesTabs } from "../controllers/resourcesPageControllers/resourceInitController.js";
+import * as ResourceController from "../controllers/resourcesPageControllers/resourcesController.js";
+import * as PurityController from "../controllers/resourcesPageControllers/puritiesController.js";
+import * as MeasureController from "../controllers/resourcesPageControllers/measuresController.js";
+import * as MeasureUnitsController from "../controllers/resourcesPageControllers/measureUnitsController.js";
+import * as ConversionUnitController from "../controllers/resourcesPageControllers/conversionUnitsController.js";
+import { getAllMeasureUnits } from "../services/measureUnitsService.js";
+import { getResources } from "../services/resourcesService.js";
+import { showToastCloseInfo } from "../../utils/alerts.js";
+import { getAllMeasures } from "../services/measuresService.js";
 
 export async function render() {
-    return `
+  return `
 <!-- Consumptions Section -->
 <div class=" py-4"  id="resources-root">
     <!--!MODAL RECURSOS -->
@@ -192,9 +192,8 @@ export async function render() {
                                 <select id="operationSelect" class="form-select">
                                     <option value="SUM">Suma</option>
                                     <option value="RES">Resta</option>
-                                    <option value="DIV">Divición</option>
-                                    <option value="MUL">Multiplicación</option>
-                                    <option value="PROD">No se que es esto gerardo</option>
+                                    <option value="PROD">Multiplicación</option>
+                                    <option value="DIV">División</option>
                                 </select>
                             </div>
                             <div class="col-6">
@@ -242,193 +241,236 @@ export async function render() {
 }
 
 export async function afterRender() {
-    resourceProces();
-    purityProces();
-    measureProcess();
-    measureUnitsProcess();
-    conversionUnitProces();
+  resourceProces();
+  purityProces();
+  measureProcess();
+  measureUnitsProcess();
+  conversionUnitProces();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
 async function resourceProces() {
-    let measureUnits = await getAllMeasureUnits();
+  let measureUnits = await getAllMeasureUnits();
 
-    const container = document.getElementById('resources-root');
+  const container = document.getElementById("resources-root");
 
-    ///Llenamos los datos con nuestro archivo de barril
-    initAllResourcesTabs(container);
+  ///Llenamos los datos con nuestro archivo de barril
+  initAllResourcesTabs(container);
 
-    ///Obtencion de modales recursos
-    const addResourceBtn = document.querySelector('#addResource-kz');
-    const nametxt = document.querySelector('#nameResource');
-    const measureUnitSelect = document.querySelector('#resourceMU');
-    const resourceCarbonFootprint = document.querySelector('#resourceCF');
-    const idResource = document.querySelector('#idResource');
-    const modalResource = document.querySelector('#resourcesModal');
-    const bdModalResource = bootstrap.Modal.getOrCreateInstance(modalResource);
-    const resourceForm = document.querySelector('#resourceForm')
+  ///Obtencion de modales recursos
+  const addResourceBtn = document.querySelector("#addResource-kz");
+  const nametxt = document.querySelector("#nameResource");
+  const measureUnitSelect = document.querySelector("#resourceMU");
+  const resourceCarbonFootprint = document.querySelector("#resourceCF");
+  const idResource = document.querySelector("#idResource");
+  const modalResource = document.querySelector("#resourcesModal");
+  const bdModalResource = bootstrap.Modal.getOrCreateInstance(modalResource);
+  const resourceForm = document.querySelector("#resourceForm");
 
-    ///Llenamos el select de unidades de medida
-    ResourceController.loadMeasureUnits(measureUnits, measureUnitSelect);
+  ///Llenamos el select de unidades de medida
+  ResourceController.loadMeasureUnits(measureUnits, measureUnitSelect);
 
-    if (addResourceBtn) {
-        addResourceBtn.addEventListener('click', () => {
-            nametxt.value = "";
-            resourceCarbonFootprint.value = "";
-        });
+  if (addResourceBtn) {
+    addResourceBtn.addEventListener("click", () => {
+      nametxt.value = "";
+      resourceCarbonFootprint.value = "";
+    });
+  }
+
+  ///Aca y hacemos el proceso de submit
+  resourceForm.addEventListener("submit", () => {
+    if (idResource.value) {
+      ResourceController.updateResource(
+        idResource,
+        nametxt,
+        measureUnitSelect,
+        resourceCarbonFootprint,
+        resourceForm
+      );
+      bdModalResource.hide();
+    } else {
+      ResourceController.insertResource(
+        nametxt,
+        measureUnitSelect,
+        resourceCarbonFootprint,
+        resourceForm
+      );
+      bdModalResource.hide();
     }
-
-    ///Aca y hacemos el proceso de submit
-    resourceForm.addEventListener('submit', () => {
-        if ((idResource.value)) {
-            ResourceController.updateResource(idResource, nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
-            bdModalResource.hide()
-        } else {
-            ResourceController.insertResource(nametxt, measureUnitSelect, resourceCarbonFootprint, resourceForm);
-            bdModalResource.hide();
-        }
-    })
+  });
 }
 
 async function purityProces() {
-    let resources = await getResources();
+  let resources = await getResources();
 
-    const container = document.getElementById('resources-root');
+  const container = document.getElementById("resources-root");
 
-    initAllResourcesTabs(container);
+  initAllResourcesTabs(container);
 
-    const addPuritBtn = document.getElementById('addPurity-kz');
+  const addPuritBtn = document.getElementById("addPurity-kz");
 
-    const resourceSelect = document.querySelector('#resourceSelect');
-    const puritytxt = document.querySelector('#puritytxt');
-    const idPurity = document.querySelector('#idPurityHidden');
-    const modalPurity = document.querySelector('#purezaModal')
-    const purityBsModal = bootstrap.Modal.getOrCreateInstance(modalPurity);
-    const purityForm = document.querySelector('#purityForm')
+  const resourceSelect = document.querySelector("#resourceSelect");
+  const puritytxt = document.querySelector("#puritytxt");
+  const idPurity = document.querySelector("#idPurityHidden");
+  const modalPurity = document.querySelector("#purezaModal");
+  const purityBsModal = bootstrap.Modal.getOrCreateInstance(modalPurity);
+  const purityForm = document.querySelector("#purityForm");
 
-    PurityController.loadResources(resources, resourceSelect)
+  PurityController.loadResources(resources, resourceSelect);
 
-    if (addPuritBtn) {
-        addPuritBtn.addEventListener('click', () => {
-            puritytxt.value = ""
-        })
+  if (addPuritBtn) {
+    addPuritBtn.addEventListener("click", () => {
+      puritytxt.value = "";
+    });
+  }
+  purityForm.addEventListener("submit", () => {
+    if (puritytxt.value.trim() > 1 || puritytxt.value.trim() < 0) {
+      showToastCloseInfo(
+        "El valor de la pureza no puede ser mayor a 1 ni menor a 0"
+      );
+      return;
     }
-    purityForm.addEventListener('submit', () => {
-        if (puritytxt.value.trim() > 1 || puritytxt.value.trim() < 0) {
-            showToastCloseInfo("El valor de la pureza no puede ser mayor a 1 ni menor a 0")
-            return;
-        }
-        if (idPurity.value) {
-            PurityController.updatePurity(resourceSelect, puritytxt, idPurity, purityForm);
-            purityBsModal.hide()
-        } else {
-            PurityController.insertPurity(resourceSelect, puritytxt, purityForm);
-            purityBsModal.hide();
-        }
-    })
+    if (idPurity.value) {
+      PurityController.updatePurity(
+        resourceSelect,
+        puritytxt,
+        idPurity,
+        purityForm
+      );
+      purityBsModal.hide();
+    } else {
+      PurityController.insertPurity(resourceSelect, puritytxt, purityForm);
+      purityBsModal.hide();
+    }
+  });
 }
 
 async function measureProcess() {
+  const container = document.getElementById("resources-root");
 
-    const container = document.getElementById('resources-root');
+  initAllResourcesTabs(container);
 
-    initAllResourcesTabs(container);
+  const addMeasure = document.getElementById("addMeasure-kz");
 
-    const addMeasure = document.getElementById('addMeasure-kz');
+  const idHidden = document.querySelector("#idMeasureHidden");
+  const nametxt = document.querySelector("#nameMetxt");
+  const measureModal = document.querySelector("#medidasModal");
+  const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
+  const measureForm = document.querySelector("#measureForm");
 
-    const idHidden = document.querySelector('#idMeasureHidden');
-    const nametxt = document.querySelector('#nameMetxt');
-    const measureModal = document.querySelector('#medidasModal')
-    const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
-    const measureForm = document.querySelector('#measureForm')
-
-    if (addMeasure) {
-        addPuritBtn.addEventListener('click', () => {
-            nametxt.value = ""
-        })
+  if (addMeasure) {
+    addMeasure.addEventListener("click", () => {
+      nametxt.value = "";
+    });
+  }
+  measureForm.addEventListener("submit", () => {
+    if (idHidden.value) {
+      MeasureController.updateMeasure(idHidden, nametxt, measureForm);
+      measureBsModal.hide();
+    } else {
+      MeasureController.insertMeasure(nametxt, measureForm);
+      measureBsModal.hide();
     }
-    measureForm.addEventListener('submit', () => {
-        if (idHidden.value) {
-            MeasureController.updateMeasure(idHidden, nametxt, measureForm);
-            measureBsModal.hide()
-        } else {
-            MeasureController.insertMeasure(nametxt, measureForm);
-            measureBsModal.hide();
-        }
-    })
+  });
 }
 
 async function measureUnitsProcess() {
-    let measureUnits = await getAllMeasures();
+  let measureUnits = await getAllMeasures();
 
-    const container = document.getElementById('resources-root');
+  const container = document.getElementById("resources-root");
 
-    initAllResourcesTabs(container);
+  initAllResourcesTabs(container);
 
-    const addMu = document.getElementById('addMeasureUnit-kz');
+  const addMu = document.getElementById("addMeasureUnit-kz");
 
-    const idHiddenMU = document.querySelector('#idhiddenMeasureU');
-    const measureSelect = document.querySelector('#medidasUtxt');
-    const nameMUtxt = document.querySelector('#nombreUtxt');
-    const measureUnitsModal = document.querySelector('#unidadesModal')
-    const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureUnitsModal);
-    const measureUnitsForm = document.querySelector('#measureUnitsForm');
+  const idHiddenMU = document.querySelector("#idhiddenMeasureU");
+  const measureSelect = document.querySelector("#medidasUtxt");
+  const nameMUtxt = document.querySelector("#nombreUtxt");
+  const measureUnitsModal = document.querySelector("#unidadesModal");
+  const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureUnitsModal);
+  const measureUnitsForm = document.querySelector("#measureUnitsForm");
 
-    MeasureUnitsController.loadMeasures(measureUnits, measureSelect);
+  MeasureUnitsController.loadMeasures(measureUnits, measureSelect);
 
-    if (addMu) {
-        addPuritBtn.addEventListener('click', () => {
-            nameMUtxt.value = ""
-        })
+  if (addMu) {
+    addMu.addEventListener("click", () => {
+      nameMUtxt.value = "";
+    });
+  }
+  measureUnitsForm.addEventListener("submit", () => {
+    if (idHiddenMU.value) {
+      MeasureUnitsController.updateMeasureUnit(
+        idHiddenMU,
+        measureSelect,
+        nameMUtxt,
+        measureUnitsForm
+      );
+      measureBsModal.hide();
+    } else {
+      MeasureUnitsController.insertMeasureUnit(
+        nameMUtxt,
+        measureSelect,
+        measureUnitsForm
+      );
+      measureBsModal.hide();
     }
-    measureUnitsForm.addEventListener('submit', () => {
-        if (idHiddenMU.value) {
-            MeasureUnitsController.updateMeasureUnit(idHiddenMU, measureSelect,nameMUtxt, measureUnitsForm);
-            measureBsModal.hide()
-        } else {
-            MeasureUnitsController.insertMeasureUnit(nameMUtxt, measureSelect ,measureUnitsForm);
-            measureBsModal.hide();
-        }
-    })
+  });
 }
 async function conversionUnitProces() {
-    let measureUnitsC = await getAllMeasureUnits();
-    let resources = await getResources()
-    const container = document.getElementById('resources-root');
+  let measureUnitsC = await getAllMeasureUnits();
+  let resources = await getResources();
+  const container = document.getElementById("resources-root");
 
-    initAllResourcesTabs(container);
+  initAllResourcesTabs(container);
 
-    const addConversionUnit = document.getElementById('addConversionUnit-kz');
+  const addConversionUnit = document.getElementById("addConversionUnit-kz");
 
-    const idHidden = document.querySelector('#conversionIdHidden');
-    const initialSelect = document.querySelector('#initialUnitSelect');
-    const finalSelect = document.querySelector('#finalUnitSelect');
-    const resourceSelect = document.querySelector('#resourceMUSelect');
-    const operation = document.querySelector('#operationSelect');
-    const constant = document.querySelector('#constantxt')
-    const conversionModa = document.querySelector('#conversionModal')
-    const conversionBsModal = bootstrap.Modal.getOrCreateInstance(conversionModa);
-    const conversionForm = document.querySelector('#conversionForm');
+  const idHidden = document.querySelector("#conversionIdHidden");
+  const initialSelect = document.querySelector("#initialUnitSelect");
+  const finalSelect = document.querySelector("#finalUnitSelect");
+  const resourceSelect = document.querySelector("#resourceMUSelect");
+  const operation = document.querySelector("#operationSelect");
+  const constant = document.querySelector("#constantxt");
+  const conversionModa = document.querySelector("#conversionModal");
+  const conversionBsModal = bootstrap.Modal.getOrCreateInstance(conversionModa);
+  const conversionForm = document.querySelector("#conversionForm");
 
-    ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
-    ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);
-    ConversionUnitController.loadResources(resources, resourceSelect)
+  ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
+  ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);
 
-    if (addConversionUnit) {
-        addConversionUnit.addEventListener('click', () => {
-            ConversionUnitController.loadResources(resources, resourceSelect)
-            constant.value = ""
-            idHidden.value = ""
-            operation.value = "SUM"
-        })
+  ConversionUnitController.loadResources(resources, resourceSelect);
+  resourceSelect.innerHTML += `<option value="">Universal</option>`;
+
+  if (addConversionUnit) {
+    addConversionUnit.addEventListener("click", () => {
+      ConversionUnitController.loadResources(resources, resourceSelect);
+      constant.value = "";
+      idHidden.value = "";
+      operation.value = "SUM";
+    });
+  }
+  conversionForm.addEventListener("submit", () => {
+    if (idHidden.value) {
+      ConversionUnitController.updateConversionUnit(
+        idHidden,
+        initialSelect,
+        finalSelect,
+        resourceSelect,
+        constant,
+        operation,
+        conversionForm
+      );
+      conversionBsModal.hide();
+    } else {
+      ConversionUnitController.insertConversionUnit(
+        initialSelect,
+        finalSelect,
+        resourceSelect,
+        constant,
+        operation,
+        conversionForm
+      );
+      conversionBsModal.hide();
     }
-    conversionForm.addEventListener('submit', () => {
-        if (idHidden.value) {
-            ConversionUnitController.updateConversionUnit(idHidden, initialSelect, finalSelect, resourceSelect, constant, operation,conversionForm);
-            conversionBsModal.hide()
-        } else {
-            ConversionUnitController.insertConversionUnit(initialSelect, finalSelect, resourceSelect, constant, operation,conversionForm);
-            conversionBsModal.hide()
-        }
-    })
+  });
 }
