@@ -1,6 +1,7 @@
 import { renderPuritiesData } from "./puritiesController";
 import { initResource } from "./resourcesController";
 import { initMeasure } from "./measuresController";
+import { initMeasureUnits } from "./measureUnitsController";
 
 export async function initAllResourcesTabs(container) {
     const $tabListR = container.querySelector('#tabList-resource');
@@ -10,7 +11,13 @@ export async function initAllResourcesTabs(container) {
             <a class="nav-link active" data-bs-toggle="tab" href="#resources">Recursos</a>
         </li>
         <li class="nav-item d-flex">
-            <a class="nav-link" data-bs-toggle="tab" href="#purity">Pureza</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#purity">Pureza de recursos</a>
+        </li>
+        <li class="nav-item d-flex">
+            <a class="nav-link" data-bs-toggle="tab" href="#conversionUnits">Conversion de unidades</a>
+        </li>
+        </li>
+            <a class="nav-link" data-bs-toggle="tab" href="#measureUnits">Unidades de medida</a>
         </li>
         <li class="nav-item d-flex">
             <a class="nav-link" data-bs-toggle="tab" href="#measures">Medidas</a>
@@ -18,5 +25,6 @@ export async function initAllResourcesTabs(container) {
     `;
     initResource(container);
     renderPuritiesData(container);
-    initMeasure(container)
+    initMeasure(container);
+    initMeasureUnits(container);
 }
