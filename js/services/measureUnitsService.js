@@ -83,11 +83,11 @@ export async function updateMeasureUnit(payload, id) {
             Alerts.showToastCloseSuccess("Unidad de medida actualizada exitosamente")
         }
         else {
-            Alerts.showToastCloseError(`Error actualizando unidade medida`)
+            Alerts.showToastCloseError(`Error actualizando unidad de medida`)
         }
         return response.json();
     } catch (err) {
-        Alerts.showToastCloseError(`Error actualizando medida ${err}`)
+        Alerts.showToastCloseError(`Error actualizando unidad de medida ${err}`)
     }
 
 }

@@ -8,13 +8,13 @@ export async function getUsers() {
         const response = await fetch(`${API_URL}apiUser/getAllUsers`);
         ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
         if (!response.ok) {
-            throw new Error(`Error fetching users: ${response.status}`);
+            throw new Error(`Error cargando users: ${response.status}`);
         }
         ///Finalmente retornamos nuestra respuesta en formato json
         return response.json();
         ///Ya el catch, supongo que ya se la saben ok
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error cargando users:", error);
         throw error;
     }
 }
@@ -29,12 +29,12 @@ export async function getUserById(id) {
         const u = await response.json();
         ///lo mismo de arriba
         if (!response.ok) {
-            throw new Error(`Error fetching users: ${response.status}`);
+            throw new Error(`Error cargando users: ${response.status}`);
         }
         return u;
     ///Ya lo saben
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error cargando users:", error);
         throw error;
     }
 }

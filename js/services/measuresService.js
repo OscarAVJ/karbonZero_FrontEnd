@@ -94,7 +94,7 @@ export async function updateMeasure(payload, id) {
 export async function deleteMeasure(id) {
     ///Le pedimos una confirmacion al usuario 
     Swal.fire({
-        title: "¿Estas seguro de que quieres eliminar a este recurso?",
+        title: "¿Estas seguro de que quieres eliminar a esta medida?",
         showDenyButton: true,
         confirmButtonText: "Eliminar",
         confirmButtonColor: "#DF4646",

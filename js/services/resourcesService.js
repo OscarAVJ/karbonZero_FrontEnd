@@ -29,12 +29,12 @@ export async function getResourcesById(id) {
         const u = await response.json();
         ///lo mismo de arriba
         if (!response.ok) {
-            throw new Error(`Error fetching resources: ${response.status}`);
+            throw new Error(`Error cargadno recurso: ${response.status}`);
         }
         return u;
     ///Ya lo saben
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error carando recurso:", error);
         throw error;
     }
 }
@@ -52,16 +52,16 @@ export async function insertResource(payload) {
         });
         ///Si esta bueno mandamos una alerta buena
         if (response.ok) {
-            Alerts.showToastCloseSuccess("Usuario creado exitosamente")
+            Alerts.showToastCloseSuccess("Recurso creado exitosamente")
         }
         ///Si no pues una mala
         else {
-            Alerts.showToastCloseError(`Error creando usuario ${response.status}`)
+            Alerts.showToastCloseError(`Error creando recurso ${response.status}`)
         }
         ///Retornamos nuestra respuesta
         return response.json();
     } catch (err) {
-        Alerts.showToastCloseError(`Error creando usuario ${err}`)
+        Alerts.showToastCloseError(`Error creando recurso ${err}`)
     }
 }
 

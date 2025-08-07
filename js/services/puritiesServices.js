@@ -79,14 +79,14 @@ export async function updateResourcePurity(payload, id) {
         })
         ///Lo mismo que esta en insertResource, suban
         if (response.ok) {
-            Alerts.showToastCloseSuccess("Recurso actualizado exitosamente")
+            Alerts.showToastCloseSuccess("Pureza actualizado exitosamente")
         }
         else {
-            Alerts.showToastCloseError(`Error actualizando recurso`)
+            Alerts.showToastCloseError(`Error actualizando pureza`)
         }
         return response.json();
     } catch (err) {
-        Alerts.showToastCloseError(`Error actualizando recurso ${err}`)
+        Alerts.showToastCloseError(`Error actualizando pureza ${err}`)
     }
 
 }
@@ -94,7 +94,7 @@ export async function updateResourcePurity(payload, id) {
 export async function deleResourcePurity(id) {
     ///Le pedimos una confirmacion al usuario 
     Swal.fire({
-        title: "¿Estas seguro de que quieres eliminar a este recurso?",
+        title: "¿Estas seguro de que quieres eliminar a esta pureza?",
         showDenyButton: true,
         confirmButtonText: "Eliminar",
         confirmButtonColor: "#DF4646",
@@ -106,7 +106,7 @@ export async function deleResourcePurity(id) {
             await fetch(`${API_URL}apiResource/deleteResourcePurity/${id}`, {
                 method: 'DELETE'
             });
-            Alerts.showToastCloseSuccess("Recurso eliminado exitosamente")
+            Alerts.showToastCloseSuccess("Pureza eliminada exitosamente")
         } else if (result.isDenied) {
             Alerts.showToastCloseError("Proceso cancelado")
             return;
