@@ -34,7 +34,13 @@ export async function renderConversionUnits(container) {
             const id = editBtn.dataset.id;
             try {
                 const conversion = await ConversionUnitsService.getConversionUnitById(id);
-                document.querySelector('#resourceMUSelect').value = conversion.idResource;
+
+                if (conversion.idResource) {
+                    document.querySelector('#resourceMUSelect').value = conversion.idResource;
+                } else {
+                    document.querySelector("#resourceMUSelect").value = "";
+                }
+
                 document.querySelector('#initialUnitSelect').value = conversion.idInitialUnit;
                 document.querySelector('#finalUnitSelect').value = conversion.idFinalUnit;
                 document.querySelector('#operationSelect').value = conversion.operation;
@@ -98,22 +104,32 @@ function loadConversionUnits(conversion, tab) {
                 <th>Unidad final</th>
                 <th>Operación</th>
                 <th>Constante</th>
+                <th>Recurso</th>
                 <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            ${conversion.map((r, i) => `
+            ${conversion
+              .map(
+                (r, i) => `
               <tr>
                 <td>${i + 1}</td>
                 <td>${r.nameInitialUnit}</td>
                 <td>${r.nameFinalUnit}</td>
                 <td>${r.operation}</td>
                 <td>${r.constant}</td>
+                <td>${r.nameResource}</td>
                 <td>
-                    <button class="btn btn-sm btn-success me-1 btn-edit-conversionUnit" data-id="${r.idConversionUnit}" data-bs-toggle="modal" data-bs-target="#conversionModal"><i class="bi bi-pencil-fill"></i></button>
-                    <button class="btn btn-sm btn-danger btn-delete-conversionUnit" data-id="${r.idConversionUnit}"><i class="bi bi-trash-fill"></i></button>
+                    <button class="btn btn-sm btn-success me-1 btn-edit-conversionUnit" data-id="${
+                      r.idConversionUnit
+                    }" data-bs-toggle="modal" data-bs-target="#conversionModal"><i class="bi bi-pencil-fill"></i></button>
+                    <button class="btn btn-sm btn-danger btn-delete-conversionUnit" data-id="${
+                      r.idConversionUnit
+                    }"><i class="bi bi-trash-fill"></i></button>
                 </td>
-              </tr>`).join('')}
+              </tr>`
+              )
+              .join("")}
           </tbody>
         </table>
     </div>`;
@@ -139,6 +155,20 @@ export function loadFinalUnits(finalUnits, finalUnitsSelect) {
       `
     });
 }
+
+function conversionPayloadValidator(payload) {
+    if (payload.idInitialUnit == payload.idFinalUnit) {
+        Alerts.showToastCloseError(`La unidad inicial y final deben ser diferentes`)
+        return false;
+    }
+
+    if (!payload.constant) {
+        Alerts.showToastCloseError(`La constante es obligatoria`)
+        return false;
+    }
+    return true
+}
+
 export async function insertConversionUnit(selectInitial, selectFinal, selectResource, constantxt, operationtxt, form) {
     const payload = {
         idInitialUnit: selectInitial.value,
@@ -147,9 +177,12 @@ export async function insertConversionUnit(selectInitial, selectFinal, selectRes
         constant: constantxt.value.trim(),
         operation: operationtxt.value
     }
-    console.log(payload)
+    if (!conversionPayloadValidator(payload)) {
+        return;
+    }
+
     try {
-        ConversionUnitsService.insertConversionUnit(payload);
+        await ConversionUnitsService.insertConversionUnit(payload);
     } catch {
         Alerts.showToastCloseError(`No se pudo agregar la conversion de unidades ${err}`)
     }
@@ -164,6 +197,10 @@ export async function updateConversionUnit(idConversionUnitxt,selectInitial, sel
         constant: constantxt.value.trim(),
         operation: operationtxt.value
     }
+    if (!conversionPayloadValidator(payload)) {
+        return;
+    }
+
     try {
         await ConversionUnitsService.updateConversionUnit(payload, idConversionUnitxt);
     } catch {
