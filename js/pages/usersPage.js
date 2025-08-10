@@ -199,21 +199,34 @@ export async function afterRender() {
   ///Aca definimos que si el boton existe, al hacerle click vamos a limpiar los campos al cargar
   if (addUserBtn) {
     addUserBtn.addEventListener('click', () => {
+      idHideen.value = '';
       nametxt.value = '';
       lastNametxt.value = '';
       usernametxt.value = '';
       emailtxt.value = '';
+      rolesSelect.selectedIndex = 0;
     });
   }
 
+  let isLoading = false;
   ///Aca ya vinculamos la parte del insert/update con el submit de nuestro formulario, pasamos datos segun sean solicitados
-  usersForm.addEventListener('submit', () => {
+  usersForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isLoading) return;
+    isLoading = true;
+    let res;
     if (idHideen.value) {
-      UserController.updateUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm,idHideen);
-      bsModal.hide()
+      res = await UserController.updateUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm, idHideen);
     } else {
-      UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect ,usersForm);
-      bsModal.hide()
+      res = await UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm);
     }
-  })
+
+    bsModal.hide();
+    isLoading = false;
+    idHideen.value = '';
+    ///Si la respueta que nos retorna ya sea updateUser o insertUser es ok en positivo, pues hacemos el reload, como da la respuesta lo pueden ver en el metodo respectivo
+    if (res?.ok) {
+      await UserController.reload(container);
+    }
+  });
 }
