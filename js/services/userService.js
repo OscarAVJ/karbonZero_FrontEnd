@@ -32,67 +32,64 @@ export async function getUserById(id) {
             throw new Error(`Error cargando users: ${response.status}`);
         }
         return u;
-    ///Ya lo saben
+        ///Ya lo saben
     } catch (error) {
         console.error("Error cargando users:", error);
         throw error;
     }
 }
 
-///Funcion para insertar usuarios, (Peticion)
+///Metodo para insertar usuarios, le pasamos payload como parametro
 export async function insertUser(payload) {
-    ///Try
     try {
-        ///Peticion para el insert y como lo queremos asi como su metodo
         const response = await fetch(`${API_URL}apiUser/insertUser`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            ///Convertimos la respuesta a json
             body: JSON.stringify(payload)
         });
-        ///Si esta bueno mandamos una alerta buena
+        ///Transformamos la data a json 
+        const data = await response.json();
+
         if (response.ok) {
-            Alerts.showToastCloseSuccess("Usuario creado exitosamente")
+            Alerts.showToastCloseSuccess("Usuario creado exitosamente");
+        } else {
+            Alerts.showToastCloseError(`Error creando usuario ${response.status}`);
         }
-        ///Si no pues una mala
-        else {
-            Alerts.showToastCloseError(`Error creando usuario ${response.status}`)
-        }
-        ///Retornamos nuestra respuesta
-        return response.json();
+        ///Retornamos un ok en true y pues la data ya en formato json 
+        return { ok: true, data };
     } catch (err) {
-        Alerts.showToastCloseError(`Error creando usuario ${err}`)
+        Alerts.showToastCloseError(`Error creando usuario ${err}`);
+        ///False, la data en null y su error respectivo
+        return { ok: false, data: null, error: err };
     }
 }
 
-///Peticion para actualizar Usuario
-///IMPORTANTE: QUE EN LA PETICION EL ID.VALUE 
+///Metodo para acualizar, pero aca le pasamos el id tambien y en el parametro de la Url es importante que sea id.value si no pues no va a funcionar
 export async function updateUser(payload, id) {
-    ///Try
     try {
-        ///Peticion para actualizar usuario
         const response = await fetch(`${API_URL}apiUser/updateUser/${id.value}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            ///lo hacemos json
             body: JSON.stringify(payload)
-        })
-        ///Lo mismo que esta en insertUser, suban
-        if (response.ok) {
-            Alerts.showToastCloseSuccess("Usuario actualizado exitosamente")
-        }
-        else {
-            Alerts.showToastCloseError(`Error actualizando usuario`)
-        }
-        return response.json();
-    } catch (err) {
-        Alerts.showToastCloseError(`Error actualizando usuario ${err}`)
-    }
+        });
+        const data = await response.json().catch(() => null);
 
+        if (response.ok) {
+            Alerts.showToastCloseSuccess("Usuario actualizado exitosamente");
+        } else {
+            Alerts.showToastCloseError(`Error actualizando usuario`);
+        }
+        ///Enviamos un estado de ok en true y de igual forma la data
+        return { ok: true, data };
+    } catch (err) {
+        Alerts.showToastCloseError(`Error actualizando usuario ${err}`);
+        ///Enviamos un false data en null y su respectivo error
+        return { ok: false, data: null, error: err };
+    }
 }
-///Aca esta el delete
+
 export async function deleteUser(id) {
-    ///Le pedimos una confirmacion al usuario 
+    ///Creamos una promesa para poder responder y sabes cuando la operacion salio bien y mal de una manera mas controlada, y pues ahi en el flujo del codigo pueden ver que dependiendo de nos retorna true o false
     Swal.fire({
         title: "Estas seguro de que quieres eliminar a este usuario?",
         showDenyButton: true,
@@ -101,15 +98,23 @@ export async function deleteUser(id) {
         denyButtonColor: "#6d6c6c",
         denyButtonText: `Cancelar`
     }).then(async (result) => {
-        ///Si el usuario acepta hacemos la peticion
         if (result.isConfirmed) {
-            await fetch(`${API_URL}apiUser/deleteUser/${id}`, {
-                method: 'DELETE'
-            });
-            Alerts.showToastCloseSuccess("Usuario eliminado exitosamente")
-        } else if (result.isDenied) {
-            Alerts.showToastCloseError("Proceso cancelado")
-            return;
+            try {
+                const resp = await fetch(`${API_URL}apiUser/deleteUser/${id}`, { method: 'DELETE' });
+                if (resp.ok) {
+                    Alerts.showToastCloseSuccess("Usuario eliminado exitosamente");
+                    return true; ///Si todo sale bien un true
+                } else {
+                    Alerts.showToastCloseError("No se pudo eliminar el usuario");
+                    return false; ///Aca ya es false
+                }
+            } catch (e) {
+                Alerts.showToastCloseError("Error eliminando usuario");
+                return false; ///Aca igual
+            }
+        } else {
+            Alerts.showToastCloseError("Proceso cancelado");
+            return false; ///Y aca ni se diga
         }
     });
 }
