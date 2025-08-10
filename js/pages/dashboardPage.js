@@ -1,4 +1,6 @@
-import {getAllResourcesConsumptionsCO2} from "../services/dashboardService";
+import { getAllResourcesConsumptionsCO2 } from "../services/dashboardService";
+import { getAllResourceConsumptionsCO2Total } from "../services/dashboardService";
+
 
 export async function render() {
     loadCSS();
@@ -53,6 +55,8 @@ function loadCSS() {
 
 
 async function initDashboard() {
+    const general_data = await getAllResourceConsumptionsCO2Total();
+
     const specific_data = await getAllResourcesConsumptionsCO2();
     specific_data.forEach( resource => {
         resource.data = Object.entries(resource.data)
@@ -62,14 +66,7 @@ async function initDashboard() {
       general: {
         id: "general",
         name: "General",
-        data: {
-          Luz: 60,
-          Agua: 20,
-          Gasolina: 5,
-          Diesel: 5,
-          Papel: 8,
-          Refrigerante: 2,
-        },
+        data: general_data,
       },
       specific: specific_data,
     };
@@ -98,9 +95,6 @@ function loadMainChart(json) {
                 },
             },
         ],
-        fill: {
-            colors: ["#1F4F24", "#388E3C", "#2E7D32", "#2C6B2F"],
-        },
         legend: {
             fontSize: "20px",
         },
@@ -216,9 +210,6 @@ function getChartConfig() {
         },
         markers: {
             size: 5,
-        },
-        fill: {
-            colors: ["#1F4F24", "#388E3C", "#2E7D32", "#2C6B2F"],
         },
         xaxis: {
             type: "datetime",

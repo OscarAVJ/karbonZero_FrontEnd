@@ -15,3 +15,20 @@ export async function getAllResourcesConsumptionsCO2() {
     throw error;
   }
 }
+
+
+export async function getAllResourceConsumptionsCO2Total() {
+  try {
+    const response = await fetch(
+      `${API_URL}apiResource/getAllResourceConsumptionsCO2Total`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error getting pie chart data: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error getting pie chart data:", error);
+    throw error;
+  }
+}
