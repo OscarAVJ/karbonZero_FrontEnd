@@ -1,3 +1,5 @@
+import {getAllResourcesConsumptionsCO2} from "../services/dashboardService";
+
 export async function render() {
     loadCSS();
     return `
@@ -50,76 +52,26 @@ function loadCSS() {
 }
 
 
-function initDashboard() {
+async function initDashboard() {
+    const specific_data = await getAllResourcesConsumptionsCO2();
+    specific_data.forEach( resource => {
+        resource.data = Object.entries(resource.data)
+    })
+
     const chartsData = {
-        general: {
-            id: "general",
-            name: "General",
-            data: {
-                Luz: 60,
-                Agua: 20,
-                Gasolina: 5,
-                Diesel: 5,
-                Papel: 8,
-                Refrigerante: 2,
-            },
+      general: {
+        id: "general",
+        name: "General",
+        data: {
+          Luz: 60,
+          Agua: 20,
+          Gasolina: 5,
+          Diesel: 5,
+          Papel: 8,
+          Refrigerante: 2,
         },
-        specific: [
-            {
-                id: "agua",
-                name: "Agua",
-                data: [
-                    ["2025-01-01T00:00:00.000Z", 32],
-                    ["2025-02-01T00:00:00.000Z", 20],
-                    ["2025-03-01T00:00:00.000Z", 45],
-                    ["2025-04-01T00:00:00.000Z", 78],
-                    ["2025-05-01T00:00:00.000Z", 45],
-                    ["2025-06-01T00:00:00.000Z", 20],
-                    ["2025-07-01T00:00:00.000Z", 47],
-                    ["2025-08-01T00:00:00.000Z", 45],
-                    ["2025-09-01T00:00:00.000Z", 41],
-                    ["2025-10-01T00:00:00.000Z", 20],
-                    ["2025-11-01T00:00:00.000Z", 47],
-                    ["2025-12-01T00:00:00.000Z", 74],
-                ],
-            },
-            {
-                id: "luz",
-                name: "Luz",
-                data: [
-                    ["2025-01-01T00:00:00.000Z", 12],
-                    ["2025-02-01T00:00:00.000Z", 75],
-                    ["2025-03-01T00:00:00.000Z", 2],
-                    ["2025-04-01T00:00:00.000Z", 5],
-                    ["2025-05-01T00:00:00.000Z", 4],
-                    ["2025-06-01T00:00:00.000Z", 20],
-                    ["2025-07-01T00:00:00.000Z", 47],
-                    ["2025-08-01T00:00:00.000Z", 15],
-                    ["2025-09-01T00:00:00.000Z", 41],
-                    ["2025-10-01T00:00:00.000Z", 20],
-                    ["2025-11-01T00:00:00.000Z", 47],
-                    ["2025-12-01T00:00:00.000Z", 74],
-                ],
-            },
-            {
-                id: "gasolina",
-                name: "Gasolina",
-                data: [
-                    ["2025-01-01T00:00:00.000Z", 32],
-                    ["2025-02-01T00:00:00.000Z", 20],
-                    ["2025-03-01T00:00:00.000Z", 45],
-                    ["2025-04-01T00:00:00.000Z", 12],
-                    ["2025-05-01T00:00:00.000Z", 45],
-                    ["2025-06-01T00:00:00.000Z", 45],
-                    ["2025-07-01T00:00:00.000Z", 12],
-                    ["2025-08-01T00:00:00.000Z", 32],
-                    ["2025-09-01T00:00:00.000Z", 0],
-                    ["2025-10-01T00:00:00.000Z", 124],
-                    ["2025-11-01T00:00:00.000Z", 47],
-                    ["2025-12-01T00:00:00.000Z", 74],
-                ],
-            },
-        ],
+      },
+      specific: specific_data,
     };
 
     loadCharts(chartsData);
