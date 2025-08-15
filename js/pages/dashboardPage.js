@@ -60,6 +60,9 @@ async function initDashboard() {
     const specific_data = await getAllResourcesConsumptionsCO2();
     specific_data.forEach( resource => {
         resource.data = Object.entries(resource.data)
+        resource.data.forEach(entry => {
+            entry[1] = parseFloat(entry[1]).toFixed(4);
+        })
     })
 
     const chartsData = {
