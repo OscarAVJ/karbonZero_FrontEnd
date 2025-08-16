@@ -42,23 +42,7 @@
     box-shadow: 0px 4px 12px rgba(0, 69, 49, 0.25);
 }
 
-/*/ Barra de búsqueda y filtros */
-.filters-bar {
-    background: #f5f5f5;
-    border-radius: 18px;
-    gap: 1rem;
-    flex-wrap: nowrap;
-}
-
 /*/ Control del fondo de la barra de filtros y input */
-.input-group .form-control,
-.input-group-text,
-.filters-bar .input-group-text,
-.filters-bar .form-control {
-    background: transparent;
-    border: none;
-}
-
 .input-group .form-control {
     border-radius: 8px;
 }
