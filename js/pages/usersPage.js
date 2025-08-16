@@ -15,7 +15,7 @@ export function render() {
           class="input-group search-bar flex-grow-1"
           style="max-width: 400px;"
         >
-          <span class="input-group-text bg-transparent border-0">
+          <span class="input-group-text  border-0">
             <i class="bi bi-search"></i>
           </span>
           <input
@@ -71,6 +71,24 @@ export function render() {
       </div>
       <ul class="nav nav-tabs mb-3" id="tabList"></ul>
       <div class="tab-content" id="tabContent"></div>
+      <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+        <div class="col-auto d-flex justify-content-start">
+          <select class="form-select" aria-label="Items por pagina" id="itemsSelect">
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div class="col d-flex justify-content-end">
+          <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination mb-0" id="userPagination">
+              
+            </ul>
+          </nav>
+        </div>
+      </div>
     </div>
 
     <div
@@ -118,7 +136,6 @@ export function render() {
                   >
                 </div>
               </div>
-              
               <div class="row g-2 mb-3">
                 <div class="col-sm-6">
                   <label for="usuariotxt" class="form-label">Usuario</label>
@@ -129,7 +146,6 @@ export function render() {
                     placeholder="Usuario"
                   >
                 </div>
-                
                 <div class="col-sm-6">
                   <label
                     for="correoElectronicotxt"
@@ -155,11 +171,11 @@ export function render() {
                   >
                 </div>
               </div>
-               <div class="row g-2 mb-3 ">
-                  <label for="roltxt" class="form-label">Rol</label>
-                    <select id="roltxt" class="form-select">
-                  </select>
-                </div>
+              <div class="row g-2 mb-3 ">
+                <label for="roltxt" class="form-label">Rol</label>
+                <select id="roltxt" class="form-select">
+                </select>
+              </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
               <button type="submit" class="btn kz-button-create">

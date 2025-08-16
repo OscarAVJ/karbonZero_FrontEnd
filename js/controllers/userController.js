@@ -8,20 +8,26 @@ export async function init(container) {
   ///Mandamos el contenedor junto con nuestro metodo init
   renderData(container);
 }
-
+let currentPage = 0;
+let currentSize = 10;
 ///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de usuarios 
 export async function reload(container) {
   ///Si nuestro container es nulo....
   if (!container) return;
   ///Si no pues hacemos una peticion get y le pasamos ese array de usuarios + el tab donde queremos poner la grid
   try {
-    const users = await UserService.getUsers();
+    const data = await UserService.getUsers(currentPage, currentSize);
+    const users = data.content;
     const $tabContent = container.querySelector('#tabContent');
     LoadTable(users, $tabContent);
+    ///Llamamos a renderPagination para que siempre pues vaya cambiando en base a la pagina y numero en el cual se encuentre al hacer reload
+    renderPagination(data.number, data.totalPages, container);  
   } catch (e) {
     console.error(e);
   }
 }
+
+
 ///Funcion para renderizar los datos asi como los eventos de nuestro formulario
 async function renderData(container) {
   ///Variables con nuestro tabList y el contenido(nuestra tabla)
@@ -32,7 +38,12 @@ async function renderData(container) {
 
   ///Llenamos los usuarios
   try {
-    users = await UserService.getUsers();
+    ///traemos el json en data
+    const data = await UserService.getUsers(currentPage, currentSize);
+    ///Accedemos al content de eso 
+    users = data.content;
+    ///Llamamos al renderPagination para que carge cuando inicie todo
+    renderPagination(data.number, data.totalPages, container)
   } catch (error) {
     console.error(error);
     return container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`;
@@ -46,6 +57,13 @@ async function renderData(container) {
 
   ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
   LoadTable(users, $tabContent);
+
+  const sizeSelector = document.getElementById("itemsSelect");
+  sizeSelector.addEventListener("change", () => {
+    currentSize = parseInt(sizeSelector.value);
+    currentPage = 0;
+    reload(container);
+  });
 
   ///Aca definimos que hace nuestro boton de eliminar
   container.addEventListener('click', async e => {
@@ -79,6 +97,8 @@ async function renderData(container) {
 
 ///Aca cargamos nuestros usuarios, nada nuevo, eso si en lugar del id mandamos un numero, por que pues si, usamos RAW, xdnt
 export function LoadTable(users, tab) {
+  ///EL base index nos sirve para que siempre se guarden las filas que llevamos en pase a la pagina y su tamaño
+  const baseIndex = currentPage * currentSize; 
   tab.innerHTML = "";
   tab.innerHTML = `
     <div id="usuarios" class="tab-pane fade show active">
@@ -97,7 +117,7 @@ export function LoadTable(users, tab) {
           <tbody id="containerUsers">
             ${users.map((u, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex+ i + 1}</td>
                 <td>${u.firstName} ${u.lastName}</td>
                 <td>${u.username}</td>
                 <td>${u.nameRol}</td>
@@ -136,7 +156,7 @@ export async function insertUser(usertxt, nametxt, lastNametxt, emailtxt, rolId,
   try {
     const res = await UserService.insertUser(payload);
     form.reset();
-    return res; 
+    return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo agregar al usuario ${err}`);
     ///Retornamos un false
@@ -158,13 +178,69 @@ export async function updateUser(usertxt, nametxt, lastNametxt, emailtxt, roltxt
     ///Hacemos la peticion
     const res = await UserService.updateUser(payload, id);
     form.reset();
-    return res; 
+    return res;
   } catch (err) {
     Alerts.showToastCloseError("No se pudo actualizar el usuario");
     ///Retornamos un false
     return { ok: false };
   }
 }
+
+export function renderPagination(current, totalPages, container) {
+  ///Aca accedemos a nuestro ul de pagination
+  const pagination = document.getElementById("userPagination");
+  if (!pagination) return;
+  pagination.innerHTML = "";///Limpiamos la paginacion previa
+
+
+  ///Este es el boton para ir en retroseso
+  const prev = document.createElement("li");
+  prev.className = `page-item ${current <= 0 ? "disabled" : ""}`;
+  prev.innerHTML = ` <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                     </a>`;
+  ///Este es su evento
+  prev.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (current > 0) {
+      currentPage = current - 1;///Retrocede una pagina
+      ///Hacemos reload
+      reload(container);
+    }
+  });
+  pagination.appendChild(prev);
+
+  ///Aca controlamos el numero de paginas en base a totalPages
+  for (let i = 0; i < totalPages; i++) {
+    const li = document.createElement("li");
+    li.className = `page-item ${i === current ? "active" : ""}`;
+    li.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+    li.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (currentPage !== i) {
+        currentPage = i; ///Saltamos a la pagina seleccionada
+        reload(container);
+      }
+    });
+    pagination.appendChild(li);
+  }
+
+  ///Boton siguiente
+  const next = document.createElement("li");
+  next.className = `page-item ${current >= totalPages - 1 ? "disabled" : ""}`;
+  next.innerHTML = `<a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>`;
+  next.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (current < totalPages - 1) {
+      currentPage = current + 1;///Avanza una pagina
+      reload(container);
+    }
+  });
+  pagination.appendChild(next);
+}
+
 
 ///Funcion para generar contrasenia aleatoria
 function generateRandomPassword(length = 8) {

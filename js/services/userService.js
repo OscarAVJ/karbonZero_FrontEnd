@@ -2,10 +2,10 @@ import { APIURL as API_URL } from "../../utils/api_url";
 import * as Alerts from '../../utils/alerts.js'
 
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getUsers() {
+export async function getUsers( page = 0, size = 10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
-        const response = await fetch(`${API_URL}apiUser/getAllUsers`);
+        const response = await fetch(`${API_URL}apiUser/getAllUsers?page=${page}&size=${size}`);
         ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
         if (!response.ok) {
             throw new Error(`Error cargando users: ${response.status}`);
@@ -89,32 +89,34 @@ export async function updateUser(payload, id) {
 }
 
 export async function deleteUser(id) {
-    ///Creamos una promesa para poder responder y sabes cuando la operacion salio bien y mal de una manera mas controlada, y pues ahi en el flujo del codigo pueden ver que dependiendo de nos retorna true o false
-    Swal.fire({
-        title: "Estas seguro de que quieres eliminar a este usuario?",
+    ///Aca le preguntamos al usuario si quiere eliminar y pues su valor dependera de si acepta o no, tipo un alert
+    const result = await Swal.fire({
+        title: "¿Estás seguro de eliminar este usuario?",
         showDenyButton: true,
         confirmButtonText: "Eliminar",
         confirmButtonColor: "#DF4646",
         denyButtonColor: "#6d6c6c",
-        denyButtonText: `Cancelar`
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                const resp = await fetch(`${API_URL}apiUser/deleteUser/${id}`, { method: 'DELETE' });
-                if (resp.ok) {
-                    Alerts.showToastCloseSuccess("Usuario eliminado exitosamente");
-                    return true; ///Si todo sale bien un true
-                } else {
-                    Alerts.showToastCloseError("No se pudo eliminar el usuario");
-                    return false; ///Aca ya es false
-                }
-            } catch (e) {
-                Alerts.showToastCloseError("Error eliminando usuario");
-                return false; ///Aca igual
-            }
-        } else {
-            Alerts.showToastCloseError("Proceso cancelado");
-            return false; ///Y aca ni se diga
-        }
+        denyButtonText: "Cancelar"
     });
+    ///Si el man cancela el proceso
+    if (!result.isConfirmed) {
+        return false;
+    }
+    ///Y ya el delete, ya se la saben
+    try {
+        ///Peticion
+        const resp = await fetch(`${API_URL}apiUser/deleteUser/${id}`, { method: 'DELETE' });
+        ///Ahi un return en caso de error
+        if (!resp.ok) {
+            Alerts.showToastCloseError("No se pudo eliminar el usuario");
+            return false;
+        }
+        ///Si todo bien mandamos el success
+        Alerts.showToastCloseSuccess("Usuario eliminado exitosamente");
+        return true;
+    } catch (e) {
+        ///En caso de error
+        Alerts.showToastCloseError("Error eliminando usuario");
+        return false;
+    }
 }
