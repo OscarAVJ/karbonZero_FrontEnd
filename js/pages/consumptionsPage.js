@@ -1,10 +1,11 @@
 import * as consumptionController from "../controllers/consumptionController";
-import { getAllResourcePurities } from "../services/puritiesServices"
-import { getAllMeasureUnits } from "../services/measureUnitsService"
-import { showToastCloseError } from "../../utils/alerts";
+import * as ConsumptionService from "../services/consumptionService";
+import * as Alerts from "../../utils/alerts";
+import { getAllResourcePurities } from "../services/puritiesServices";
+import { getAllMeasureUnits } from "../services/measureUnitsService";
 
 export async function render() {
-    return `
+  return `
     <!-- Consumptions Section -->
     <div class="py-4" id="consumptions-root">
       <h2 class="general-title">Consumos</h2>
@@ -74,7 +75,7 @@ export async function render() {
                   </div>
                   <div class="col-sm-3">
                     <label for="cantidadtxt" class="form-label">Cantidad</label>
-                    <input id="cantidadtxt" type="number" class="form-control" placeholder="Cantidad">
+                    <input id="cantidadtxt" type="number" class="form-control" placeholder="Cantidad" step=0.001>
                   </div>
                 </div>
                 <div class="row g-2 mb-3">
@@ -111,10 +112,10 @@ export async function render() {
 }
 
 export function afterRender() {
-    consumptionsProces(); 
+  consumptionsProcess();
 }
 
-async function consumptionsProces() {
+async function consumptionsProcess() {
   const container = document.getElementById("consumptions-root");
   consumptionController.initConsumption(container);
 
@@ -129,7 +130,8 @@ async function consumptionsProces() {
   const date = document.querySelector("#fecha");
 
   const modalConsumption = document.querySelector("#consumptionsModal");
-  const consumptionBsModal = bootstrap.Modal.getOrCreateInstance(modalConsumption);
+  const consumptionBsModal =
+    bootstrap.Modal.getOrCreateInstance(modalConsumption);
   const consumptionForm = document.querySelector("#consumptionsForm");
 
   const resourcesPurities = await getAllResourcePurities();
@@ -141,55 +143,80 @@ async function consumptionsProces() {
     addConsumptionBtn.addEventListener("click", () => {
       quantitytxt.value = "";
       costtxt.value = "";
-      date.value = "";
+      date.value = new Date().toISOString().substring(0, 10);
     });
   }
 
   if (resourceSelect && puritytxt) {
-    puritytxt.value =
-        resourceSelect.options[
-        resourceSelect.selectedIndex
-    ].dataset.purity;
-    unitySelect.value = 
-        resourceSelect.options[
-        resourceSelect.selectedIndex
-    ].dataset.measure;
-
+    consumptionController.updateConsumptionEntries(
+      resourceSelect,
+      unitySelect,
+      puritytxt
+    );
     resourceSelect.addEventListener("change", () => {
-        puritytxt.value = resourceSelect.options[resourceSelect.selectedIndex].dataset.purity;
-        unitySelect.value = resourceSelect.options[resourceSelect.selectedIndex].dataset.measure;
-    })
+      consumptionController.updateConsumptionEntries(
+        resourceSelect,
+        unitySelect,
+        puritytxt
+      );
+    });
   }
 
-  consumptionForm.addEventListener("submit", () => {
+  consumptionForm.addEventListener("submit", async () => {
     if (quantitytxt.value <= 0) {
-        showToastCloseError("La cantidad debe de ser positiva")
-        return;
+      Alerts.showToastCloseError("La cantidad debe de ser positiva");
+      return;
     }
 
     if (costtxt.value < 0) {
-      showToastCloseError("El coste no puede ser negativo");
+      Alerts.showToastCloseError("El coste no puede ser negativo");
       return;
     }
 
     if (!date.value) {
-        showToastCloseError("La fecha es obligatoria");
+      Alerts.showToastCloseError("La fecha es obligatoria");
+      return;
+    }
+
+    const resourceMeasureUnit =
+      resourceSelect.options[resourceSelect.selectedIndex].dataset.measure;
+    const resourceId =
+      resourceSelect.options[resourceSelect.selectedIndex].dataset.resource;
+
+    if (resourceMeasureUnit != unitySelect.value) {
+      const new_quantity = await ConsumptionService.convertMeasureUnit(
+        unitySelect.value,
+        resourceMeasureUnit,
+        resourceId,
+        quantitytxt.value
+      );
+
+      if (!new_quantity.value) {
+        Alerts.showToastCloseError("Seleccionó una unidad de medida no válida");
         return;
+      }
+
+      Alerts.showToastCloseInfo("Unidad de medida convertida automáticamente");
+      quantitytxt.value = new_quantity.value;
+      unitySelect.value = resourceMeasureUnit;
+      return;
     }
 
     if (idConsumption.value) {
-      PurityController.updatePurity(
+      consumptionController.updateConsumption(
+        idConsumption.value,
         resourceSelect,
-        puritytxt,
-        idPurity,
-        purityForm
+        quantitytxt,
+        date,
+        costtxt,
+        "D9086EE4AFFF477C91E20DA876AA1AF5",
+        consumptionForm
       );
       consumptionBsModal.hide();
     } else {
       consumptionController.insertConsumption(
         resourceSelect,
         quantitytxt,
-        unitySelect,
         date,
         costtxt,
         "D9086EE4AFFF477C91E20DA876AA1AF5",
