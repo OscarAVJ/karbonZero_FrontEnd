@@ -23,25 +23,34 @@ async function renderConsumptionData(container) {
     const deleteBtnConsumptions = e.target.closest(".btn-delete-consumption");
     if (!deleteBtnConsumptions) return;
     const id = deleteBtnConsumptions.dataset.id;
-    await ResourceService.deleteResource(id);
+    await ConsumptionService.deleteConsumption(id);
   });
 
-  ///Cargar los datos al editar
+  ///Update method
   container.addEventListener("click", async (e) => {
-    const editResourceBtn = e.target.closest(".btn-edit-resource");
-    if (editResourceBtn) {
-      const id = editResourceBtn.dataset.id;
-      try {
-        const resource = await ResourceService.getResourcesById(id);
-        document.getElementById("idResource").value = resource.idResource;
-        document.getElementById("resourceMU").value = resource.idMeasureUnit;
-        document.getElementById("nameResource").value = resource.name;
-        document.getElementById("resourceCF").value = resource.carbonFootprint;
-      } catch (err) {
-        Alerts.showToastCloseError("No se puso cargar el recurso");
+    const editBtnConsumptions = e.target.closest(".btn-edit-consumption");
+    if (!editBtnConsumptions) return;
+    
+    const id = editBtnConsumptions.dataset.id;
+    try {
+        const consumption = await ConsumptionService.getConsumptionById(id);
+
+        const resourceSelect = document.querySelector("#recursoSelect");
+        const unitySelect = document.querySelector("#unidadSelect");
+        const puritytxt = document.querySelector("#purezatxt");
+
+        document.querySelector("#idConsumptionHidden").value = consumption.idConsumption;
+        
+        resourceSelect.disabled = true;
+        resourceSelect.value = consumption.idResourcePurity;
+        updateConsumptionEntries(resourceSelect, unitySelect, puritytxt);
+
+        document.querySelector("#cantidadtxt").value = consumption.quantity;
+        document.querySelector("#costotxt").value = consumption.cost;
+        document.querySelector("#fecha").value = consumption.consumptionDate.substring(0, 10);
+    } catch (err) {
+        Alerts.showToastCloseError("No se puso cargar el consumo");
         console.log(err);
-      }
-      return;
     }
   });
 }
@@ -89,6 +98,14 @@ function loadConsumptionsTable(consumptions, tab) {
     </div>`;
 }
 
+export function updateConsumptionEntries(resourceSelect, unitySelect, puritytxt) {
+  puritytxt.value =
+    resourceSelect.options[resourceSelect.selectedIndex].dataset.purity;
+  unitySelect.value =
+    resourceSelect.options[resourceSelect.selectedIndex].dataset.measure;
+}
+
+
 export function loadResourcePurities(resourcesPurities, resourceSelect) {
     resourcesPurities.forEach((element) => {
       resourceSelect.innerHTML += `
@@ -106,29 +123,8 @@ export function loadMeasureUnits(measureUnits, unitySelect) {
 }
 
 ///Metodo para insertar recursos
-export async function insertConsumption(resourceS, quantityT, measureUnitS, dateT, costT, user, form) {
+export async function insertConsumption(resourceS, quantityT, dateT, costT, user, form) {
     const date = dateT.value.split("-");
-    
-    const resourceMeasureUnit = resourceS.options[resourceS.selectedIndex].dataset.measure;
-    const resourceId = resourceS.options[resourceS.selectedIndex].dataset.resource;
-
-    if (resourceMeasureUnit != measureUnitS.value) {
-      const new_quantity = await ConsumptionService.convertMeasureUnit(
-        measureUnitS.value,
-        resourceMeasureUnit,
-        resourceId,
-        quantityT.value
-      );
-      
-      if (!new_quantity.value) {
-        Alerts.showToastCloseError("Seleccionó una unidad de medida no válida")
-        return;
-      }
-
-      Alerts.showToastCloseInfo("Unidad de medida convertida automáticamente")
-      quantityT.value = new_quantity.value;
-      measureUnitS.value = resourceMeasureUnit;
-    }
     
     const payload = {
       idResourcePurity: resourceS.value.trim(),
@@ -140,7 +136,6 @@ export async function insertConsumption(resourceS, quantityT, measureUnitS, date
 
     try {
         ConsumptionService.insertConsumption(payload);
-        console.log(payload);
     } catch (err) {
         Alerts.showToastCloseError(`No se pudo agregar el consumo`)
     }
@@ -148,15 +143,20 @@ export async function insertConsumption(resourceS, quantityT, measureUnitS, date
 }
 
 ///Metodo para actualizar recursos
-export async function updateResource(id, nameT, measureUnitS, carbonFootprintT, form) {
-    const payload = {
-        idResource: id.value,
-        idMeasureUnit: measureUnitS.value,
-        name: nameT.value.trim(),
-        carbonFootprint: carbonFootprintT.value.trim()
-    }
+export async function updateConsumption(id, resourceS, quantityT, dateT, costT, user, form) {
+     const date = dateT.value.split("-");
+
+     const payload = {
+       idConsumption: id,
+       idResourcePurity: resourceS.value.trim(),
+       idUser: user,
+       quantity: quantityT.value.trim(),
+       consumptionDate: `${date[2]}/${date[1]}/${date[0]}`,
+       cost: costT.value.trim(),
+     };
+
     try {
-        ResourceService.updateResource(payload, id);
+        ConsumptionService.updateConsumption(id, payload);
     } catch (err) {
         Alerts.showToastCloseError(`No se pudo actualizar el recurso`)
     }
