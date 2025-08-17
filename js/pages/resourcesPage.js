@@ -8,6 +8,7 @@ import { getAllMeasureUnits } from "../services/measureUnitsService.js";
 import { getResources } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
 import { getAllMeasures } from "../services/measuresService.js";
+import * as Alerts from "../../utils/alerts.js"
 
 export async function render() {
   return `
@@ -450,6 +451,18 @@ async function conversionUnitProces() {
     });
   }
   conversionForm.addEventListener("submit", () => {
+    if (initialSelect.value == finalSelect.value) {
+      Alerts.showToastCloseInfo(
+        "La unidad inicial y final deben ser diferentes"
+      );
+      return;
+    }
+
+    if (!constant.value) {
+      Alerts.showToastCloseInfo("La constante es obligatoria");
+      return;
+    }
+
     if (idHidden.value) {
       ConversionUnitController.updateConversionUnit(
         idHidden,

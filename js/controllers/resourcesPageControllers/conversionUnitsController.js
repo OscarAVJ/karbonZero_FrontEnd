@@ -156,19 +156,6 @@ export function loadFinalUnits(finalUnits, finalUnitsSelect) {
     });
 }
 
-function conversionPayloadValidator(payload) {
-    if (payload.idInitialUnit == payload.idFinalUnit) {
-        Alerts.showToastCloseError(`La unidad inicial y final deben ser diferentes`)
-        return false;
-    }
-
-    if (!payload.constant) {
-        Alerts.showToastCloseError(`La constante es obligatoria`)
-        return false;
-    }
-    return true
-}
-
 export async function insertConversionUnit(selectInitial, selectFinal, selectResource, constantxt, operationtxt, form) {
     const payload = {
         idInitialUnit: selectInitial.value,
@@ -177,10 +164,7 @@ export async function insertConversionUnit(selectInitial, selectFinal, selectRes
         constant: constantxt.value.trim(),
         operation: operationtxt.value
     }
-    if (!conversionPayloadValidator(payload)) {
-        return;
-    }
-
+   
     try {
         await ConversionUnitsService.insertConversionUnit(payload);
     } catch {
@@ -197,10 +181,7 @@ export async function updateConversionUnit(idConversionUnitxt,selectInitial, sel
         constant: constantxt.value.trim(),
         operation: operationtxt.value
     }
-    if (!conversionPayloadValidator(payload)) {
-        return;
-    }
-
+   
     try {
         await ConversionUnitsService.updateConversionUnit(payload, idConversionUnitxt);
     } catch {
