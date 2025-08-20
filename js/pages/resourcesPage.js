@@ -4,10 +4,10 @@ import * as PurityController from "../controllers/resourcesPageControllers/purit
 import * as MeasureController from "../controllers/resourcesPageControllers/measuresController.js";
 import * as MeasureUnitsController from "../controllers/resourcesPageControllers/measureUnitsController.js";
 import * as ConversionUnitController from "../controllers/resourcesPageControllers/conversionUnitsController.js";
-import { getAllMeasureUnits } from "../services/measureUnitsService.js";
-import { getResources } from "../services/resourcesService.js";
+import { getAllMeasureUnitsList } from "../services/measureUnitsService.js";
+import { getAllResourcesList } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
-import { getAllMeasures } from "../services/measuresService.js";
+import { getAllMeasuresList } from "../services/measuresService.js";
 import * as Alerts from "../../utils/alerts.js"
 
 export async function render() {
@@ -244,14 +244,14 @@ export async function render() {
 export async function afterRender() {
   resourceProces();
   purityProces();
-  measureProcess();
-  measureUnitsProcess();
   conversionUnitProces();
+  measureUnitsProcess();
+  measureProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
 async function resourceProces() {
-  let measureUnits = await getAllMeasureUnits();
+  let measureUnits = await getAllMeasureUnitsList();
 
   const container = document.getElementById("resources-root");
 
@@ -302,7 +302,7 @@ async function resourceProces() {
 }
 
 async function purityProces() {
-  let resources = await getResources();
+  let resources = await getAllResourcesList();
 
   const container = document.getElementById("resources-root");
 
@@ -376,7 +376,7 @@ async function measureProcess() {
 }
 
 async function measureUnitsProcess() {
-  let measureUnits = await getAllMeasures();
+  let measureUnits = await getAllMeasuresList();
 
   const container = document.getElementById("resources-root");
 
@@ -418,8 +418,8 @@ async function measureUnitsProcess() {
   });
 }
 async function conversionUnitProces() {
-  let measureUnitsC = await getAllMeasureUnits();
-  let resources = await getResources();
+  let measureUnitsC = await getAllMeasureUnitsList();
+  let resources = await getAllResourcesList();
   const container = document.getElementById("resources-root");
 
   initAllResourcesTabs(container);

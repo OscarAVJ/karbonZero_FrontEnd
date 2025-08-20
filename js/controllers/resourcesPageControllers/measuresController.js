@@ -18,7 +18,7 @@ export async function renderMeasure(container) {
     }
     const measureTab = document.getElementById('measures');
 
-    loadMeasures(measures, measureTab);
+    loadMeasures(measures.content, measureTab);
 
     ///Aca definimos que hace nuestro boton de eliminar
     container.addEventListener('click', async e => {

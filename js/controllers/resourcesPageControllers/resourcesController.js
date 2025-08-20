@@ -9,12 +9,10 @@ export async function initResource(container) {
 ///Renderizado de elementos
 async function renderResourceData(container) {
 
-
-
     let resources = [];
     ///Obtener usuarios
     try {
-        resources = await ResourceService.getResources();
+        resources = await ResourceService.getAllResources();
     } catch (err) {
         console.log(err);
         return container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`;
@@ -22,8 +20,7 @@ async function renderResourceData(container) {
 
     ///Los mandamos en 
     const resourcesTab = document.getElementById('resources');
-    loadResourcesTable(resources, resourcesTab );
-
+    loadResourcesTable(resources.content, resourcesTab );
 
     ///Delete method
     container.addEventListener('click', async e => {

@@ -19,7 +19,7 @@ export async function renderMeasureUnits(container) {
     }
     const measureTab = document.getElementById('measureUnits');
 
-    loadMeasureUnits(measures, measureTab);
+    loadMeasureUnits(measures.content, measureTab);
 
     ///Aca definimos que hace nuestro boton de eliminar
     container.addEventListener('click', async e => {
@@ -114,7 +114,7 @@ export function loadMeasures(measures, measureSelect) {
     measures.forEach(element => {
         measureSelect.innerHTML += `
         <option value="${element.idMeasure}">${element.name}</option>
-      `
+      `;
     });
 }
 

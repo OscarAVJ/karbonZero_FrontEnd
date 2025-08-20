@@ -2,6 +2,19 @@ import * as Alerts from '../../utils/alerts.js'
 import { APIURL as API_URL } from '../../utils/api_url.js';
 
 
+export async function getAllMeasuresList() {
+    try {
+        const response = await fetch(`${API_URL}apiMeasure/getAllMeasuresList`);
+
+        if (!response.ok) {
+            console.error("Error fetching measures");
+        }
+        return response.json();
+    } catch (error) {
+        console.error(`Error fetching resources: ${error}`);
+    }
+}
+
 ///Exportamos la funcion para poder importarla en nuestro controlador
 export async function getAllMeasures() {
     try {

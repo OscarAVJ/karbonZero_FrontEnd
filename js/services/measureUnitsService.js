@@ -1,6 +1,17 @@
 import * as Alerts from '../../utils/alerts.js'
 import { APIURL } from '../../utils/api_url.js';
 
+export async function getAllMeasureUnitsList() {
+    try {
+        const response = await fetch(`${APIURL}apiMeasure/getAllMeasureUnitsList`);
+        if (!response.ok) {
+            console.error("Error fetching measure units");
+        }
+        return response.json();
+    } catch (error) {
+        console.error (`Error fetching measure units: ${error}`);
+    }
+}
 
 ///Exportamos la funcion para poder importarla en nuestro controlador
 export async function getAllMeasureUnits() {

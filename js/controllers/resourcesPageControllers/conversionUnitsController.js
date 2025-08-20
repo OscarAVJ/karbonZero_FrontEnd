@@ -18,7 +18,7 @@ export async function renderConversionUnits(container) {
     }
     const conversionTab = document.getElementById('conversionUnits');
 
-    loadConversionUnits(conversionUnits, conversionTab);
+    loadConversionUnits(conversionUnits.content, conversionTab);
 
     ///Aca definimos que hace nuestro boton de eliminar
     container.addEventListener('click', async e => {

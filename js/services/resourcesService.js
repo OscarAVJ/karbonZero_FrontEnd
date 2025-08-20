@@ -1,8 +1,20 @@
 import { APIURL as API_URL } from "../../utils/api_url";
 import * as Alerts from '../../utils/alerts.js'
 
+export async function getAllResourcesList() {
+    try {
+        const response = await fetch(`${API_URL}apiResource/getAllResourcesList`);
+        if (!response.ok) {
+            console.error("Error fetching resources");
+        }
+        return response.json();
+    } catch (error) {
+        console.error(`Error fetching resources: ${error}`);
+    }
+}
+
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getResources() {
+export async function getAllResources() {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
         const response = await fetch(`${API_URL}apiResource/getAllResources`);
