@@ -220,25 +220,122 @@ export async function render() {
     <ul class="nav nav-tabs mb-3" id="tabList-resource"></ul>
     <div class="tab-content" id="tabContent-resource">
         <div id="resources" class="tab-pane fade show active">
-            <!-- contenido de recursos -->
+            <!-- contenido de recursos -->           
+            <div id="resourceTable">
+            </div>
+            <!-- paginación de recursos -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="resourceItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="resourcePagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="purity" class="tab-pane fade">
-            <!-- contenido de pureza -->
+            <!-- contenido de purezas -->           
+            <div id="purityTable">
+            </div>
+            <!-- paginación de purezas -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="purityItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="purityPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="measures" class="tab-pane fade">
             <!-- contenido de medidas -->
+            <div id="measureTable">
+            </div>
+            <!-- paginación de medidas -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="measureItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="measurePagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="measureUnits" class="tab-pane fade">
-            <!-- contenido de pureza -->
+            <!-- contenido de unidades de medida -->
+            <div id="measureUnitTable">
+            </div>
+            <!-- paginación de unidades de medida -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="measureUnitItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="measureUnitPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="conversionUnits" class="tab-pane fade">
-            <!-- contenido de medidas -->
+            <!-- contenido de unidades de conversion-->
+            <div id="conversionUnitTable">
+            </div>
+            <!-- paginación de unidades de conversion -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="conversionUnitItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="conversionUnitPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
-
-</div>      
-
-  `;
+</div>`;
 }
 
 export async function afterRender() {

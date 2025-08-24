@@ -2,7 +2,7 @@ import { APIURL as API_URL } from "../../utils/api_url";
 import * as Alerts from '../../utils/alerts.js'
 
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getUsers( page = 0, size = 10) {
+export async function getUsers(page= 0, size=10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
         const response = await fetch(`${API_URL}apiUser/getAllUsers?page=${page}&size=${size}`);

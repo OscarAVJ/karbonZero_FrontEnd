@@ -14,10 +14,12 @@ export async function getAllResourcesList() {
 }
 
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getAllResources() {
+export async function getAllResources(currentPage=0, currentSize=10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
-        const response = await fetch(`${API_URL}apiResource/getAllResources`);
+        const response = await fetch(
+          `${API_URL}apiResource/getAllResources?page=${currentPage}&size=${currentSize}`
+        );
         ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
         if (!response.ok) {
             throw new Error(`Error fetching users: ${response.status}`);

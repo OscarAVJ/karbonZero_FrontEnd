@@ -6,18 +6,98 @@ export async function initPurity(container) {
   renderPuritiesData(container);
 }
 
+let currentPage = 0;
+let currentSize = 10;
+
+export async function reload(container) {
+  if (!container) return;
+  try {
+    const purities = await PuritiesService.getAllResourcePurities(
+      currentPage,
+      currentSize
+    );
+    const puritiesTab = container.querySelector("#purityTable");
+    loadResourcesPurityTable(purities.content, puritiesTab);
+    renderPagination(purities.number, purities.totalPages, container);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function renderPagination(current, totalPages, container) {
+  const pagination = document.querySelector("#purityPagination");
+  if (!pagination) return;
+  pagination.innerHTML = ""; ///Limpiamos la paginacion previa
+
+  // Retroceso
+  const prev = document.createElement("li");
+  prev.className = `page-item ${current <= 0 ? "disabled" : ""}`;
+  prev.innerHTML = ` <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                     </a>`;
+  prev.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (current > 0) {
+      currentPage = current - 1;
+      reload(container);
+    }
+  });
+  pagination.appendChild(prev);
+
+  // Número de páginas
+  for (let i = 0; i < totalPages; i++) {
+    const li = document.createElement("li");
+    li.className = `page-item ${i === current ? "active" : ""}`;
+    li.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+    li.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (currentPage !== i) {
+        currentPage = i; ///Saltamos a la pagina seleccionada
+        reload(container);
+      }
+    });
+    pagination.appendChild(li);
+  }
+
+  // Siguiente
+  const next = document.createElement("li");
+  next.className = `page-item ${current >= totalPages - 1 ? "disabled" : ""}`;
+  next.innerHTML = `<a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>`;
+  next.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (current < totalPages - 1) {
+      currentPage = current + 1;
+      reload(container);
+    }
+  });
+  pagination.appendChild(next);
+}
+
 export async function renderPuritiesData(container) {
   let resourcePurities = [];
 
   try {
-    resourcePurities = await PuritiesService.getAllResourcePurities();
+    resourcePurities = await PuritiesService.getAllResourcePurities(
+      currentPage,
+      currentSize
+    );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
   }
-  const puritiesTab = document.getElementById("purity");
 
+  const puritiesTab = document.querySelector("#purityTable");
   loadResourcesPurityTable(resourcePurities.content, puritiesTab);
+
+  // Selector de la paginación
+  const sizeSelector = document.querySelector("#purityItemsSelect");
+  sizeSelector.addEventListener("change", () => {
+    currentSize = parseInt(sizeSelector.value);
+    currentPage = 0;
+    reload(container);
+  });
 
   ///Aca definimos que hace nuestro boton de eliminar
   container.addEventListener("click", async (e) => {
@@ -116,7 +196,8 @@ function loadResourcesPurityTable(puritites, tab) {
               .join("")}
           </tbody>
         </table>
-    </div>`;
+    </div>
+   `;
 }
 
 export function loadResources(resources, resourceSelect) {
