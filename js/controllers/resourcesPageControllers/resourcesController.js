@@ -87,11 +87,11 @@ async function renderResourceData(container) {
   }
 
   ///Los mandamos en
-  const resourcesContainer = document.getElementById("resourceTable");
+  const resourcesContainer = document.querySelector("#resourceTable");
   loadResourcesTable(resources.content, resourcesContainer);
 
   // Selector de la paginación
-  const sizeSelector = document.getElementById("resourceItemsSelect");
+  const sizeSelector = document.querySelector("#resourceItemsSelect");
   sizeSelector.addEventListener("change", () => {
     currentSize = parseInt(sizeSelector.value);
     currentPage = 0;
@@ -128,6 +128,8 @@ async function renderResourceData(container) {
 
 ///Metodo para cargar tabla
 function loadResourcesTable(resources, tab) {
+  const baseIndex = currentPage * currentSize;
+  tab.innerHTML = "";
   tab.innerHTML = `
     <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
           <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
@@ -181,7 +183,7 @@ function loadResourcesTable(resources, tab) {
               .map(
                 (r, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${r.name}</td>
                 <td>${r.measureName}</td>
                 <td>${r.carbonFootprint}</td>

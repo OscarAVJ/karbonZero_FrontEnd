@@ -16,8 +16,8 @@ export async function reload(container) {
       currentPage,
       currentSize
     );
-    const conversionsTab = container.querySelector("#conversionUnitTable");
-    loadConversionUnits(conversions.content, conversionsTab);
+    const conversionContainer = container.querySelector("#conversionUnitTable");
+    loadConversionUnits(conversions.content, conversionContainer);
     renderPagination(conversions.number, conversions.totalPages, container);
   } catch (e) {
     console.error(e);
@@ -144,8 +144,9 @@ export async function renderConversionUnits(container) {
 }
 ///Metodo para cargar tabla
 function loadConversionUnits(conversion, tab) {
-  tab.innerHTML = "";
-  tab.innerHTML = `
+    const baseIndex = currentPage * currentSize;
+    tab.innerHTML = "";
+    tab.innerHTML = `
     <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
           <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
               <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
@@ -200,7 +201,7 @@ function loadConversionUnits(conversion, tab) {
               .map(
                 (r, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${r.nameInitialUnit}</td>
                 <td>${r.nameFinalUnit}</td>
                 <td>${r.operation}</td>

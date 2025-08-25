@@ -16,8 +16,8 @@ export async function reload(container) {
       currentPage,
       currentSize
     );
-    const measuresTab = container.querySelector("#measureTable");
-    loadMeasures(measures.content, measuresTab);
+    const measuresContainer = container.querySelector("#measureTable");
+    loadMeasures(measures.content, measuresContainer);
     renderPagination(measures.number, measures.totalPages, container);
   } catch (e) {
     console.error(e);
@@ -85,8 +85,8 @@ export async function renderMeasure(container) {
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar las medidas.</p>`);
   }
 
-  const measureTab = document.querySelector("#measureTable");
-  loadMeasures(measures.content, measureTab);
+  const measuresContainer = document.querySelector("#measureTable");
+  loadMeasures(measures.content, measuresContainer);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureItemsSelect");
@@ -122,6 +122,8 @@ export async function renderMeasure(container) {
 }
 ///Metodo para cargar tabla
 function loadMeasures(measures, tab) {
+  const baseIndex = currentPage * currentSize;
+  tab.innerHTML = "";
   tab.innerHTML = `
     <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
           <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
@@ -173,7 +175,7 @@ function loadMeasures(measures, tab) {
               .map(
                 (r, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${r.name}</td>
                 <td>
                     <button class="btn btn-sm btn-success me-1 btn-edit-measure" data-id="${

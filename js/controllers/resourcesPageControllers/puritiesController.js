@@ -16,8 +16,8 @@ export async function reload(container) {
       currentPage,
       currentSize
     );
-    const puritiesTab = container.querySelector("#purityTable");
-    loadResourcesPurityTable(purities.content, puritiesTab);
+    const puritiesContainer = container.querySelector("#purityTable");
+    loadResourcesPurityTable(purities.content, puritiesContainer);
     renderPagination(purities.number, purities.totalPages, container);
   } catch (e) {
     console.error(e);
@@ -88,8 +88,8 @@ export async function renderPuritiesData(container) {
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
   }
 
-  const puritiesTab = document.querySelector("#purityTable");
-  loadResourcesPurityTable(resourcePurities.content, puritiesTab);
+  const puritiesContainer = document.querySelector("#purityTable");
+  loadResourcesPurityTable(resourcePurities.content, puritiesContainer);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#purityItemsSelect");
@@ -120,12 +120,13 @@ export async function renderPuritiesData(container) {
         Alerts.showToastCloseError("No se pudo cargar la medida");
         console.error(err);
       }
-      return;
     }
   });
 }
 ///Metodo para cargar tabla
 function loadResourcesPurityTable(puritites, tab) {
+  const baseIndex = currentPage * currentSize;
+  tab.innerHTML = "";
   tab.innerHTML = `
     <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
           <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
@@ -179,7 +180,7 @@ function loadResourcesPurityTable(puritites, tab) {
               .map(
                 (r, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${r.resourceName}</td>
                 <td>${r.measureUnitName}</td>
                 <td>${r.purity}</td>

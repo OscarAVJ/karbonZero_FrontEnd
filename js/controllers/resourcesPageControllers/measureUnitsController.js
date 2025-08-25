@@ -17,8 +17,8 @@ export async function reload(container) {
       currentPage,
       currentSize
     );
-    const measureUnitsTab = container.querySelector("#measureUnitTable");
-    loadMeasureUnits(measureUnits.content, measureUnitsTab);
+    const measureUnitsContainer = container.querySelector("#measureUnitTable");
+    loadMeasureUnits(measureUnits.content, measureUnitsContainer);
     renderPagination(measureUnits.number, measureUnits.totalPages, container);
   } catch (e) {
     console.error(e);
@@ -89,8 +89,8 @@ export async function renderMeasureUnits(container) {
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar las unidades de medida.</p>`);
   }
 
-  const measureTab = document.querySelector("#measureUnitTable");
-  loadMeasureUnits(measures.content, measureTab);
+  const measureUnitsContainer = document.querySelector("#measureUnitTable");
+  loadMeasureUnits(measures.content, measureUnitsContainer);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureUnitItemsSelect");
@@ -128,6 +128,8 @@ export async function renderMeasureUnits(container) {
 }
 ///Metodo para cargar tabla
 function loadMeasureUnits(measures, tab) {
+  const baseIndex = currentPage * currentSize;
+  tab.innerHTML = "";
   tab.innerHTML = `
     <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
           <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
@@ -180,7 +182,7 @@ function loadMeasureUnits(measures, tab) {
               .map(
                 (r, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${r.measureName}</td>
                 <td>${r.name}</td>
                 <td>
