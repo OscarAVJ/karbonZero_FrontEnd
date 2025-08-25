@@ -96,7 +96,9 @@ async function renderConsumptionData(container) {
     const deleteBtnConsumptions = e.target.closest(".btn-delete-consumption");
     if (!deleteBtnConsumptions) return;
     const id = deleteBtnConsumptions.dataset.id;
-    await ConsumptionService.deleteConsumption(id);
+    const ok = await ConsumptionService.deleteConsumption(id);
+    console.log(ok);
+    if (ok) await reload(container);
   });
 
   ///Update method
