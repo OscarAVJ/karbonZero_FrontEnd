@@ -1,5 +1,5 @@
 import * as UserController from '../controllers/userController.js';
-import { getRoles } from '../services/rolService.js';
+import { getAllRolesList } from "../services/rolService.js";
 
 ///Esto es lo que va suceder al ingresar a la pagina, lo definimos en routes.js
 ///Aca mas que todo mandamos el html, titulos, contenedores, y modales
@@ -71,6 +71,7 @@ export function render() {
       </div>
       <ul class="nav nav-tabs mb-3" id="tabList"></ul>
       <div class="tab-content" id="tabContent"></div>
+      <!-- Paginación -->
       <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
         <div class="col-auto d-flex justify-content-start">
           <select class="form-select" aria-label="Items por pagina" id="itemsSelect">
@@ -192,7 +193,7 @@ export function render() {
 ///Esto es lo que pasa cuando ya hemos renderizado nuestra pagina
 export async function afterRender() {
   ///Obtenemos roles
-  let roles = await getRoles();
+  let roles = await getAllRolesList();
   ///Aca mandamos a llamar el init de userController que es el que llena la tabla, por eso le pasamos container
   const container = document.getElementById('users-root');
   UserController.init(container);

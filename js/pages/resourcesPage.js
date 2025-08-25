@@ -4,10 +4,10 @@ import * as PurityController from "../controllers/resourcesPageControllers/purit
 import * as MeasureController from "../controllers/resourcesPageControllers/measuresController.js";
 import * as MeasureUnitsController from "../controllers/resourcesPageControllers/measureUnitsController.js";
 import * as ConversionUnitController from "../controllers/resourcesPageControllers/conversionUnitsController.js";
-import { getAllMeasureUnits } from "../services/measureUnitsService.js";
-import { getResources } from "../services/resourcesService.js";
+import { getAllMeasureUnitsList } from "../services/measureUnitsService.js";
+import { getAllResourcesList } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
-import { getAllMeasures } from "../services/measuresService.js";
+import { getAllMeasuresList } from "../services/measuresService.js";
 import * as Alerts from "../../utils/alerts.js"
 
 export async function render() {
@@ -220,38 +220,135 @@ export async function render() {
     <ul class="nav nav-tabs mb-3" id="tabList-resource"></ul>
     <div class="tab-content" id="tabContent-resource">
         <div id="resources" class="tab-pane fade show active">
-            <!-- contenido de recursos -->
+            <!-- contenido de recursos -->           
+            <div id="resourceTable">
+            </div>
+            <!-- paginación de recursos -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="resourceItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="resourcePagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="purity" class="tab-pane fade">
-            <!-- contenido de pureza -->
+            <!-- contenido de purezas -->           
+            <div id="purityTable">
+            </div>
+            <!-- paginación de purezas -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="purityItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="purityPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="measures" class="tab-pane fade">
             <!-- contenido de medidas -->
+            <div id="measureTable">
+            </div>
+            <!-- paginación de medidas -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="measureItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="measurePagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="measureUnits" class="tab-pane fade">
-            <!-- contenido de pureza -->
+            <!-- contenido de unidades de medida -->
+            <div id="measureUnitTable">
+            </div>
+            <!-- paginación de unidades de medida -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="measureUnitItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="measureUnitPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div id="conversionUnits" class="tab-pane fade">
-            <!-- contenido de medidas -->
+            <!-- contenido de unidades de conversion-->
+            <div id="conversionUnitTable">
+            </div>
+            <!-- paginación de unidades de conversion -->
+            <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+                <div class="col-auto d-flex justify-content-start">
+                    <select class="form-select" aria-label="Items por pagina" id="conversionUnitItemsSelect">
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                        <ul id="conversionUnitPagination" class="tab-pane fade show active pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
-
-</div>      
-
-  `;
+</div>`;
 }
 
 export async function afterRender() {
   resourceProces();
   purityProces();
-  measureProcess();
-  measureUnitsProcess();
   conversionUnitProces();
+  measureUnitsProcess();
+  measureProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
 async function resourceProces() {
-  let measureUnits = await getAllMeasureUnits();
+  let measureUnits = await getAllMeasureUnitsList();
 
   const container = document.getElementById("resources-root");
 
@@ -302,7 +399,7 @@ async function resourceProces() {
 }
 
 async function purityProces() {
-  let resources = await getResources();
+  let resources = await getAllResourcesList();
 
   const container = document.getElementById("resources-root");
 
@@ -376,7 +473,7 @@ async function measureProcess() {
 }
 
 async function measureUnitsProcess() {
-  let measureUnits = await getAllMeasures();
+  let measureUnits = await getAllMeasuresList();
 
   const container = document.getElementById("resources-root");
 
@@ -418,8 +515,8 @@ async function measureUnitsProcess() {
   });
 }
 async function conversionUnitProces() {
-  let measureUnitsC = await getAllMeasureUnits();
-  let resources = await getResources();
+  let measureUnitsC = await getAllMeasureUnitsList();
+  let resources = await getAllResourcesList();
   const container = document.getElementById("resources-root");
 
   initAllResourcesTabs(container);

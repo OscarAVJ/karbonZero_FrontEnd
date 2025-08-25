@@ -3,11 +3,13 @@ import { APIURL as API_URL } from '../../utils/api_url.js';
 
 
 ///Exportamos la funcion para poder importarla en nuestro controlador
-export async function getAllConversionUnits() {
+export async function getAllConversionUnits(currentPage=0, currentSize=10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
         ///!Hacemos el get, nada nuevo
-        const response = await fetch(`${API_URL}apiMeasure/getAllConversionUnits`);
+        const response = await fetch(
+          `${API_URL}apiMeasure/getAllConversionUnits?page=${currentPage}&size=${currentSize}`
+        );
         ///Si esta malo pues aja, mandamos error
         if (!response.ok) {
             Alerts.showToastCloseError("Error cargando conversion de unidades")

@@ -31,9 +31,11 @@ export async function getConsumptionById(id) {
     }
 }
 
-export async function getAllConsumptions() {
+export async function getAllConsumptions(currentPage=0, currentSize=10) {
   try {
-    const response = await fetch(`${API_URL}apiConsumption/getAllConsumptions`);
+    const response = await fetch(
+      `${API_URL}apiConsumption/getAllConsumptions?page=${currentPage}&size=${currentSize}`
+    );
     if (!response.ok) {
       throw new Error(`Error fetching consumptions: ${response.status}`);
     }

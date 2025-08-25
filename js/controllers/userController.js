@@ -2,14 +2,15 @@ import * as UserService from '../services/userService.js';
 import * as Alerts from '../../utils/alerts.js'
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 
-
 ///Nuestro metodo de inicio, lo llamamos en el userPage.js
 export async function init(container) {
   ///Mandamos el contenedor junto con nuestro metodo init
   renderData(container);
 }
+
 let currentPage = 0;
 let currentSize = 10;
+
 ///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de usuarios 
 export async function reload(container) {
   ///Si nuestro container es nulo....
@@ -19,7 +20,7 @@ export async function reload(container) {
     const data = await UserService.getUsers(currentPage, currentSize);
     const users = data.content;
     const $tabContent = container.querySelector('#tabContent');
-    LoadTable(users, $tabContent);
+    loadUsersTable(users, $tabContent);
     ///Llamamos a renderPagination para que siempre pues vaya cambiando en base a la pagina y numero en el cual se encuentre al hacer reload
     renderPagination(data.number, data.totalPages, container);  
   } catch (e) {
@@ -56,7 +57,7 @@ async function renderData(container) {
         </li>`;
 
   ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
-  LoadTable(users, $tabContent);
+  loadUsersTable(users, $tabContent);
 
   const sizeSelector = document.getElementById("itemsSelect");
   sizeSelector.addEventListener("change", () => {
@@ -96,9 +97,9 @@ async function renderData(container) {
 }
 
 ///Aca cargamos nuestros usuarios, nada nuevo, eso si en lugar del id mandamos un numero, por que pues si, usamos RAW, xdnt
-export function LoadTable(users, tab) {
+export function loadUsersTable(users, tab) {
   ///EL base index nos sirve para que siempre se guarden las filas que llevamos en pase a la pagina y su tamaño
-  const baseIndex = currentPage * currentSize; 
+  const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `
     <div id="usuarios" class="tab-pane fade show active">
@@ -115,18 +116,26 @@ export function LoadTable(users, tab) {
             </tr>
           </thead>
           <tbody id="containerUsers">
-            ${users.map((u, i) => `
+            ${users
+              .map(
+                (u, i) => `
               <tr>
-                <td>${baseIndex+ i + 1}</td>
+                <td>${baseIndex + i + 1}</td>
                 <td>${u.firstName} ${u.lastName}</td>
                 <td>${u.username}</td>
                 <td>${u.nameRol}</td>
                 <td>${u.email}</td>
                 <td>
-                    <button class="btn btn-sm btn-success me-1 btn-edit-user" data-id="${u.idUser}" data-bs-toggle="modal" data-bs-target="#usersModal"><i class="bi bi-pencil-fill"></i></button>
-                    <button class="btn btn-sm btn-danger btn-delete-user" data-id="${u.idUser}"><i class="bi bi-trash-fill"></i></button>
+                    <button class="btn btn-sm btn-success me-1 btn-edit-user" data-id="${
+                      u.idUser
+                    }" data-bs-toggle="modal" data-bs-target="#usersModal"><i class="bi bi-pencil-fill"></i></button>
+                    <button class="btn btn-sm btn-danger btn-delete-user" data-id="${
+                      u.idUser
+                    }"><i class="bi bi-trash-fill"></i></button>
                 </td>
-              </tr>`).join('')}
+              </tr>`
+              )
+              .join("")}
           </tbody>
         </table>
       </div>

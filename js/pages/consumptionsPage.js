@@ -1,8 +1,8 @@
 import * as consumptionController from "../controllers/consumptionController";
 import * as ConsumptionService from "../services/consumptionService";
 import * as Alerts from "../../utils/alerts";
-import { getAllResourcePurities } from "../services/puritiesServices";
-import { getAllMeasureUnits } from "../services/measureUnitsService";
+import { getAllResourcePuritiesList } from "../services/puritiesServices";
+import { getAllMeasureUnitsList } from "../services/measureUnitsService";
 
 export async function render() {
   return `
@@ -103,9 +103,25 @@ export async function render() {
 
       <ul class="nav nav-tabs mb-3" id="tabList"></ul>
       <div class="tab-content" id="tabContent">
-        <div id="consumptions" class="tab-pane fade show active">
-            <!-- contenido de consumos -->
-         </div>
+      </div>
+       <!-- Paginación -->
+      <div class="row flex-nowrap mt-2" style="overflow-x: auto;">
+        <div class="col-auto d-flex justify-content-start">
+          <select class="form-select" aria-label="Items por pagina" id="itemsSelect">
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div class="col d-flex justify-content-end">
+          <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination mb-0" id="consumptionPagination">
+
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   `;
@@ -134,9 +150,9 @@ async function consumptionsProcess() {
     bootstrap.Modal.getOrCreateInstance(modalConsumption);
   const consumptionForm = document.querySelector("#consumptionsForm");
 
-  const resourcesPurities = await getAllResourcePurities();
+  const resourcesPurities = await getAllResourcePuritiesList();
   consumptionController.loadResourcePurities(resourcesPurities, resourceSelect);
-  const measureUnits = await getAllMeasureUnits();
+  const measureUnits = await getAllMeasureUnitsList();
   consumptionController.loadMeasureUnits(measureUnits, unitySelect);
 
   if (addConsumptionBtn) {
