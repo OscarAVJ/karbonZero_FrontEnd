@@ -63,9 +63,12 @@ export async function insertConsumption (payload) {
         else {
             console.error(`Error creating consumption ${response.status}`)
         }
-        return response.json();
+        const data = await response.json();
+        return { ok: true, data};
     } catch (err) {
         console.error(`Error creating consumption ${err}`);
+        return { ok: true, data: null, error: err};
+
     }
 }
 
@@ -82,9 +85,12 @@ export async function updateConsumption(id, payload) {
     } else {
       console.error(`Error updating consumption ${response.status}`);
     }
-    return response.json();
+
+    const data = await response.json();
+    return { ok: true, data };
   } catch (err) {
     console.error(`Error updating consumption ${err}`);
+    return { ok: true, data: null, error: err };
   }
 }
 

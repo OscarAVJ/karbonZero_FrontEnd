@@ -8,7 +8,7 @@ import { getAllMeasureUnitsList } from "../services/measureUnitsService.js";
 import { getAllResourcesList } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
 import { getAllMeasuresList } from "../services/measuresService.js";
-import * as Alerts from "../../utils/alerts.js"
+import * as Alerts from "../../utils/alerts.js";
 
 export async function render() {
   return `
@@ -35,11 +35,11 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nameResource" class="form-label">Nombre</label>
-                            <input id="nameResource" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nameResource" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="resourceCF" class="form-label">Huella de carbono</label>
-                            <input id="resourceCF" type="number" min="0" step="0.1"class="form-control" placeholder="Huella de carbono">
+                            <input id="resourceCF" type="number" min="0.01" step="0.01"class="form-control" placeholder="Huella de carbono" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idResource" class="form-label">idResource</label>
@@ -69,13 +69,12 @@ export async function render() {
                         <div class="row g-2 mb-3 ">
                             <label for="resourceSelect" class="form-label">Recurso</label>
                             <select id="resourceSelect" class="form-select">
-                              
                             </select>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="puritytxt" class="form-label">Pureza</label>
                             <input id="puritytxt" type="number"
-                            min="0" step="0.1"
+                            min="0.01" step="0.01"
                             class="form-control" placeholder="Pureza">
                         </div>
                         <div class="row g-2 mb-3 d-none">
@@ -105,7 +104,7 @@ export async function render() {
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="nameMetxt" class="form-label">Medida</label>
-                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                     </div>
                     <div class="modal-body mx-3 d-none">
@@ -141,7 +140,7 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nombreUtxt" class="form-label">Unidad</label>
-                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idhiddenMeasureU" class="form-label">Unidad</label>
@@ -199,11 +198,11 @@ export async function render() {
                             </div>
                             <div class="col-6">
                                 <label for="constantxt" class="form-label">Constante</label>
-                                <input id="constantxt" type="number" min="0" step="0.01" class="form-control" placeholder="Constante">
+                                <input id="constantxt" type="number" step="0.01" class="form-control" placeholder="Constante" required>
                             </div>
                              <div class="col-6 d-none">
                                 <label for="conversionIdHidden" class="form-label">Constante</label>
-                                <input id="conversionIdHidden" type="text" class="form-control" placeholder="Constante">
+                                <input id="conversionIdHidden" type="text" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -377,6 +376,25 @@ async function resourceProces() {
 
   ///Aca y hacemos el proceso de submit
   resourceForm.addEventListener("submit", () => {
+    if (!nametxt.value.trim()) {
+      Alerts.showToastCloseError("El nombre del recurso es obligatorio");
+      return;
+    }
+
+    if (!resourceCarbonFootprint.value.trim()) {
+      Alerts.showToastCloseError(
+        "El factor de conversión a huella de carbono es obligatorio"
+      );
+      return;
+    }
+
+    if (resourceCarbonFootprint.value.trim() <= 0) {
+      Alerts.showToastCloseError(
+        "El factor de conversión a huella de carbono debe ser positivo"
+      );
+      return;
+    }
+
     if (idResource.value) {
       ResourceController.updateResource(
         idResource,
@@ -422,9 +440,9 @@ async function purityProces() {
     });
   }
   purityForm.addEventListener("submit", () => {
-    if (puritytxt.value.trim() > 1 || puritytxt.value.trim() < 0) {
+    if (puritytxt.value.trim() > 1 || puritytxt.value.trim() <= 0) {
       showToastCloseInfo(
-        "El valor de la pureza no puede ser mayor a 1 ni menor a 0"
+        "El valor de la pureza no puede ser mayor a 1 ni menor o igual a 0"
       );
       return;
     }
@@ -462,6 +480,11 @@ async function measureProcess() {
     });
   }
   measureForm.addEventListener("submit", () => {
+    if (!nametxt.value.trim()) {
+      Alerts.showToastCloseError("El nombre de la medida es obligatorio");
+      return;
+    }
+
     if (idHidden.value) {
       MeasureController.updateMeasure(idHidden, nametxt, measureForm);
       measureBsModal.hide();
@@ -496,6 +519,13 @@ async function measureUnitsProcess() {
     });
   }
   measureUnitsForm.addEventListener("submit", () => {
+    if (!nameMUtxt.value.trim()) {
+      Alerts.showToastCloseError(
+        "El nombre de la unidad de medida es obligatorio"
+      );
+      return;
+    }
+
     if (idHiddenMU.value) {
       MeasureUnitsController.updateMeasureUnit(
         idHiddenMU,
@@ -548,15 +578,20 @@ async function conversionUnitProces() {
     });
   }
   conversionForm.addEventListener("submit", () => {
-    if (initialSelect.value == finalSelect.value) {
+    if (initialSelect.value.trim() == finalSelect.value.trim()) {
       Alerts.showToastCloseInfo(
         "La unidad inicial y final deben ser diferentes"
       );
       return;
     }
 
-    if (!constant.value) {
+    if (!constant.value.trim()) {
       Alerts.showToastCloseInfo("La constante es obligatoria");
+      return;
+    }
+
+    if (constant.value.trim() == 0) {
+      Alerts.showToastCloseError("La constante no puede ser cero");
       return;
     }
 

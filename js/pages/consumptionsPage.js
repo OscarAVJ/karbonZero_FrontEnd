@@ -157,18 +157,22 @@ async function consumptionsProcess() {
 
   if (addConsumptionBtn) {
     addConsumptionBtn.addEventListener("click", () => {
+      const resourceSelect = consumptionForm.querySelector("#recursoSelect");
+      resourceSelect.disabled = false;
+      
+      consumptionController.updateConsumptionEntries(
+        resourceSelect,
+        unitySelect,
+        puritytxt
+      );
+
       quantitytxt.value = "";
       costtxt.value = "";
       date.value = new Date().toISOString().substring(0, 10);
     });
   }
 
-  if (resourceSelect && puritytxt) {
-    consumptionController.updateConsumptionEntries(
-      resourceSelect,
-      unitySelect,
-      puritytxt
-    );
+  if (resourceSelect && puritytxt) {    
     resourceSelect.addEventListener("change", () => {
       consumptionController.updateConsumptionEntries(
         resourceSelect,
@@ -178,10 +182,17 @@ async function consumptionsProcess() {
     });
   }
 
-  consumptionForm.addEventListener("submit", async () => {
+  let isLoading = false;
+  consumptionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (quantitytxt.value <= 0) {
       Alerts.showToastCloseError("La cantidad debe de ser positiva");
       return;
+    }
+
+    if (!costtxt.value) {
+      costtxt.value = 0;
     }
 
     if (costtxt.value < 0) {
@@ -198,7 +209,6 @@ async function consumptionsProcess() {
       resourceSelect.options[resourceSelect.selectedIndex].dataset.measure;
     const resourceId =
       resourceSelect.options[resourceSelect.selectedIndex].dataset.resource;
-
     if (resourceMeasureUnit != unitySelect.value) {
       const new_quantity = await ConsumptionService.convertMeasureUnit(
         unitySelect.value,
@@ -218,8 +228,12 @@ async function consumptionsProcess() {
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idConsumption.value) {
-      consumptionController.updateConsumption(
+      res = await consumptionController.updateConsumption(
         idConsumption.value,
         resourceSelect,
         quantitytxt,
@@ -228,9 +242,8 @@ async function consumptionsProcess() {
         "D9086EE4AFFF477C91E20DA876AA1AF5",
         consumptionForm
       );
-      consumptionBsModal.hide();
     } else {
-      consumptionController.insertConsumption(
+      res = await consumptionController.insertConsumption(
         resourceSelect,
         quantitytxt,
         date,
@@ -238,7 +251,18 @@ async function consumptionsProcess() {
         "D9086EE4AFFF477C91E20DA876AA1AF5",
         consumptionForm
       );
-      consumptionBsModal.hide();
+    }
+    consumptionBsModal.hide();
+    isLoading = false;
+
+    consumptionController.updateConsumptionEntries(
+      resourceSelect,
+      unitySelect,
+      puritytxt
+    );
+
+    if (res?.ok) {
+      await consumptionController.reload(container);
     }
   });
 }

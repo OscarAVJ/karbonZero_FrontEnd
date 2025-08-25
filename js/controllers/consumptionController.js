@@ -208,11 +208,13 @@ export async function insertConsumption(resourceS, quantityT, dateT, costT, user
     };
 
     try {
-        ConsumptionService.insertConsumption(payload);
+        const res = await ConsumptionService.insertConsumption(payload);
+        form.reset();
+        return res;
     } catch (err) {
-        Alerts.showToastCloseError(`No se pudo agregar el consumo`)
+        Alerts.showToastCloseError(`No se pudo agregar el consumo`);
+        return {ok: false};
     }
-    form.reset();
 }
 
 ///Metodo para actualizar recursos
@@ -229,9 +231,11 @@ export async function updateConsumption(id, resourceS, quantityT, dateT, costT, 
      };
 
     try {
-        ConsumptionService.updateConsumption(id, payload);
+        const res = await ConsumptionService.updateConsumption(id, payload);
+        form.reset();
+        return res;
     } catch (err) {
-        Alerts.showToastCloseError(`No se pudo actualizar el recurso`)
+        Alerts.showToastCloseError(`No se pudo actualizar el recurso`);
+        return {ok : false};
     }
-    form.reset();
 }
