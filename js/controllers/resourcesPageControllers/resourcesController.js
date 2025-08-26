@@ -103,7 +103,8 @@ async function renderResourceData(container) {
     const deleteBtnResources = e.target.closest(".btn-delete-resource");
     if (!deleteBtnResources) return;
     const id = deleteBtnResources.dataset.id;
-    await ResourceService.deleteResource(id);
+    const ok = await ResourceService.deleteResource(id);
+    if (ok) reload(container);
   });
 
   ///Cargar los datos al editar

@@ -157,8 +157,8 @@ async function consumptionsProcess() {
 
   if (addConsumptionBtn) {
     addConsumptionBtn.addEventListener("click", () => {
-      const resourceSelect = consumptionForm.querySelector("#recursoSelect");
       resourceSelect.disabled = false;
+      resourceSelect.selectedIndex = 0
       
       consumptionController.updateConsumptionEntries(
         resourceSelect,

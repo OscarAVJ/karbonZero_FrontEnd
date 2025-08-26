@@ -86,7 +86,7 @@ export async function renderMeasure(container) {
   }
 
   const measuresContainer = document.querySelector("#measureTable");
-  loadMeasures(measures.content, measuresContainer);
+  loadMeasuresTable(measures.content, measuresContainer);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureItemsSelect");
@@ -101,8 +101,10 @@ export async function renderMeasure(container) {
     const btn = e.target.closest(".btn-delete-measure");
     if (!btn) return;
     const id = btn.dataset.id;
-    await MeasureService.deleteMeasure(id);
+    const ok = await MeasureService.deleteMeasure(id);
+    if (ok) reload(container);
   });
+  
   ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-measure");
@@ -121,7 +123,7 @@ export async function renderMeasure(container) {
   });
 }
 ///Metodo para cargar tabla
-function loadMeasures(measures, tab) {
+function loadMeasuresTable(measures, tab) {
   const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `

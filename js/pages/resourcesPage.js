@@ -338,21 +338,21 @@ export async function render() {
 }
 
 export async function afterRender() {
-  resourceProces();
-  purityProces();
-  conversionUnitProces();
-  measureUnitsProcess();
-  measureProcess();
+  const container = document.getElementById("resources-root");
+  await initAllResourcesTabs(container);
+  
+  await resourceProcess();
+  await purityProcess();
+  await conversionUnitProcess();
+  await measureUnitsProcess();
+  await measureProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
-async function resourceProces() {
+async function resourceProcess() {
   let measureUnits = await getAllMeasureUnitsList();
 
   const container = document.getElementById("resources-root");
-
-  ///Llenamos los datos con nuestro archivo de barril
-  initAllResourcesTabs(container);
 
   ///Obtencion de modales recursos
   const addResourceBtn = document.querySelector("#addResource-kz");
@@ -369,13 +369,17 @@ async function resourceProces() {
 
   if (addResourceBtn) {
     addResourceBtn.addEventListener("click", () => {
+      measureUnitSelect.selectedIndex = 0;
       nametxt.value = "";
       resourceCarbonFootprint.value = "";
     });
   }
 
   ///Aca y hacemos el proceso de submit
-  resourceForm.addEventListener("submit", () => {
+  let isLoading = false;
+  resourceForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (!nametxt.value.trim()) {
       Alerts.showToastCloseError("El nombre del recurso es obligatorio");
       return;
@@ -395,33 +399,39 @@ async function resourceProces() {
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idResource.value) {
-      ResourceController.updateResource(
+      res = await ResourceController.updateResource(
         idResource,
         nametxt,
         measureUnitSelect,
         resourceCarbonFootprint,
         resourceForm
       );
-      bdModalResource.hide();
     } else {
-      ResourceController.insertResource(
+      res = await ResourceController.insertResource(
         nametxt,
         measureUnitSelect,
         resourceCarbonFootprint,
         resourceForm
       );
-      bdModalResource.hide();
+    }
+    bdModalResource.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await ResourceController.reload(container);
     }
   });
 }
 
-async function purityProces() {
+async function purityProcess() {
   let resources = await getAllResourcesList();
 
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addPuritBtn = document.getElementById("addPurity-kz");
 
@@ -436,35 +446,51 @@ async function purityProces() {
 
   if (addPuritBtn) {
     addPuritBtn.addEventListener("click", () => {
+      resourceSelect.selectedIndex = 0;
       puritytxt.value = "";
     });
   }
-  purityForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  purityForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (puritytxt.value.trim() > 1 || puritytxt.value.trim() <= 0) {
       showToastCloseInfo(
         "El valor de la pureza no puede ser mayor a 1 ni menor o igual a 0"
       );
       return;
     }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idPurity.value) {
-      PurityController.updatePurity(
+      res = await PurityController.updatePurity(
         resourceSelect,
         puritytxt,
         idPurity,
         purityForm
       );
-      purityBsModal.hide();
     } else {
-      PurityController.insertPurity(resourceSelect, puritytxt, purityForm);
-      purityBsModal.hide();
+      res = await PurityController.insertPurity(
+        resourceSelect,
+        puritytxt,
+        purityForm
+      );
+    }
+    purityBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await PurityController.reload(container);
     }
   });
 }
 
 async function measureProcess() {
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addMeasure = document.getElementById("addMeasure-kz");
 
@@ -474,23 +500,40 @@ async function measureProcess() {
   const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
   const measureForm = document.querySelector("#measureForm");
 
+  console.log(addMeasure);
   if (addMeasure) {
     addMeasure.addEventListener("click", () => {
       nametxt.value = "";
     });
   }
-  measureForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  measureForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (!nametxt.value.trim()) {
       Alerts.showToastCloseError("El nombre de la medida es obligatorio");
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHidden.value) {
-      MeasureController.updateMeasure(idHidden, nametxt, measureForm);
-      measureBsModal.hide();
+      res = await MeasureController.updateMeasure(
+        idHidden,
+        nametxt,
+        measureForm
+      );
     } else {
-      MeasureController.insertMeasure(nametxt, measureForm);
-      measureBsModal.hide();
+      res = await MeasureController.insertMeasure(nametxt, measureForm);
+    }
+    measureBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await MeasureController.reload(container);
     }
   });
 }
@@ -499,8 +542,6 @@ async function measureUnitsProcess() {
   let measureUnits = await getAllMeasuresList();
 
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addMu = document.getElementById("addMeasureUnit-kz");
 
@@ -515,10 +556,15 @@ async function measureUnitsProcess() {
 
   if (addMu) {
     addMu.addEventListener("click", () => {
+      measureSelect.selectedIndex = 0;
       nameMUtxt.value = "";
     });
   }
-  measureUnitsForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  measureUnitsForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (!nameMUtxt.value.trim()) {
       Alerts.showToastCloseError(
         "El nombre de la unidad de medida es obligatorio"
@@ -526,30 +572,37 @@ async function measureUnitsProcess() {
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHiddenMU.value) {
-      MeasureUnitsController.updateMeasureUnit(
+      res = await MeasureUnitsController.updateMeasureUnit(
         idHiddenMU,
         measureSelect,
         nameMUtxt,
         measureUnitsForm
       );
-      measureBsModal.hide();
     } else {
-      MeasureUnitsController.insertMeasureUnit(
+      res = await MeasureUnitsController.insertMeasureUnit(
         nameMUtxt,
         measureSelect,
         measureUnitsForm
       );
-      measureBsModal.hide();
+    }
+
+    measureBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await MeasureUnitsController.reload(container);
     }
   });
 }
-async function conversionUnitProces() {
+async function conversionUnitProcess() {
   let measureUnitsC = await getAllMeasureUnitsList();
   let resources = await getAllResourcesList();
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addConversionUnit = document.getElementById("addConversionUnit-kz");
 
@@ -566,18 +619,25 @@ async function conversionUnitProces() {
   ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
   ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);
 
-  ConversionUnitController.loadResources(resources, resourceSelect);
   resourceSelect.innerHTML += `<option value="">Universal</option>`;
+  ConversionUnitController.loadResources(resources, resourceSelect);
 
   if (addConversionUnit) {
     addConversionUnit.addEventListener("click", () => {
-      ConversionUnitController.loadResources(resources, resourceSelect);
+      initialSelect.selectedIndex = 0;
+      finalSelect.selectedIndex = 0;
+      resourceSelect.selectedIndex = 0;
+
       constant.value = "";
       idHidden.value = "";
       operation.value = "SUM";
     });
   }
-  conversionForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  conversionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     if (initialSelect.value.trim() == finalSelect.value.trim()) {
       Alerts.showToastCloseInfo(
         "La unidad inicial y final deben ser diferentes"
@@ -595,8 +655,12 @@ async function conversionUnitProces() {
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHidden.value) {
-      ConversionUnitController.updateConversionUnit(
+      res = await ConversionUnitController.updateConversionUnit(
         idHidden,
         initialSelect,
         finalSelect,
@@ -605,9 +669,8 @@ async function conversionUnitProces() {
         operation,
         conversionForm
       );
-      conversionBsModal.hide();
     } else {
-      ConversionUnitController.insertConversionUnit(
+      res = await ConversionUnitController.insertConversionUnit(
         initialSelect,
         finalSelect,
         resourceSelect,
@@ -615,7 +678,12 @@ async function conversionUnitProces() {
         operation,
         conversionForm
       );
-      conversionBsModal.hide();
+    }
+    conversionBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await ConversionUnitController.reload(container);
     }
   });
 }

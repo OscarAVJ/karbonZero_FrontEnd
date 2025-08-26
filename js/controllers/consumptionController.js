@@ -97,7 +97,6 @@ async function renderConsumptionData(container) {
     if (!deleteBtnConsumptions) return;
     const id = deleteBtnConsumptions.dataset.id;
     const ok = await ConsumptionService.deleteConsumption(id);
-    console.log(ok);
     if (ok) await reload(container);
   });
 

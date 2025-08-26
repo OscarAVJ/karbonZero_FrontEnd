@@ -112,7 +112,7 @@ export async function updateResource(payload, id) {
 ///Aca esta el delete
 export async function deleteResource(id) {
   ///Le pedimos una confirmacion al usuario
-  const result = Swal.fire({
+  const result = await Swal.fire({
     title: "¿Estas seguro de que quieres eliminar a este recurso?",
     showDenyButton: true,
     confirmButtonText: "Eliminar",

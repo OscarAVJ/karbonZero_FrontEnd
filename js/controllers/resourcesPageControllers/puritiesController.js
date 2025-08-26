@@ -104,8 +104,10 @@ export async function renderPuritiesData(container) {
     const btn = e.target.closest(".btn-delete-purity");
     if (!btn) return;
     const id = btn.dataset.id;
-    await PuritiesService.deleResourcePurity(id);
+    const ok = await PuritiesService.deleResourcePurity(id);
+    if (ok) reload(container);
   });
+  
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-purity");
     if (editBtn) {
