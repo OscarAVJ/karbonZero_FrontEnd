@@ -8,13 +8,13 @@ export async function getUsers(page= 0, size=10) {
         const response = await fetch(`${API_URL}apiUser/getAllUsers?page=${page}&size=${size}`);
         ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
         if (!response.ok) {
-            throw new Error(`Error cargando users: ${response.status}`);
+            console.error(`Error fetching users`);
         }
         ///Finalmente retornamos nuestra respuesta en formato json
         return response.json();
         ///Ya el catch, supongo que ya se la saben ok
     } catch (error) {
-        console.error("Error cargando users:", error);
+        console.error(`Error fetching users: ${error}`);
         throw error;
     }
 }
@@ -29,12 +29,12 @@ export async function getUserById(id) {
         const u = await response.json();
         ///lo mismo de arriba
         if (!response.ok) {
-            throw new Error(`Error cargando users: ${response.status}`);
+            throw new Error(`Error fetching user`);
         }
         return u;
         ///Ya lo saben
     } catch (error) {
-        console.error("Error cargando users:", error);
+        console.error(`Error fetching user: ${error}`);
         throw error;
     }
 }
@@ -48,18 +48,17 @@ export async function insertUser(payload) {
             body: JSON.stringify(payload)
         });
         ///Transformamos la data a json 
-        const data = await response.json();
-
+        
         if (response.ok) {
             Alerts.showToastCloseSuccess("Usuario creado exitosamente");
         } else {
-            Alerts.showToastCloseError(`Error creando usuario ${response.status}`);
+            console.error(`Error creating user: ${response.status}`);
         }
-        ///Retornamos un ok en true y pues la data ya en formato json 
+        
+        const data = await response.json();
         return { ok: true, data };
     } catch (err) {
-        Alerts.showToastCloseError(`Error creando usuario ${err}`);
-        ///False, la data en null y su error respectivo
+        console.error(`Error creating user: ${err}`);
         return { ok: false, data: null, error: err };
     }
 }
@@ -72,18 +71,17 @@ export async function updateUser(payload, id) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        const data = await response.json().catch(() => null);
-
+        
         if (response.ok) {
             Alerts.showToastCloseSuccess("Usuario actualizado exitosamente");
         } else {
-            Alerts.showToastCloseError(`Error actualizando usuario`);
+            console.error(`Error updating user: ${response.status}`);
         }
-        ///Enviamos un estado de ok en true y de igual forma la data
-        return { ok: true, data };
+        
+        const data = await response.json();
+        return { ok: true, data};
     } catch (err) {
-        Alerts.showToastCloseError(`Error actualizando usuario ${err}`);
-        ///Enviamos un false data en null y su respectivo error
+        console.error(`Error updating user: ${err}`);
         return { ok: false, data: null, error: err };
     }
 }
@@ -105,18 +103,18 @@ export async function deleteUser(id) {
     ///Y ya el delete, ya se la saben
     try {
         ///Peticion
-        const resp = await fetch(`${API_URL}apiUser/deleteUser/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}apiUser/deleteUser/${id}`, { method: 'DELETE' });
         ///Ahi un return en caso de error
-        if (!resp.ok) {
-            Alerts.showToastCloseError("No se pudo eliminar el usuario");
+        if (!response.ok) {
+            console.error(`Error deleting user: ${response.status}`);
             return false;
         }
         ///Si todo bien mandamos el success
         Alerts.showToastCloseSuccess("Usuario eliminado exitosamente");
         return true;
-    } catch (e) {
+    } catch (err) {
         ///En caso de error
-        Alerts.showToastCloseError("Error eliminando usuario");
+        Alerts.showToastCloseError(`Error deleting user: ${err}`);
         return false;
     }
 }

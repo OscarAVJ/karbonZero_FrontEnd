@@ -13,7 +13,7 @@ export async function convertMeasureUnit(
     );
 
     if (!response.ok) {
-      throw new Error(`Error converting measure unit: ${response.status}`);
+      console.error(`Error converting measure unit: ${response.status}`);
     }
 
     return response.json();
@@ -29,7 +29,7 @@ export async function getConsumptionById(id) {
       `${API_URL}apiConsumption/getConsumptionById/${id}`
     );
     if (!response.ok) {
-      throw new Error(`Error fetching consumption: ${response.status}`);
+      console.error(`Error fetching consumption: ${response.status}`);
     }
     return response.json();
   } catch (error) {
@@ -44,7 +44,7 @@ export async function getAllConsumptions(currentPage = 0, currentSize = 10) {
       `${API_URL}apiConsumption/getAllConsumptions?page=${currentPage}&size=${currentSize}`
     );
     if (!response.ok) {
-      throw new Error(`Error fetching consumptions: ${response.status}`);
+      console.error(`Error fetching consumptions: ${response.status}`);
     }
     return response.json();
   } catch (error) {
@@ -64,12 +64,12 @@ export async function insertConsumption(payload) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Consumo creado exitosamente");
     } else {
-      console.error(`Error creating consumption ${response.status}`);
+      console.error(`Error creating consumption: ${response.status}`);
     }
     const data = await response.json();
     return { ok: true, data };
   } catch (err) {
-    console.error(`Error creating consumption ${err}`);
+    console.error(`Error creating consumption: ${err}`);
     return { ok: true, data: null, error: err };
   }
 }
@@ -88,13 +88,13 @@ export async function updateConsumption(id, payload) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Consumo actualizado exitosamente");
     } else {
-      console.error(`Error updating consumption ${response.status}`);
+      console.error(`Error updating consumption: ${response.status}`);
     }
 
     const data = await response.json();
     return { ok: true, data };
   } catch (err) {
-    console.error(`Error updating consumption ${err}`);
+    console.error(`Error updating consumption: ${err}`);
     return { ok: true, data: null, error: err };
   }
 }
@@ -122,14 +122,14 @@ export async function deleteConsumption(id) {
       }
     );
     if (!response.ok) {
-      console.error(`Error deleting consumption ${error}`);
+      console.error(`Error deleting consumption: ${error}`);
       return false;
     }
 
     Alerts.showToastCloseSuccess("Consumo eliminado exitosamente");
     return true;
   } catch (error) {
-    console.error(`Error deleting consumption ${error}`);
+    console.error(`Error deleting consumption: ${error}`);
     return false;
   }
 }
