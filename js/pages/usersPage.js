@@ -1,5 +1,6 @@
-import * as UserController from '../controllers/userController.js';
+import * as userController from "../controllers/userController.js";
 import { getAllRolesList } from "../services/rolService.js";
+import * as Alerts from "../../utils/alerts.js";
 
 ///Esto es lo que va suceder al ingresar a la pagina, lo definimos en routes.js
 ///Aca mas que todo mandamos el html, titulos, contenedores, y modales
@@ -145,6 +146,7 @@ export function render() {
                     type="text"
                     class="form-control"
                     placeholder="Usuario"
+                    required
                   >
                 </div>
                 <div class="col-sm-6">
@@ -156,7 +158,8 @@ export function render() {
                     id="correoElectronicotxt"
                     type="email"
                     class="form-control"
-                    placeholder="Correo"
+                    placeholder="Correo" 
+                    required
                   >
                 </div>
                 <div class="col-sm-6 d-none">
@@ -195,55 +198,82 @@ export async function afterRender() {
   ///Obtenemos roles
   let roles = await getAllRolesList();
   ///Aca mandamos a llamar el init de userController que es el que llena la tabla, por eso le pasamos container
-  const container = document.getElementById('users-root');
-  UserController.init(container);
+  const container = document.getElementById("users-root");
+  userController.init(container);
 
   ///Obtenemos nuestros elementos
-  const addUserBtn = document.querySelector('#addUser-kz');
-  const nametxt = document.querySelector('#nombretxt');
-  const lastNametxt = document.querySelector('#apellidotxt');
-  const usernametxt = document.querySelector('#usuariotxt');
-  const emailtxt = document.querySelector('#correoElectronicotxt');
-  const usersForm = document.querySelector('#userForm');
-  const modalEl = document.getElementById('usersModal')
-  const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl)
-  const idHideen = document.querySelector('#idtxt');
-  const rolesSelect = document.querySelector('#roltxt');
+  const addUserBtn = document.querySelector("#addUser-kz");
+  const nametxt = document.querySelector("#nombretxt");
+  const lastNametxt = document.querySelector("#apellidotxt");
+  const usernametxt = document.querySelector("#usuariotxt");
+  const emailtxt = document.querySelector("#correoElectronicotxt");
+  const usersForm = document.querySelector("#userForm");
+  const modalEl = document.getElementById("usersModal");
+  const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+  const idHideen = document.querySelector("#idtxt");
+  const rolesSelect = document.querySelector("#roltxt");
 
   ///Aca mandamos a llenar el loadRoles y le pasamos los roles que hemos obtenido asi como el formselect
-  UserController.loadRoles(roles, rolesSelect);
+  userController.loadRoles(roles, rolesSelect);
 
   ///Aca definimos que si el boton existe, al hacerle click vamos a limpiar los campos al cargar
   if (addUserBtn) {
-    addUserBtn.addEventListener('click', () => {
-      idHideen.value = '';
-      nametxt.value = '';
-      lastNametxt.value = '';
-      usernametxt.value = '';
-      emailtxt.value = '';
+    addUserBtn.addEventListener("click", () => {
+      idHideen.value = "";
+      nametxt.value = "";
+      lastNametxt.value = "";
+      usernametxt.value = "";
+      emailtxt.value = "";
       rolesSelect.selectedIndex = 0;
     });
   }
 
   let isLoading = false;
   ///Aca ya vinculamos la parte del insert/update con el submit de nuestro formulario, pasamos datos segun sean solicitados
-  usersForm.addEventListener('submit', async (e) => {
+  usersForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+  
+    if (!usernametxt.value.trim()) {
+      Alerts.showToastCloseError("El nombre de usuario es obligatorio");
+      return;
+    }
+
+    if (!emailtxt.value.trim()) {
+      Alerts.showToastCloseError("El correo electrónico es obligatorio");
+      return;
+    }
+
     if (isLoading) return;
     isLoading = true;
+
     let res;
     if (idHideen.value) {
-      res = await UserController.updateUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm, idHideen);
+      res = await userController.updateUser(
+        usernametxt,
+        nametxt,
+        lastNametxt,
+        emailtxt,
+        rolesSelect,
+        usersForm,
+        idHideen
+      );
     } else {
-      res = await UserController.insertUser(usernametxt, nametxt, lastNametxt, emailtxt, rolesSelect, usersForm);
+      res = await userController.insertUser(
+        usernametxt,
+        nametxt,
+        lastNametxt,
+        emailtxt,
+        rolesSelect,
+        usersForm
+      );
     }
 
     bsModal.hide();
     isLoading = false;
-    idHideen.value = '';
+    idHideen.value = "";
     ///Si la respueta que nos retorna ya sea updateUser o insertUser es ok en positivo, pues hacemos el reload, como da la respuesta lo pueden ver en el metodo respectivo
     if (res?.ok) {
-      await UserController.reload(container);
+      await userController.reload(container);
     }
   });
 }

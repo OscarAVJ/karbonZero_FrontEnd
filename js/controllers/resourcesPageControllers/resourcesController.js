@@ -103,7 +103,8 @@ async function renderResourceData(container) {
     const deleteBtnResources = e.target.closest(".btn-delete-resource");
     if (!deleteBtnResources) return;
     const id = deleteBtnResources.dataset.id;
-    await ResourceService.deleteResource(id);
+    const ok = await ResourceService.deleteResource(id);
+    if (ok) reload(container);
   });
 
   ///Cargar los datos al editar
@@ -224,11 +225,13 @@ export async function insertResource(
     carbonFootprint: carbonFootprintT.value.trim(),
   };
   try {
-    ResourceService.insertResource(payload);
+    const res = await ResourceService.insertResource(payload);
+    form.reset();
+    return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo agregar el recurso`);
+    return {ok: false};
   }
-  form.reset();
 }
 
 ///Metodo para actualizar recursos
@@ -246,9 +249,11 @@ export async function updateResource(
     carbonFootprint: carbonFootprintT.value.trim(),
   };
   try {
-    ResourceService.updateResource(payload, id);
+    const res = await ResourceService.updateResource(payload, id);
+    form.reset();
+    return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo actualizar el recurso`);
+    return {ok: false};
   }
-  form.reset();
 }

@@ -104,8 +104,10 @@ export async function renderConversionUnits(container) {
     const btn = e.target.closest(".btn-delete-conversionUnit");
     if (!btn) return;
     const id = btn.dataset.id;
-    await ConversionUnitsService.deleteConversionUnit(id);
+    const ok = await ConversionUnitsService.deleteConversionUnit(id);
+    if (ok) await reload(container);
   });
+  
   ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-conversionUnit");
@@ -261,13 +263,15 @@ export async function insertConversionUnit(
   };
 
   try {
-    await ConversionUnitsService.insertConversionUnit(payload);
+    const res = await ConversionUnitsService.insertConversionUnit(payload);
+    form.reset()
+    return res;
   } catch {
     Alerts.showToastCloseError(
       `No se pudo agregar la conversion de unidades ${err}`
     );
+    return {ok: false};
   }
-  form.reset();
 }
 export async function updateConversionUnit(
   idConversionUnitxt,
@@ -288,14 +292,16 @@ export async function updateConversionUnit(
   };
 
   try {
-    await ConversionUnitsService.updateConversionUnit(
+    const res = await ConversionUnitsService.updateConversionUnit(
       payload,
       idConversionUnitxt
     );
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(
       `No se pudo actualizar la conversion de unidades ${err}`
     );
+    return {ok: false};
   }
-  form.reset();
 }

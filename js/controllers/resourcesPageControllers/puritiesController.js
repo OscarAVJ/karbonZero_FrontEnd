@@ -104,8 +104,10 @@ export async function renderPuritiesData(container) {
     const btn = e.target.closest(".btn-delete-purity");
     if (!btn) return;
     const id = btn.dataset.id;
-    await PuritiesService.deleResourcePurity(id);
+    const ok = await PuritiesService.deleResourcePurity(id);
+    if (ok) reload(container);
   });
+  
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-purity");
     if (editBtn) {
@@ -215,12 +217,15 @@ export async function insertPurity(resourceSelect, puritytxt, form) {
     purity: puritytxt.value.trim(),
   };
   try {
-    PuritiesService.insertResourcePurity(payload);
+    const res = await PuritiesService.insertResourcePurity(payload);
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo agregar la pureza ${err}`);
+    return {ok: false};
   }
-  form.reset();
 }
+
 export async function updatePurity(resourceSelect, puritytxt, id, form) {
   const payload = {
     idResourcePurity: id.value,
@@ -228,9 +233,11 @@ export async function updatePurity(resourceSelect, puritytxt, id, form) {
     purity: puritytxt.value.trim(),
   };
   try {
-    PuritiesService.updateResourcePurity(payload, id);
+    const res = await PuritiesService.updateResourcePurity(payload, id);
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo actualizar la pureza ${err}`);
+    return {ok: false};
   }
-  form.reset();
 }

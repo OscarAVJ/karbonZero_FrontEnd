@@ -8,7 +8,7 @@ import { getAllMeasureUnitsList } from "../services/measureUnitsService.js";
 import { getAllResourcesList } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
 import { getAllMeasuresList } from "../services/measuresService.js";
-import * as Alerts from "../../utils/alerts.js"
+import * as Alerts from "../../utils/alerts.js";
 
 export async function render() {
   return `
@@ -35,11 +35,11 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nameResource" class="form-label">Nombre</label>
-                            <input id="nameResource" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nameResource" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="resourceCF" class="form-label">Huella de carbono</label>
-                            <input id="resourceCF" type="number" min="0" step="0.1"class="form-control" placeholder="Huella de carbono">
+                            <input id="resourceCF" type="number" min="0.01" step="0.01"class="form-control" placeholder="Huella de carbono" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idResource" class="form-label">idResource</label>
@@ -69,13 +69,12 @@ export async function render() {
                         <div class="row g-2 mb-3 ">
                             <label for="resourceSelect" class="form-label">Recurso</label>
                             <select id="resourceSelect" class="form-select">
-                              
                             </select>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="puritytxt" class="form-label">Pureza</label>
                             <input id="puritytxt" type="number"
-                            min="0" step="0.1"
+                            min="0.01" step="0.01"
                             class="form-control" placeholder="Pureza">
                         </div>
                         <div class="row g-2 mb-3 d-none">
@@ -105,7 +104,7 @@ export async function render() {
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="nameMetxt" class="form-label">Medida</label>
-                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                     </div>
                     <div class="modal-body mx-3 d-none">
@@ -141,7 +140,7 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nombreUtxt" class="form-label">Unidad</label>
-                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre">
+                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idhiddenMeasureU" class="form-label">Unidad</label>
@@ -199,11 +198,11 @@ export async function render() {
                             </div>
                             <div class="col-6">
                                 <label for="constantxt" class="form-label">Constante</label>
-                                <input id="constantxt" type="number" min="0" step="0.01" class="form-control" placeholder="Constante">
+                                <input id="constantxt" type="number" step="0.01" class="form-control" placeholder="Constante" required>
                             </div>
                              <div class="col-6 d-none">
                                 <label for="conversionIdHidden" class="form-label">Constante</label>
-                                <input id="conversionIdHidden" type="text" class="form-control" placeholder="Constante">
+                                <input id="conversionIdHidden" type="text" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -339,21 +338,21 @@ export async function render() {
 }
 
 export async function afterRender() {
-  resourceProces();
-  purityProces();
-  conversionUnitProces();
-  measureUnitsProcess();
-  measureProcess();
+  const container = document.getElementById("resources-root");
+  await initAllResourcesTabs(container);
+  
+  await resourceProcess();
+  await purityProcess();
+  await conversionUnitProcess();
+  await measureUnitsProcess();
+  await measureProcess();
 }
 
 ///En este tipo de paginas donde hay diversos tabs para que sea mas facil leer todo cada tab tendra su proces
-async function resourceProces() {
+async function resourceProcess() {
   let measureUnits = await getAllMeasureUnitsList();
 
   const container = document.getElementById("resources-root");
-
-  ///Llenamos los datos con nuestro archivo de barril
-  initAllResourcesTabs(container);
 
   ///Obtencion de modales recursos
   const addResourceBtn = document.querySelector("#addResource-kz");
@@ -370,40 +369,69 @@ async function resourceProces() {
 
   if (addResourceBtn) {
     addResourceBtn.addEventListener("click", () => {
+      measureUnitSelect.selectedIndex = 0;
       nametxt.value = "";
       resourceCarbonFootprint.value = "";
     });
   }
 
   ///Aca y hacemos el proceso de submit
-  resourceForm.addEventListener("submit", () => {
+  let isLoading = false;
+  resourceForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!nametxt.value.trim()) {
+      Alerts.showToastCloseError("El nombre del recurso es obligatorio");
+      return;
+    }
+
+    if (!resourceCarbonFootprint.value.trim()) {
+      Alerts.showToastCloseError(
+        "El factor de conversión a huella de carbono es obligatorio"
+      );
+      return;
+    }
+
+    if (resourceCarbonFootprint.value.trim() <= 0) {
+      Alerts.showToastCloseError(
+        "El factor de conversión a huella de carbono debe ser positivo"
+      );
+      return;
+    }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idResource.value) {
-      ResourceController.updateResource(
+      res = await ResourceController.updateResource(
         idResource,
         nametxt,
         measureUnitSelect,
         resourceCarbonFootprint,
         resourceForm
       );
-      bdModalResource.hide();
     } else {
-      ResourceController.insertResource(
+      res = await ResourceController.insertResource(
         nametxt,
         measureUnitSelect,
         resourceCarbonFootprint,
         resourceForm
       );
-      bdModalResource.hide();
+    }
+    bdModalResource.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await ResourceController.reload(container);
     }
   });
 }
 
-async function purityProces() {
+async function purityProcess() {
   let resources = await getAllResourcesList();
 
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addPuritBtn = document.getElementById("addPurity-kz");
 
@@ -418,35 +446,51 @@ async function purityProces() {
 
   if (addPuritBtn) {
     addPuritBtn.addEventListener("click", () => {
+      resourceSelect.selectedIndex = 0;
       puritytxt.value = "";
     });
   }
-  purityForm.addEventListener("submit", () => {
-    if (puritytxt.value.trim() > 1 || puritytxt.value.trim() < 0) {
+
+  let isLoading = false;
+  purityForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (puritytxt.value.trim() > 1 || puritytxt.value.trim() <= 0) {
       showToastCloseInfo(
-        "El valor de la pureza no puede ser mayor a 1 ni menor a 0"
+        "El valor de la pureza no puede ser mayor a 1 ni menor o igual a 0"
       );
       return;
     }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idPurity.value) {
-      PurityController.updatePurity(
+      res = await PurityController.updatePurity(
         resourceSelect,
         puritytxt,
         idPurity,
         purityForm
       );
-      purityBsModal.hide();
     } else {
-      PurityController.insertPurity(resourceSelect, puritytxt, purityForm);
-      purityBsModal.hide();
+      res = await PurityController.insertPurity(
+        resourceSelect,
+        puritytxt,
+        purityForm
+      );
+    }
+    purityBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await PurityController.reload(container);
     }
   });
 }
 
 async function measureProcess() {
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addMeasure = document.getElementById("addMeasure-kz");
 
@@ -456,18 +500,40 @@ async function measureProcess() {
   const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
   const measureForm = document.querySelector("#measureForm");
 
+  console.log(addMeasure);
   if (addMeasure) {
     addMeasure.addEventListener("click", () => {
       nametxt.value = "";
     });
   }
-  measureForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  measureForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!nametxt.value.trim()) {
+      Alerts.showToastCloseError("El nombre de la medida es obligatorio");
+      return;
+    }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHidden.value) {
-      MeasureController.updateMeasure(idHidden, nametxt, measureForm);
-      measureBsModal.hide();
+      res = await MeasureController.updateMeasure(
+        idHidden,
+        nametxt,
+        measureForm
+      );
     } else {
-      MeasureController.insertMeasure(nametxt, measureForm);
-      measureBsModal.hide();
+      res = await MeasureController.insertMeasure(nametxt, measureForm);
+    }
+    measureBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await MeasureController.reload(container);
     }
   });
 }
@@ -476,8 +542,6 @@ async function measureUnitsProcess() {
   let measureUnits = await getAllMeasuresList();
 
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addMu = document.getElementById("addMeasureUnit-kz");
 
@@ -492,34 +556,53 @@ async function measureUnitsProcess() {
 
   if (addMu) {
     addMu.addEventListener("click", () => {
+      measureSelect.selectedIndex = 0;
       nameMUtxt.value = "";
     });
   }
-  measureUnitsForm.addEventListener("submit", () => {
+
+  let isLoading = false;
+  measureUnitsForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!nameMUtxt.value.trim()) {
+      Alerts.showToastCloseError(
+        "El nombre de la unidad de medida es obligatorio"
+      );
+      return;
+    }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHiddenMU.value) {
-      MeasureUnitsController.updateMeasureUnit(
+      res = await MeasureUnitsController.updateMeasureUnit(
         idHiddenMU,
         measureSelect,
         nameMUtxt,
         measureUnitsForm
       );
-      measureBsModal.hide();
     } else {
-      MeasureUnitsController.insertMeasureUnit(
+      res = await MeasureUnitsController.insertMeasureUnit(
         nameMUtxt,
         measureSelect,
         measureUnitsForm
       );
-      measureBsModal.hide();
+    }
+
+    measureBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await MeasureUnitsController.reload(container);
     }
   });
 }
-async function conversionUnitProces() {
+async function conversionUnitProcess() {
   let measureUnitsC = await getAllMeasureUnitsList();
   let resources = await getAllResourcesList();
   const container = document.getElementById("resources-root");
-
-  initAllResourcesTabs(container);
 
   const addConversionUnit = document.getElementById("addConversionUnit-kz");
 
@@ -536,32 +619,48 @@ async function conversionUnitProces() {
   ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
   ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);
 
-  ConversionUnitController.loadResources(resources, resourceSelect);
   resourceSelect.innerHTML += `<option value="">Universal</option>`;
+  ConversionUnitController.loadResources(resources, resourceSelect);
 
   if (addConversionUnit) {
     addConversionUnit.addEventListener("click", () => {
-      ConversionUnitController.loadResources(resources, resourceSelect);
+      initialSelect.selectedIndex = 0;
+      finalSelect.selectedIndex = 0;
+      resourceSelect.selectedIndex = 0;
+
       constant.value = "";
       idHidden.value = "";
       operation.value = "SUM";
     });
   }
-  conversionForm.addEventListener("submit", () => {
-    if (initialSelect.value == finalSelect.value) {
+
+  let isLoading = false;
+  conversionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (initialSelect.value.trim() == finalSelect.value.trim()) {
       Alerts.showToastCloseInfo(
         "La unidad inicial y final deben ser diferentes"
       );
       return;
     }
 
-    if (!constant.value) {
+    if (!constant.value.trim()) {
       Alerts.showToastCloseInfo("La constante es obligatoria");
       return;
     }
 
+    if (constant.value.trim() == 0) {
+      Alerts.showToastCloseError("La constante no puede ser cero");
+      return;
+    }
+
+    if (isLoading) return;
+    isLoading = true;
+
+    let res;
     if (idHidden.value) {
-      ConversionUnitController.updateConversionUnit(
+      res = await ConversionUnitController.updateConversionUnit(
         idHidden,
         initialSelect,
         finalSelect,
@@ -570,9 +669,8 @@ async function conversionUnitProces() {
         operation,
         conversionForm
       );
-      conversionBsModal.hide();
     } else {
-      ConversionUnitController.insertConversionUnit(
+      res = await ConversionUnitController.insertConversionUnit(
         initialSelect,
         finalSelect,
         resourceSelect,
@@ -580,7 +678,12 @@ async function conversionUnitProces() {
         operation,
         conversionForm
       );
-      conversionBsModal.hide();
+    }
+    conversionBsModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await ConversionUnitController.reload(container);
     }
   });
 }

@@ -11,24 +11,24 @@ export async function getAllRolesList () {
         return response.json();
     } catch (error) {
         console.error(`Error fetching roles ${error}`);
+        throw error;
     }
 }
 
 export async function getAllRoles(currentPage=0, currentSize=10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
-        ///!Hacemos el get, nada nuevo
         const response = await fetch(
           `${API_URL}apiUser/getAllRoles?page=${currentPage}&size=${currentSize}`
         );
         ///Si esta malo pues aja, mandamos error
         if (!response.ok) {
-            Alerts.showToastCloseError("Error cargando roles")
+            console.error("Error fetching roles");
         }
         ///Retornamos la respuesta en formato json
         return response.json();
     } catch (error) {
-        Alerts.showToastCloseError(`Error cargando roles ${error}`)
+        console.error(`Error fetching roles: ${error}`)
         throw error;
     }
 }
