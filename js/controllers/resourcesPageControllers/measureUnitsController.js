@@ -214,12 +214,15 @@ export async function insertMeasureUnit(nametxt, measureSelect, form) {
     name: nametxt.value.trim(),
   };
   try {
-    MeasureUnitsService.insertMeasureUnit(payload);
+    const res = await MeasureUnitsService.insertMeasureUnit(payload);
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo agregar la unidad de medida ${err}`);
+    return {ok: false};
   }
-  form.reset();
 }
+
 export async function updateMeasureUnit(
   idMeasureUnit,
   measureSelect,
@@ -232,11 +235,13 @@ export async function updateMeasureUnit(
     name: nametxt.value.trim(),
   };
   try {
-    MeasureUnitsService.updateMeasureUnit(payload, idMeasureUnit);
+    const res = await MeasureUnitsService.updateMeasureUnit(payload, idMeasureUnit);
+    form.reset();
+    return res;
   } catch (err) {
     Alerts.showToastCloseError(
       `No se pudo actualizar la unidad de medida ${err}`
     );
+    return {ok: false};
   }
-  form.reset();
 }

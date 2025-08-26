@@ -198,11 +198,13 @@ export async function insertMeasure(nametxt, form) {
     name: nametxt.value.trim(),
   };
   try {
-    MeasureService.insertMeasure(payload);
+    const res = await MeasureService.insertMeasure(payload);
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo agregar la medida ${err}`);
+    return {ok: false};
   }
-  form.reset();
 }
 export async function updateMeasure(idMeasure, nametxt, form) {
   const payload = {
@@ -210,9 +212,11 @@ export async function updateMeasure(idMeasure, nametxt, form) {
     name: nametxt.value.trim(),
   };
   try {
-    MeasureService.updateMeasure(payload, idMeasure);
+    const res = await MeasureService.updateMeasure(payload, idMeasure);
+    form.reset();
+    return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo actualizar la medida ${err}`);
+    return {ok: false};
   }
-  form.reset();
 }

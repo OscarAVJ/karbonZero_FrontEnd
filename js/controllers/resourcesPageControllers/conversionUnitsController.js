@@ -261,13 +261,15 @@ export async function insertConversionUnit(
   };
 
   try {
-    await ConversionUnitsService.insertConversionUnit(payload);
+    const res = await ConversionUnitsService.insertConversionUnit(payload);
+    form.reset()
+    return res;
   } catch {
     Alerts.showToastCloseError(
       `No se pudo agregar la conversion de unidades ${err}`
     );
+    return {ok: false};
   }
-  form.reset();
 }
 export async function updateConversionUnit(
   idConversionUnitxt,
@@ -288,14 +290,16 @@ export async function updateConversionUnit(
   };
 
   try {
-    await ConversionUnitsService.updateConversionUnit(
+    const res = await ConversionUnitsService.updateConversionUnit(
       payload,
       idConversionUnitxt
     );
+    form.reset();
+    return res;
   } catch {
     Alerts.showToastCloseError(
       `No se pudo actualizar la conversion de unidades ${err}`
     );
+    return {ok: false};
   }
-  form.reset();
 }
