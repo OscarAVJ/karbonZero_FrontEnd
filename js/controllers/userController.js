@@ -1,5 +1,5 @@
-import * as UserService from '../services/userService.js';
-import * as Alerts from '../../utils/alerts.js'
+import * as UserService from "../services/userService.js";
+import * as Alerts from "../../utils/alerts.js";
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 
 ///Nuestro metodo de inicio, lo llamamos en el userPage.js
@@ -11,53 +11,64 @@ export async function init(container) {
 let currentPage = 0;
 let currentSize = 10;
 
-///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de usuarios 
+export async function setCurrentPage(page) {
+  currentPage = page;
+}
+
+///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de usuarios
 export async function reload(container) {
   ///Si nuestro container es nulo....
   if (!container) return;
   ///Si no pues hacemos una peticion get y le pasamos ese array de usuarios + el tab donde queremos poner la grid
   try {
-    const data = await UserService.getUsers(currentPage, currentSize);
-    const users = data.content;
-    const $tabContent = container.querySelector('#tabContent');
-    loadUsersTable(users, $tabContent);
+    const userSearch = document.querySelector("#userSearch");
+    const searchName = userSearch.value.trim();
+
+    let users;
+    if (!searchName) {
+      users = await UserService.getAllUsers(currentPage, currentSize);
+    } else {
+      users = await UserService.getAllUsersByUsername(
+        searchName,
+        currentPage,
+        currentSize
+      );
+    }
+    const tabContent = container.querySelector("#tabContent");
+    loadUsersTable(users.content, tabContent);
     ///Llamamos a renderPagination para que siempre pues vaya cambiando en base a la pagina y numero en el cual se encuentre al hacer reload
-    renderPagination(data.number, data.totalPages, container);  
+    renderPagination(users.number, users.totalPages, container);
   } catch (e) {
     console.error(e);
   }
 }
 
-
 ///Funcion para renderizar los datos asi como los eventos de nuestro formulario
 async function renderData(container) {
   ///Variables con nuestro tabList y el contenido(nuestra tabla)
-  const $tabList = container.querySelector('#tabList');
-  const $tabContent = container.querySelector('#tabContent');
-  ///Array donde se guardan los usuarios
-  let users = [];
+  const tabList = container.querySelector("#tabList");
+  const tabContent = container.querySelector("#tabContent");
 
+  let users;
   ///Llenamos los usuarios
   try {
     ///traemos el json en data
-    const data = await UserService.getUsers(currentPage, currentSize);
-    ///Accedemos al content de eso 
-    users = data.content;
+    users = await UserService.getAllUsers(currentPage, currentSize);
     ///Llamamos al renderPagination para que carge cuando inicie todo
-    renderPagination(data.number, data.totalPages, container)
+    renderPagination(users.number, users.totalPages, container);
   } catch (error) {
     console.error(error);
-    return container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`;
+    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`);
   }
 
-  ///Aca definimos nuestros tabs y de igual forma a donde estan dirigidos, puedes definir varios en page, y cada uno debe tener su div con ru ID 
-  $tabList.innerHTML = `
+  ///Aca definimos nuestros tabs y de igual forma a donde estan dirigidos, puedes definir varios en page, y cada uno debe tener su div con ru ID
+  tabList.innerHTML = `
         <li class="nav-item d-flex">
             <a class="nav-link active" data-bs-toggle="tab" href="#usuarios">Usuarios</a>
         </li>`;
 
   ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
-  loadUsersTable(users, $tabContent);
+  loadUsersTable(users.content, tabContent);
 
   const sizeSelector = document.getElementById("itemsSelect");
   sizeSelector.addEventListener("change", () => {
@@ -67,8 +78,8 @@ async function renderData(container) {
   });
 
   ///Aca definimos que hace nuestro boton de eliminar
-  container.addEventListener('click', async e => {
-    const btn = e.target.closest('.btn-delete-user');
+  container.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".btn-delete-user");
     if (!btn) return;
     const id = btn.dataset.id;
     const ok = await UserService.deleteUser(id);
@@ -77,20 +88,20 @@ async function renderData(container) {
   });
 
   ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
-  container.addEventListener('click', async e => {
-    const editBtn = e.target.closest('.btn-edit-user');
+  container.addEventListener("click", async (e) => {
+    const editBtn = e.target.closest(".btn-edit-user");
     if (!editBtn) return;
     const id = editBtn.dataset.id;
     try {
       const user = await UserService.getUserById(id);
-      document.getElementById('idtxt').value = user.idUser ?? '';
-      document.getElementById('nombretxt').value = user.firstName ?? '';
-      document.getElementById('apellidotxt').value = user.lastName ?? '';
-      document.getElementById('usuariotxt').value = user.username ?? '';
-      document.getElementById('correoElectronicotxt').value = user.email ?? '';
-      document.getElementById('roltxt').value = user.idRol ?? '';
+      document.getElementById("idtxt").value = user.idUser ?? "";
+      document.getElementById("nombretxt").value = user.firstName ?? "";
+      document.getElementById("apellidotxt").value = user.lastName ?? "";
+      document.getElementById("usuariotxt").value = user.username ?? "";
+      document.getElementById("correoElectronicotxt").value = user.email ?? "";
+      document.getElementById("roltxt").value = user.idRol ?? "";
     } catch (err) {
-      Alerts.showToastCloseError('No se pudo cargar el usuario');
+      Alerts.showToastCloseError("No se pudo cargar el usuario");
       console.error(err);
     }
   });
@@ -144,24 +155,31 @@ export function loadUsersTable(users, tab) {
 
 ///Aca llenamos nuestros roles, la funcionalidad esta en page
 export function loadRoles(roles, rolSelect) {
-  roles.forEach(element => {
+  roles.forEach((element) => {
     rolSelect.innerHTML += `
         <option value="${element.idRol}">${element.name}</option>
-      `
+      `;
   });
 }
 
 ///!IMPORTANTE: con el tema del idRol nosotros aca usamos el .value, en el page, pasamos el select entero
 ///Aca hacemos la funcionalidad del insert, su uso esta en page
-export async function insertUser(usertxt, nametxt, lastNametxt, emailtxt, rolId, form) {
+export async function insertUser(
+  usertxt,
+  nametxt,
+  lastNametxt,
+  emailtxt,
+  rolId,
+  form
+) {
   const payload = {
     idRol: rolId.value,
     username: usertxt.value.trim(),
     firstName: nametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
-    userPassword: generateRandomPassword().trim()
-  }
+    userPassword: generateRandomPassword().trim(),
+  };
   try {
     const res = await UserService.insertUser(payload);
     form.reset();
@@ -174,7 +192,15 @@ export async function insertUser(usertxt, nametxt, lastNametxt, emailtxt, rolId,
 }
 
 ///Lo mismo que el insert pero ahora update,
-export async function updateUser(usertxt, nametxt, lastNametxt, emailtxt, roltxt, form, id) {
+export async function updateUser(
+  usertxt,
+  nametxt,
+  lastNametxt,
+  emailtxt,
+  roltxt,
+  form,
+  id
+) {
   const payload = {
     idUser: id.value,
     idRol: roltxt.value,
@@ -182,7 +208,7 @@ export async function updateUser(usertxt, nametxt, lastNametxt, emailtxt, roltxt
     firstName: nametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
-  }
+  };
   try {
     ///Hacemos la peticion
     const res = await UserService.updateUser(payload, id);
@@ -199,8 +225,7 @@ export function renderPagination(current, totalPages, container) {
   ///Aca accedemos a nuestro ul de pagination
   const pagination = document.getElementById("userPagination");
   if (!pagination) return;
-  pagination.innerHTML = "";///Limpiamos la paginacion previa
-
+  pagination.innerHTML = ""; ///Limpiamos la paginacion previa
 
   ///Este es el boton para ir en retroseso
   const prev = document.createElement("li");
@@ -212,7 +237,7 @@ export function renderPagination(current, totalPages, container) {
   prev.addEventListener("click", (e) => {
     e.preventDefault();
     if (current > 0) {
-      currentPage = current - 1;///Retrocede una pagina
+      currentPage = current - 1; ///Retrocede una pagina
       ///Hacemos reload
       reload(container);
     }
@@ -243,22 +268,21 @@ export function renderPagination(current, totalPages, container) {
   next.addEventListener("click", (e) => {
     e.preventDefault();
     if (current < totalPages - 1) {
-      currentPage = current + 1;///Avanza una pagina
+      currentPage = current + 1; ///Avanza una pagina
       reload(container);
     }
   });
   pagination.appendChild(next);
 }
 
-
 ///Funcion para generar contrasenia aleatoria
 function generateRandomPassword(length = 8) {
   const charset =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-    'abcdefghijklmnopqrstuvwxyz' +
-    '0123456789' +
-    '!@#$%^&*()_-+={}[]';
-  let password = '';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    "abcdefghijklmnopqrstuvwxyz" +
+    "0123456789" +
+    "!@#$%^&*()_-+={}[]";
+  let password = "";
   for (let i = 0; i < length; i++) {
     const randIndex = Math.floor(Math.random() * charset.length);
     password += charset[randIndex];
@@ -266,4 +290,3 @@ function generateRandomPassword(length = 8) {
   let castPassword = toString(password);
   return castPassword;
 }
-

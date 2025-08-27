@@ -53,6 +53,40 @@ export async function getAllConsumptions(currentPage = 0, currentSize = 10) {
   }
 }
 
+export async function getAllConsumptionsByFilters(
+  searchName, 
+  searchYear,
+  searchMonth,
+  currentPage = 0,
+  currentSize = 10
+) {
+  try {
+    let params = `?page=${currentPage}&size=${currentSize}`;
+    
+    if (searchName) {
+        params += `&name=${searchName}`;
+    }
+
+    if (searchYear) {
+        params += `&year=${searchYear}`;
+        if (searchMonth) {
+            params += `&month=${searchMonth}`;
+        }
+    }
+
+    const response = await fetch(
+      `${API_URL}apiConsumption/getConsumptionsByFilters` + params
+    );
+    if (!response.ok) {
+      console.error(`Error fetching consumptions: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching consumptions: ", error);
+    throw error;
+  }
+}
+
 export async function insertConsumption(payload) {
   try {
     const response = await fetch(`${API_URL}apiConsumption/insertConsumption`, {
