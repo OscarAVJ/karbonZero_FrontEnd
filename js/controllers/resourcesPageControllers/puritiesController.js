@@ -9,13 +9,31 @@ export async function initPurity(container) {
 let currentPage = 0;
 let currentSize = 10;
 
+export async function setCurrentPage(page) {
+  currentPage = page;
+}
+
 export async function reload(container) {
   if (!container) return;
   try {
-    const purities = await PuritiesService.getAllResourcePurities(
-      currentPage,
-      currentSize
-    );
+    const puritySearch = document.querySelector("#resourcePuritySearch");
+    const searchName = puritySearch.value.trim();
+
+    let purities;
+    if (!searchName) {
+      purities = await PuritiesService.getAllResourcePurities(
+        currentPage,
+        currentSize
+      );
+    } else {
+      purities = await PuritiesService.getAllResourcePuritiesByName(
+        searchName,
+        currentPage,
+        currentSize
+      );
+    }
+
+    console.log(purities)
     const puritiesContainer = container.querySelector("#purityTable");
     loadResourcesPurityTable(purities.content, puritiesContainer);
     renderPagination(purities.number, purities.totalPages, container);
@@ -76,8 +94,7 @@ export function renderPagination(current, totalPages, container) {
 }
 
 export async function renderPuritiesData(container) {
-  let resourcePurities = [];
-
+  let resourcePurities;
   try {
     resourcePurities = await PuritiesService.getAllResourcePurities(
       currentPage,
@@ -107,7 +124,7 @@ export async function renderPuritiesData(container) {
     const ok = await PuritiesService.deleResourcePurity(id);
     if (ok) reload(container);
   });
-  
+
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-purity");
     if (editBtn) {
@@ -130,43 +147,7 @@ function loadResourcesPurityTable(puritites, tab) {
   const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `
-    <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
-          <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
-              <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar">
-          </div>
-          <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Mes
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMes">
-                      <li><a class="dropdown-item" href="#">Enero</a></li>
-                      <li><a class="dropdown-item" href="#">Febrero</a></li>
-                      <li><a class="dropdown-item" href="#">Marzo</a></li>
-                  </ul>
-              </div>
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownTrimestre" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Trimestre
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownTrimestre">
-                      <li><a class="dropdown-item" href="#">Q1</a></li>
-                      <li><a class="dropdown-item" href="#">Q2</a></li>
-                      <li><a class="dropdown-item" href="#">Q3</a></li>
-                  </ul>
-              </div>
-              <button class="kz-button-create" id="addPurity-kz" data-bs-toggle="modal"
-            data-bs-target="#purezaModal">
-                  Crear pureza
-              </button>
-          </div>
-    </div>
-      <div class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
@@ -222,7 +203,7 @@ export async function insertPurity(resourceSelect, puritytxt, form) {
     return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo agregar la pureza ${err}`);
-    return {ok: false};
+    return { ok: false };
   }
 }
 
@@ -238,6 +219,6 @@ export async function updatePurity(resourceSelect, puritytxt, id, form) {
     return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo actualizar la pureza ${err}`);
-    return {ok: false};
+    return { ok: false };
   }
 }

@@ -9,15 +9,25 @@ export async function initMeasure(container) {
 let currentPage = 0;
 let currentSize = 10;
 
+export async function setCurrentPage(page) {
+    currentPage = page;
+}
+
 export async function reload(container) {
   if (!container) return;
   try {
-    const measures = await MeasureService.getAllMeasures(
-      currentPage,
-      currentSize
-    );
+    const measureSearch = document.querySelector("#measureSearch");
+    const searchName = measureSearch.value.trim();
+
+    let measures;
+    if (!searchName) {
+      measures = await MeasureService.getAllMeasures(currentPage, currentSize);
+    } else {
+      measures = await MeasureService.getAllMeasuresByName(searchName, currentPage, currentSize);
+    }
+
     const measuresContainer = container.querySelector("#measureTable");
-    loadMeasures(measures.content, measuresContainer);
+    loadMeasuresTable(measures.content, measuresContainer);
     renderPagination(measures.number, measures.totalPages, container);
   } catch (e) {
     console.error(e);
@@ -104,7 +114,7 @@ export async function renderMeasure(container) {
     const ok = await MeasureService.deleteMeasure(id);
     if (ok) reload(container);
   });
-  
+
   ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-measure");
@@ -127,43 +137,7 @@ function loadMeasuresTable(measures, tab) {
   const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `
-    <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
-          <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
-              <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar">
-          </div>
-          <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Mes
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMes">
-                      <li><a class="dropdown-item" href="#">Enero</a></li>
-                      <li><a class="dropdown-item" href="#">Febrero</a></li>
-                      <li><a class="dropdown-item" href="#">Marzo</a></li>
-                  </ul>
-              </div>
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownTrimestre" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Trimestre
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownTrimestre">
-                      <li><a class="dropdown-item" href="#">Q1</a></li>
-                      <li><a class="dropdown-item" href="#">Q2</a></li>
-                      <li><a class="dropdown-item" href="#">Q3</a></li>
-                  </ul>
-              </div>
-              <button class="kz-button-create" id="addMeasure-kz" data-bs-toggle="modal"
-            data-bs-target="#medidasModal">
-                  Crear medida
-              </button>
-          </div>
-    </div>
-      <div class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
@@ -205,7 +179,7 @@ export async function insertMeasure(nametxt, form) {
     return res;
   } catch {
     Alerts.showToastCloseError(`No se pudo agregar la medida ${err}`);
-    return {ok: false};
+    return { ok: false };
   }
 }
 export async function updateMeasure(idMeasure, nametxt, form) {
@@ -219,6 +193,6 @@ export async function updateMeasure(idMeasure, nametxt, form) {
     return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo actualizar la medida ${err}`);
-    return {ok: false};
+    return { ok: false };
   }
 }

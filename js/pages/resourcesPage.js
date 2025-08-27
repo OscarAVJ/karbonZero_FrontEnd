@@ -219,7 +219,19 @@ export async function render() {
     <ul class="nav nav-tabs mb-3" id="tabList-resource"></ul>
     <div class="tab-content" id="tabContent-resource">
         <div id="resources" class="tab-pane fade show active">
-            <!-- contenido de recursos -->           
+            <!-- búsqueda de recursos -->
+            <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
+                <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="resourceSearch">
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    <button class="kz-button-create" id="addResource-kz" data-bs-toggle="modal" data-bs-target="#resourcesModal">
+                        Crear recursos
+                    </button>
+                </div>
+            </div>        
+            <!-- contenido de recursos -->   
             <div id="resourceTable">
             </div>
             <!-- paginación de recursos -->
@@ -242,7 +254,19 @@ export async function render() {
             </div>
         </div>
         <div id="purity" class="tab-pane fade">
-            <!-- contenido de purezas -->           
+            <!-- búsqueda de purezas -->
+            <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
+                <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="resourcePuritySearch">
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    <button class="kz-button-create" id="addPurity-kz" data-bs-toggle="modal" data-bs-target="#purezaModal">
+                        Crear pureza
+                    </button>
+                </div>
+            </div>       
+            <!-- contenido de purezas -->    
             <div id="purityTable">
             </div>
             <!-- paginación de purezas -->
@@ -265,6 +289,19 @@ export async function render() {
             </div>
         </div>
         <div id="measures" class="tab-pane fade">
+            <!-- búsqueda de medidas -->
+            <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
+                <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="measureSearch">
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    <button class="kz-button-create" id="addMeasure-kz" data-bs-toggle="modal"
+            data-bs-target="#medidasModal">
+                        Crear medida
+                    </button>
+                </div>
+            </div>
             <!-- contenido de medidas -->
             <div id="measureTable">
             </div>
@@ -288,6 +325,19 @@ export async function render() {
             </div>
         </div>
         <div id="measureUnits" class="tab-pane fade">
+            <!-- búsqueda de unidades de medida -->
+            <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
+                <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="measureUnitSearch">
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    <button class="kz-button-create" id="addMeasureUnit-kz" data-bs-toggle="modal"
+            data-bs-target="#unidadesModal">
+                        Crear medida
+                    </button>
+                </div>
+            </div>
             <!-- contenido de unidades de medida -->
             <div id="measureUnitTable">
             </div>
@@ -311,6 +361,19 @@ export async function render() {
             </div>
         </div>
         <div id="conversionUnits" class="tab-pane fade">
+            <!-- búsqueda de unidades de conversion-->
+            <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
+                <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="conversionUnitSearch">
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    <button class="kz-button-create" id="addConversionUnit-kz" data-bs-toggle="modal"
+            data-bs-target="#conversionModal">
+                        Crear conversión
+                    </button>
+                </div>
+            </div>
             <!-- contenido de unidades de conversion-->
             <div id="conversionUnitTable">
             </div>
@@ -340,7 +403,7 @@ export async function render() {
 export async function afterRender() {
   const container = document.getElementById("resources-root");
   await initAllResourcesTabs(container);
-  
+
   await resourceProcess();
   await purityProcess();
   await conversionUnitProcess();
@@ -363,6 +426,14 @@ async function resourceProcess() {
   const modalResource = document.querySelector("#resourcesModal");
   const bdModalResource = bootstrap.Modal.getOrCreateInstance(modalResource);
   const resourceForm = document.querySelector("#resourceForm");
+
+  const resourceSearch = document.querySelector("#resourceSearch");
+  resourceSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      ResourceController.setCurrentPage(0);
+      ResourceController.reload(container);
+    }
+  });
 
   ///Llenamos el select de unidades de medida
   ResourceController.loadMeasureUnits(measureUnits, measureUnitSelect);
@@ -442,6 +513,14 @@ async function purityProcess() {
   const purityBsModal = bootstrap.Modal.getOrCreateInstance(modalPurity);
   const purityForm = document.querySelector("#purityForm");
 
+  const puritySearch = document.querySelector("#resourcePuritySearch");
+  puritySearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      PurityController.setCurrentPage(0);
+      PurityController.reload(container);
+    }
+  });
+
   PurityController.loadResources(resources, resourceSelect);
 
   if (addPuritBtn) {
@@ -500,7 +579,14 @@ async function measureProcess() {
   const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureModal);
   const measureForm = document.querySelector("#measureForm");
 
-  console.log(addMeasure);
+  const measureSearch = document.querySelector("#measureSearch");
+  measureSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      MeasureController.setCurrentPage(0);
+      MeasureController.reload(container);
+    }
+  });
+
   if (addMeasure) {
     addMeasure.addEventListener("click", () => {
       nametxt.value = "";
@@ -551,6 +637,14 @@ async function measureUnitsProcess() {
   const measureUnitsModal = document.querySelector("#unidadesModal");
   const measureBsModal = bootstrap.Modal.getOrCreateInstance(measureUnitsModal);
   const measureUnitsForm = document.querySelector("#measureUnitsForm");
+
+  const measureUnitSearch = document.querySelector("#measureUnitSearch");
+  measureUnitSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      MeasureUnitsController.setCurrentPage(0);
+      MeasureUnitsController.reload(container);
+    }
+  });
 
   MeasureUnitsController.loadMeasures(measureUnits, measureSelect);
 
@@ -615,6 +709,14 @@ async function conversionUnitProcess() {
   const conversionModa = document.querySelector("#conversionModal");
   const conversionBsModal = bootstrap.Modal.getOrCreateInstance(conversionModa);
   const conversionForm = document.querySelector("#conversionForm");
+
+  const conversionSearch = document.querySelector("#conversionUnitSearch");
+  conversionSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      ConversionUnitController.setCurrentPage(0);
+      ConversionUnitController.reload(container);
+    }
+  });
 
   ConversionUnitController.loadInitialUnit(measureUnitsC, initialSelect);
   ConversionUnitController.loadFinalUnits(measureUnitsC, finalSelect);

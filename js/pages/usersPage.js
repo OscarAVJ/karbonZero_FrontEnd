@@ -23,43 +23,10 @@ export function render() {
             type="text"
             class="form-control border-0 bg-transparent"
             placeholder="Buscar"
+            id="userSearch"
           >
         </div>
         <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
-          <div class="dropdown">
-            <button
-              class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3"
-              type="button"
-              id="dropdownMes"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-calendar"></i> Mes
-              <i class="bi bi-chevron-down"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMes">
-              <li><a class="dropdown-item" href="#">Enero</a></li>
-              <li><a class="dropdown-item" href="#">Febrero</a></li>
-              <li><a class="dropdown-item" href="#">Marzo</a></li>
-            </ul>
-          </div>
-          <div class="dropdown">
-            <button
-              class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3"
-              type="button"
-              id="dropdownTrimestre"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-calendar"></i> Trimestre
-              <i class="bi bi-chevron-down"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownTrimestre">
-              <li><a class="dropdown-item" href="#">Q1</a></li>
-              <li><a class="dropdown-item" href="#">Q2</a></li>
-              <li><a class="dropdown-item" href="#">Q3</a></li>
-            </ul>
-          </div>
           <button
             class="kz-button-create"
             id="addUser-kz"
@@ -213,6 +180,14 @@ export async function afterRender() {
   const idHideen = document.querySelector("#idtxt");
   const rolesSelect = document.querySelector("#roltxt");
 
+  const userSearch = document.querySelector("#userSearch");
+  userSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+        userController.setCurrentPage(0);
+        userController.reload(container);
+    }
+  })
+
   ///Aca mandamos a llenar el loadRoles y le pasamos los roles que hemos obtenido asi como el formselect
   userController.loadRoles(roles, rolesSelect);
 
@@ -232,7 +207,7 @@ export async function afterRender() {
   ///Aca ya vinculamos la parte del insert/update con el submit de nuestro formulario, pasamos datos segun sean solicitados
   usersForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-  
+
     if (!usernametxt.value.trim()) {
       Alerts.showToastCloseError("El nombre de usuario es obligatorio");
       return;

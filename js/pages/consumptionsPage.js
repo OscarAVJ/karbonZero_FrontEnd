@@ -13,38 +13,36 @@ export async function render() {
       <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
         <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
           <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-          <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar">
+          <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar" id="consumptionSearch">
         </div>
-        <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
-          <div class="dropdown">
-            <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-              id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-calendar"></i> Mes
-              <i class="bi bi-chevron-down"></i>
+        <div class="d-flex align-items-center gap-3 flex-nowrap ms-auto">
+            <div class="input-group">
+                <span class="input-group-text"">Año: </span>
+                <input type="number" class="form-control" min="1900" max="2200" value="" id="yearSelect">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Mes: </span>
+                <select class="form-select" id="monthSelect" style="max-height: 250px; overflow-y: scroll;">
+                    <option value=""></option>
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+            <button type="button" class="kz-button-create" id="addConsumption-kz" data-bs-toggle="modal" data-bs-target="#consumptionsModal">
+                <i class="bi bi-plus-circle"></i> Crear consumo
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMes">
-              <li><a class="dropdown-item" href="#">Enero</a></li>
-              <li><a class="dropdown-item" href="#">Febrero</a></li>
-              <li><a class="dropdown-item" href="#">Marzo</a></li>
-            </ul>
-          </div>
-          <div class="dropdown">
-            <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-              id="dropdownTrimestre" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-calendar"></i> Trimestre
-              <i class="bi bi-chevron-down"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownTrimestre">
-              <li><a class="dropdown-item" href="#">Q1</a></li>
-              <li><a class="dropdown-item" href="#">Q2</a></li>
-              <li><a class="dropdown-item" href="#">Q3</a></li>
-            </ul>
-          </div>
-          <button type="button" class="kz-button-create" id="addConsumption-kz" data-bs-toggle="modal" data-bs-target="#consumptionsModal">
-            <i class="bi bi-plus-circle"></i> Crear consumo
-          </button>
         </div>
-      </div>
+    </div>
 
       <!-- Modal -->
       <div class="modal fade" id="consumptionsModal" tabindex="-1" role="dialog"
@@ -131,6 +129,11 @@ export function afterRender() {
   consumptionsProcess();
 }
 
+function searchConsumptions(container) {
+  consumptionController.setCurrentPage(0);
+  consumptionController.reload(container);
+}
+
 async function consumptionsProcess() {
   const container = document.getElementById("consumptions-root");
   consumptionController.initConsumption(container);
@@ -150,6 +153,29 @@ async function consumptionsProcess() {
     bootstrap.Modal.getOrCreateInstance(modalConsumption);
   const consumptionForm = document.querySelector("#consumptionsForm");
 
+  const consumptionSearch = document.querySelector("#consumptionSearch");
+  consumptionSearch.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      searchConsumptions(container);
+    };
+  });
+
+  const yearSelect = document.querySelector("#yearSelect");
+  yearSelect.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+        if (yearSelect.value < 0) {
+            Alerts.showToastCloseInfo("El año no puede ser negativo");
+            return;
+        };
+        searchConsumptions(container);
+    };
+  });
+
+  const monthSelect = document.querySelector("#monthSelect");
+  monthSelect.addEventListener("change", (e) => {
+    searchConsumptions(container);
+  })
+
   const resourcesPurities = await getAllResourcePuritiesList();
   consumptionController.loadResourcePurities(resourcesPurities, resourceSelect);
   const measureUnits = await getAllMeasureUnitsList();
@@ -158,8 +184,8 @@ async function consumptionsProcess() {
   if (addConsumptionBtn) {
     addConsumptionBtn.addEventListener("click", () => {
       resourceSelect.disabled = false;
-      resourceSelect.selectedIndex = 0
-      
+      resourceSelect.selectedIndex = 0;
+
       consumptionController.updateConsumptionEntries(
         resourceSelect,
         unitySelect,
@@ -172,7 +198,7 @@ async function consumptionsProcess() {
     });
   }
 
-  if (resourceSelect && puritytxt) {    
+  if (resourceSelect && puritytxt) {
     resourceSelect.addEventListener("change", () => {
       consumptionController.updateConsumptionEntries(
         resourceSelect,

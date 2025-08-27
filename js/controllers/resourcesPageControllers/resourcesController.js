@@ -3,19 +3,36 @@ import * as ResourceService from "../../services/resourcesService.js";
 
 ///Funcion de init
 export async function initResource(container) {
-  renderResourceData(container);
+  await renderResourceData(container);
 }
 
 let currentPage = 0;
 let currentSize = 10;
 
+export async function setCurrentPage(page) {
+  currentPage = page;
+}
+
 export async function reload(container) {
   if (!container) return;
   try {
-    const resources = await ResourceService.getAllResources(
-      currentPage,
-      currentSize
-    );
+    const resourceSearch = document.querySelector("#resourceSearch");
+    const searchName = resourceSearch.value.trim();
+
+    let resources;
+    if (!searchName) {
+      resources = await ResourceService.getAllResources(
+        currentPage,
+        currentSize
+      );
+    } else {
+      resources = await ResourceService.getAllResourcesByName(
+        searchName,
+        currentPage,
+        currentSize
+      );
+    }
+
     const resourcesContainer = container.querySelector("#resourceTable");
     loadResourcesTable(resources.content, resourcesContainer);
     renderResourcePagination(resources.number, resources.totalPages, container);
@@ -77,10 +94,12 @@ export function renderResourcePagination(current, totalPages, container) {
 
 ///Renderizado de elementos
 async function renderResourceData(container) {
-  let resources = [];
-  ///Obtener usuarios
+  let resources;
   try {
-    resources = await ResourceService.getAllResources(currentPage, currentSize);
+      resources = await ResourceService.getAllResources(
+        currentPage,
+        currentSize
+      ); 
   } catch (err) {
     console.error(err);
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
@@ -132,43 +151,7 @@ function loadResourcesTable(resources, tab) {
   const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `
-    <div class="filters-bar d-flex align-items-center gap-3 p-3 mb-3 rounded-3 flex-nowrap" style="background:#f5f5f5;">
-          <div class="input-group search-bar flex-grow-1" style="max-width: 400px;">
-              <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control border-0 bg-transparent" placeholder="Buscar">
-          </div>
-          <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownMes" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Mes
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMes">
-                      <li><a class="dropdown-item" href="#">Enero</a></li>
-                      <li><a class="dropdown-item" href="#">Febrero</a></li>
-                      <li><a class="dropdown-item" href="#">Marzo</a></li>
-                  </ul>
-              </div>
-              <div class="dropdown">
-                  <button class="btn btn-light d-flex align-items-center gap-2 border rounded-3 px-3" type="button"
-                      id="dropdownTrimestre" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-calendar"></i> Trimestre
-                      <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownTrimestre">
-                      <li><a class="dropdown-item" href="#">Q1</a></li>
-                      <li><a class="dropdown-item" href="#">Q2</a></li>
-                      <li><a class="dropdown-item" href="#">Q3</a></li>
-                  </ul>
-              </div>
-              <button class="kz-button-create" id="addResource-kz" data-bs-toggle="modal"
-            data-bs-target="#resourcesModal">
-                  Crear recursos
-              </button>
-          </div>
-    </div>
-      <div class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
@@ -201,7 +184,7 @@ function loadResourcesTable(resources, tab) {
               .join("")}
           </tbody>
         </table>
-    </div>`
+    </div>`;
 }
 
 export function loadMeasureUnits(measureUnits, measureSelect) {
@@ -230,7 +213,7 @@ export async function insertResource(
     return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo agregar el recurso`);
-    return {ok: false};
+    return { ok: false };
   }
 }
 
@@ -254,6 +237,6 @@ export async function updateResource(
     return res;
   } catch (err) {
     Alerts.showToastCloseError(`No se pudo actualizar el recurso`);
-    return {ok: false};
+    return { ok: false };
   }
 }

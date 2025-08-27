@@ -2,7 +2,7 @@ import { APIURL as API_URL } from "../../utils/api_url";
 import * as Alerts from '../../utils/alerts.js'
 
 ///Exporamos la funcion para poder importarla en nuestro controlador
-export async function getUsers(page= 0, size=10) {
+export async function getAllUsers(page= 0, size=10) {
     try {
         ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
         const response = await fetch(`${API_URL}apiUser/getAllUsers?page=${page}&size=${size}`);
@@ -17,6 +17,25 @@ export async function getUsers(page= 0, size=10) {
         console.error(`Error fetching users: ${error}`);
         throw error;
     }
+}
+
+export async function getAllUsersByUsername(searchName, page = 0, size = 10) {
+  try {
+    ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
+    const response = await fetch(
+      `${API_URL}apiUser/getUsersByUsername/${searchName}?page=${page}&size=${size}`
+    );
+    ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
+    if (!response.ok) {
+      console.error(`Error fetching users`);
+    }
+    ///Finalmente retornamos nuestra respuesta en formato json
+    return response.json();
+    ///Ya el catch, supongo que ya se la saben ok
+  } catch (error) {
+    console.error(`Error fetching users: ${error}`);
+    throw error;
+  }
 }
 
 ///Aca pues este es Muy Importante para el put, asi que si su CRUD no lo tiene, haganlo.
