@@ -48,13 +48,32 @@ export async function getUserById(id) {
         const u = await response.json();
         ///lo mismo de arriba
         if (!response.ok) {
-            throw new Error(`Error fetching user`);
+            console.error(`Error fetching user`);
         }
         return u;
         ///Ya lo saben
     } catch (error) {
         console.error(`Error fetching user: ${error}`);
         throw error;
+    }
+}
+
+export async function confirmPassword(idUser, password) {
+    try {
+        const response = await fetch(
+          `${API_URL}apiUser/confirmPassword?idUser=${idUser}&password=${password}`,
+          {
+            method: "POST"
+          }
+        );
+
+        if (!response.ok) {
+            console.error("Error confirming password");
+        }
+        return response.json();
+    } catch (err) {
+        console.error(`Error confirming password: ${err}`);
+        throw err;
     }
 }
 
@@ -82,10 +101,12 @@ export async function insertUser(payload) {
     }
 }
 
+
+
 ///Metodo para acualizar, pero aca le pasamos el id tambien y en el parametro de la Url es importante que sea id.value si no pues no va a funcionar
 export async function updateUser(payload, id) {
     try {
-        const response = await fetch(`${API_URL}apiUser/updateUser/${id.value}`, {
+        const response = await fetch(`${API_URL}apiUser/updateUser/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
