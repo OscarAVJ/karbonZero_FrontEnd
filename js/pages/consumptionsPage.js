@@ -265,7 +265,7 @@ async function consumptionsProcess() {
         quantitytxt,
         date,
         costtxt,
-        "D9086EE4AFFF477C91E20DA876AA1AF5",
+        localStorage.getItem("user"),
         consumptionForm
       );
     } else {
@@ -274,7 +274,7 @@ async function consumptionsProcess() {
         quantitytxt,
         date,
         costtxt,
-        "D9086EE4AFFF477C91E20DA876AA1AF5",
+        localStorage.getItem("user"),
         consumptionForm
       );
     }

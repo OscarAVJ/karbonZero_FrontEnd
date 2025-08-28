@@ -40,6 +40,7 @@ document.getElementById('logout').addEventListener('click', () => {
     
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("isRemembered");
+    localStorage.removeItem("user");
     window.location.href = 'login.html';
 });
 

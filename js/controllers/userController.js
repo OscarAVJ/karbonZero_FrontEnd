@@ -211,7 +211,7 @@ export async function updateUser(
   };
   try {
     ///Hacemos la peticion
-    const res = await UserService.updateUser(payload, id);
+    const res = await UserService.updateUser(payload, id.value);
     form.reset();
     return res;
   } catch (err) {

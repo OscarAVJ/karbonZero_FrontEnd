@@ -37,13 +37,15 @@ document.getElementById("login-button").addEventListener("click", async () => {
 
   const validate = await loginService.validateLogin(email, password);
   if (validate.authenticated) {
-    localStorage.setItem("isAuthenticated", "true");
-
     const remember = document.querySelector("#remenberCheckbox");
     if (remember.checked) {
         localStorage.setItem("isRemembered", "true");
     }
-    
+        
+    localStorage.setItem("isAuthenticated", "true");
+
+    const user = await loginService.getUserByEmail(email);
+    localStorage.setItem("user", user.idUser);
     window.location.href = "index.html";
   } else {
     Alerts.showToastCloseError("Usuario o contraseña incorrectos");

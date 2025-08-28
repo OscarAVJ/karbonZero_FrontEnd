@@ -9,12 +9,25 @@ export async function validateLogin(email, password) {
       }
     );
     if (!response.ok) {
-        console.error("Error validating user");
-    };
+      console.error("Error validating user");
+    }
 
     return response.json();
   } catch (err) {
     console.error(`Error validating user: ${err}`);
+    throw err;
+  }
+}
+
+export async function getUserByEmail(email) {
+  try {
+    const response = await fetch(`${APIURL}apiUser/getUserByEmail/${email}`);
+    if (!response.ok) {
+      console.error("Error fetching user");
+    }
+    return response.json();
+  } catch (err) {
+    console.error(`Error fetching user: ${err}`);
     throw err;
   }
 }
