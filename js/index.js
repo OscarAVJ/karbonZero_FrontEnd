@@ -37,7 +37,9 @@ document.getElementById('logout').addEventListener('click', () => {
             (body.style.opacity = opacity - 0.01) < 0.1 ? open_login() : setTimeout(fade, 1)
         })();
     }, 100);
-    localStorage.removeItem('isAuthenticated');
+    
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("isRemembered");
     window.location.href = 'login.html';
 });
 

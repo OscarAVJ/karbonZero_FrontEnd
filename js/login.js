@@ -1,43 +1,52 @@
-const button = document.getElementById("login-button");
+import * as Alerts from "../utils/alerts.js";
+import * as loginService from "./services/loginService.js";
 
-function open_layout () {
-    window.location.href = "index.html";
-};
+document.addEventListener("DOMContentLoaded", (e) => {
+    if (localStorage.getItem("isRemembered") == "true") {
+      window.location.href = "index.html";
+    }
+})
 
-button.addEventListener("click", e => {
-    open_layout();
-});
-
-
-const password_input = document.getElementById("contraseñatxt")
+const password_input = document.getElementById("contraseñatxt");
 const hide_password = document.getElementById("hide-password");
 const icon = hide_password.getElementsByTagName("i")[0];
 
-
-hide_password.addEventListener("click", e => {
-    if (icon.className == "bi bi-eye-fill") {
-        icon.className = "bi bi-eye-slash-fill";
-        password_input.setAttribute("type", "text");
-    }
-    else {
-        icon.className = "bi bi-eye-fill";
-        password_input.setAttribute("type", "password");
-
-    };
-});
-
-document.getElementById('login-button').addEventListener('click', () => {
-  const usuario = document.getElementById('usuariotxt').value;
-  const contraseña = document.getElementById('contraseñatxt').value;
-    window.location.href = 'index.html';
-
-  if (usuario === 'admin' && contraseña === '1234') {
-    localStorage.setItem('isAuthenticated', 'true');
+hide_password.addEventListener("click", (e) => {
+  if (icon.className == "bi bi-eye-fill") {
+    icon.className = "bi bi-eye-slash-fill";
+    password_input.setAttribute("type", "text");
   } else {
-    alert('Usuario o contraseña incorrectos');
+    icon.className = "bi bi-eye-fill";
+    password_input.setAttribute("type", "password");
   }
 });
-// document.getElementById('login-button').addEventListener('click', () => {
-//   // A futuro podrías validar aquí
-//   window.location.href = 'index.html';
-// });
+
+document.getElementById("login-button").addEventListener("click", async () => {
+  const email = document.getElementById("emailtxt").value.trim();
+  const password = document.getElementById("contraseñatxt").value.trim();
+
+  if (!email) {
+    Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
+    return;
+  }
+
+  if (!password) {
+    Alerts.showToastCloseInfo("La contraseña es obligatoria");
+    return;
+  }
+
+  const validate = await loginService.validateLogin(email, password);
+  if (validate.authenticated) {
+    localStorage.setItem("isAuthenticated", "true");
+
+    const remember = document.querySelector("#remenberCheckbox");
+    if (remember.checked) {
+        localStorage.setItem("isRemembered", "true");
+    }
+    
+    window.location.href = "index.html";
+  } else {
+    Alerts.showToastCloseError("Usuario o contraseña incorrectos");
+  }
+
+});
