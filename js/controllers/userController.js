@@ -69,6 +69,7 @@ async function renderData(container) {
 
   ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
   loadUsersTable(users.content, tabContent);
+  renderPagination(users.number, users.totalPages, container);
 
   const sizeSelector = document.getElementById("itemsSelect");
   sizeSelector.addEventListener("change", () => {

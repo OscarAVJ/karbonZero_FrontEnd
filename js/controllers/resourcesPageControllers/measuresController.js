@@ -10,7 +10,7 @@ let currentPage = 0;
 let currentSize = 10;
 
 export async function setCurrentPage(page) {
-    currentPage = page;
+  currentPage = page;
 }
 
 export async function reload(container) {
@@ -23,7 +23,11 @@ export async function reload(container) {
     if (!searchName) {
       measures = await MeasureService.getAllMeasures(currentPage, currentSize);
     } else {
-      measures = await MeasureService.getAllMeasuresByName(searchName, currentPage, currentSize);
+      measures = await MeasureService.getAllMeasuresByName(
+        searchName,
+        currentPage,
+        currentSize
+      );
     }
 
     const measuresContainer = container.querySelector("#measureTable");
@@ -97,6 +101,7 @@ export async function renderMeasure(container) {
 
   const measuresContainer = document.querySelector("#measureTable");
   loadMeasuresTable(measures.content, measuresContainer);
+  renderPagination(measures.number, measures.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureItemsSelect");

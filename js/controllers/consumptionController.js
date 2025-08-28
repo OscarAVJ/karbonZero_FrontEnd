@@ -100,6 +100,7 @@ export async function renderConsumptionData(container) {
 
   const consumptionsTab = document.getElementById("tabContent");
   loadConsumptionsTable(consumptions.content, consumptionsTab);
+  renderPagination(consumptions.number, consumptions.totalPages, container);
 
   const sizeSelector = document.getElementById("itemsSelect");
   sizeSelector.addEventListener("change", () => {

@@ -11,7 +11,7 @@ let currentPage = 0;
 let currentSize = 10;
 
 export async function setCurrentPage(page) {
-    currentPage = 0;
+  currentPage = 0;
 }
 
 export async function reload(container) {
@@ -108,6 +108,7 @@ export async function renderMeasureUnits(container) {
 
   const measureUnitsContainer = document.querySelector("#measureUnitTable");
   loadMeasureUnits(measures.content, measureUnitsContainer);
+  renderPagination(measureUnits.number, measureUnits.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureUnitItemsSelect");

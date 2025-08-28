@@ -96,10 +96,7 @@ export function renderResourcePagination(current, totalPages, container) {
 async function renderResourceData(container) {
   let resources;
   try {
-      resources = await ResourceService.getAllResources(
-        currentPage,
-        currentSize
-      ); 
+    resources = await ResourceService.getAllResources(currentPage, currentSize);
   } catch (err) {
     console.error(err);
     return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
@@ -108,6 +105,7 @@ async function renderResourceData(container) {
   ///Los mandamos en
   const resourcesContainer = document.querySelector("#resourceTable");
   loadResourcesTable(resources.content, resourcesContainer);
+  renderResourcePagination(resources.number, resources.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#resourceItemsSelect");
