@@ -106,7 +106,6 @@ export async function renderConversionUnits(container) {
 
   const conversionContainer = document.querySelector("#conversionUnitTable");
   loadConversionUnits(conversionUnits.content, conversionContainer);
-  renderPagination(conversions.number, conversions.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#conversionUnitItemsSelect");

@@ -105,7 +105,6 @@ async function renderResourceData(container) {
   ///Los mandamos en
   const resourcesContainer = document.querySelector("#resourceTable");
   loadResourcesTable(resources.content, resourcesContainer);
-  renderResourcePagination(resources.number, resources.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#resourceItemsSelect");

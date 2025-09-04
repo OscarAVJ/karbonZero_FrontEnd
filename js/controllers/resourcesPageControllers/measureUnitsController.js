@@ -108,7 +108,6 @@ export async function renderMeasureUnits(container) {
 
   const measureUnitsContainer = document.querySelector("#measureUnitTable");
   loadMeasureUnits(measures.content, measureUnitsContainer);
-  renderPagination(measureUnits.number, measureUnits.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureUnitItemsSelect");

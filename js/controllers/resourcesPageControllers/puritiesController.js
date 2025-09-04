@@ -107,7 +107,6 @@ export async function renderPuritiesData(container) {
 
   const puritiesContainer = document.querySelector("#purityTable");
   loadResourcesPurityTable(resourcePurities.content, puritiesContainer);
-  renderPagination(purities.number, purities.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#purityItemsSelect");

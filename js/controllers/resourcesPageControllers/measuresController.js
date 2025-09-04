@@ -101,7 +101,6 @@ export async function renderMeasure(container) {
 
   const measuresContainer = document.querySelector("#measureTable");
   loadMeasuresTable(measures.content, measuresContainer);
-  renderPagination(measures.number, measures.totalPages, container);
 
   // Selector de la paginación
   const sizeSelector = document.querySelector("#measureItemsSelect");
