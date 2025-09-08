@@ -1,9 +1,9 @@
-import * as UserService from "../services/userService.js";
-import * as Alerts from "../../utils/alerts.js";
+import * as RolService from "../../services/rolService.js";
+import * as Alerts from "../../../utils/alerts.js";
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 
 ///Nuestro metodo de inicio, lo llamamos en el userPage.js
-export async function init(container) {
+export async function initRol(container) {
   ///Mandamos el contenedor junto con nuestro metodo init
   renderData(container);
 }
@@ -15,29 +15,29 @@ export async function setCurrentPage(page) {
   currentPage = page;
 }
 
-///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de usuarios
+///Aca esta nuestro metodo reload y pues container sera igual al contenedor que le estemos pasando en este caso el final en page va a ser el de roles
 export async function reload(container) {
   ///Si nuestro container es nulo....
   if (!container) return;
   ///Si no pues hacemos una peticion get y le pasamos ese array de usuarios + el tab donde queremos poner la grid
   try {
-    const userSearch = document.querySelector("#userSearch");
-    const searchName = userSearch.value.trim();
+    const rolSearch = document.querySelector("#rolSearch");
+    const searchName = rolSearch.value.trim();
 
-    let users;
+    let roles;
     if (!searchName) {
-      users = await UserService.getAllUsers(currentPage, currentSize);
+      roles = await RolService.getAllRoles(currentPage, currentSize);
     } else {
-      users = await UserService.getAllUsersByUsername(
+      roles = await RolService.getAllRolesByName(
         searchName,
         currentPage,
         currentSize
       );
     }
-    const tabContent = container.querySelector("#tabContent");
-    loadUsersTable(users.content, tabContent);
+    const tabContent = container.querySelector("#rolTable");
+    loadRolesTable(roles.content, tabContent);
     ///Llamamos a renderPagination para que siempre pues vaya cambiando en base a la pagina y numero en el cual se encuentre al hacer reload
-    renderPagination(users.number, users.totalPages, container);
+    renderPagination(roles.number, roles.totalPages, container);
   } catch (e) {
     console.error(e);
   }
@@ -46,32 +46,25 @@ export async function reload(container) {
 ///Funcion para renderizar los datos asi como los eventos de nuestro formulario
 async function renderData(container) {
   ///Variables con nuestro tabList y el contenido(nuestra tabla)
-  const tabList = container.querySelector("#tabList");
-  const tabContent = container.querySelector("#tabContent");
+  const tabContent = container.querySelector("#rolTable");
 
-  let users;
-  ///Llenamos los usuarios
+  let roles;
+  ///Llenamos los roles
   try {
     ///traemos el json en data
-    users = await UserService.getAllUsers(currentPage, currentSize);
+    roles = await RolService.getAllRoles(currentPage, currentSize);
     ///Llamamos al renderPagination para que carge cuando inicie todo
-    renderPagination(users.number, users.totalPages, container);
+    renderPagination(roles.number, roles.totalPages, container);
   } catch (error) {
     console.error(error);
-    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`);
+    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los roles.</p>`);
   }
 
-  ///Aca definimos nuestros tabs y de igual forma a donde estan dirigidos, puedes definir varios en page, y cada uno debe tener su div con ru ID
-  tabList.innerHTML = `
-        <li class="nav-item d-flex">
-            <a class="nav-link active" data-bs-toggle="tab" href="#usuarios">Usuarios</a>
-        </li>`;
-
   ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
-  loadUsersTable(users.content, tabContent);
-  renderPagination(users.number, users.totalPages, container);
+  loadRolesTable(roles.content, tabContent);
+  renderPagination(roles.number, roles.totalPages, container);
 
-  const sizeSelector = document.getElementById("itemsSelect");
+  const sizeSelector = document.getElementById("itemsRolSelect");
   sizeSelector.addEventListener("change", () => {
     currentSize = parseInt(sizeSelector.value);
     currentPage = 0;
@@ -80,50 +73,44 @@ async function renderData(container) {
 
   ///Aca definimos que hace nuestro boton de eliminar
   container.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".btn-delete-user");
+    const btn = e.target.closest(".btn-delete-rol");
     if (!btn) return;
     const id = btn.dataset.id;
-    const ok = await UserService.deleteUser(id);
+    const ok = await RolService.deleteRol(id);
     ///En caso de que nos devuelva un true recargamos
     if (ok) await reload(container);
   });
 
   ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
   container.addEventListener("click", async (e) => {
-    const editBtn = e.target.closest(".btn-edit-user");
+    const editBtn = e.target.closest(".btn-edit-rol");
     if (!editBtn) return;
     const id = editBtn.dataset.id;
     try {
-      const user = await UserService.getUserById(id);
-      document.getElementById("idtxt").value = user.idUser ?? "";
-      document.getElementById("nombretxt").value = user.firstName ?? "";
-      document.getElementById("apellidotxt").value = user.lastName ?? "";
-      document.getElementById("usuariotxt").value = user.username ?? "";
-      document.getElementById("correoElectronicotxt").value = user.email ?? "";
-      document.getElementById("roltxt").value = user.idRol ?? "";
+      const rol = await RolService.getRolById(id);
+      document.querySelector("#rolIdTxt").value = rol.idRol ?? "";
+      document.querySelector("#rolNameTxt").value = rol.name ?? "";
+      document.querySelector("#levelSelect").value = rol.status ?? "";
     } catch (err) {
-      Alerts.showToastCloseError("No se pudo cargar el usuario");
+      Alerts.showToastCloseError("No se pudo cargar el rol");
       console.error(err);
     }
   });
 }
 
 ///Aca cargamos nuestros usuarios, nada nuevo, eso si en lugar del id mandamos un numero, por que pues si, usamos RAW, xdnt
-export function loadUsersTable(users, tab) {
+export function loadRolesTable(users, tab) {
   ///EL base index nos sirve para que siempre se guarden las filas que llevamos en pase a la pagina y su tamaño
   const baseIndex = currentPage * currentSize;
   tab.innerHTML = "";
   tab.innerHTML = `
-    <div id="usuarios" class="tab-pane fade show active">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Correo</th>
+                <th>Nivel</th>
                 <th>Acciones</th>
             </tr>
           </thead>
@@ -133,16 +120,14 @@ export function loadUsersTable(users, tab) {
                 (u, i) => `
               <tr>
                 <td>${baseIndex + i + 1}</td>
-                <td>${u.firstName} ${u.lastName}</td>
-                <td>${u.username}</td>
-                <td>${u.nameRol}</td>
-                <td>${u.email}</td>
+                <td>${u.name}</td>
+                <td>${u.status == "0" ? "Lector" : "Administrador"}</td>
                 <td>
-                    <button class="btn btn-sm btn-success me-1 btn-edit-user" data-id="${
-                      u.idUser
-                    }" data-bs-toggle="modal" data-bs-target="#usersModal"><i class="bi bi-pencil-fill"></i></button>
-                    <button class="btn btn-sm btn-danger btn-delete-user" data-id="${
-                      u.idUser
+                    <button class="btn btn-sm btn-success me-1 btn-edit-rol" data-id="${
+                      u.idRol
+                    }" data-bs-toggle="modal" data-bs-target="#rolModal"><i class="bi bi-pencil-fill"></i></button>
+                    <button class="btn btn-sm btn-danger btn-delete-rol" data-id="${
+                      u.idRol
                     }"><i class="bi bi-trash-fill"></i></button>
                 </td>
               </tr>`
@@ -150,73 +135,50 @@ export function loadUsersTable(users, tab) {
               .join("")}
           </tbody>
         </table>
-      </div>
     </div>`;
 }
 
-///Aca llenamos nuestros roles, la funcionalidad esta en page
-export function loadRoles(roles, rolSelect) {
-  roles.forEach((element) => {
-    rolSelect.innerHTML += `
-        <option value="${element.idRol}">${element.name}</option>
-      `;
-  });
-}
 
-///!IMPORTANTE: con el tema del idRol nosotros aca usamos el .value, en el page, pasamos el select entero
 ///Aca hacemos la funcionalidad del insert, su uso esta en page
-export async function insertUser(
-  usertxt,
+export async function insertRol(
   nametxt,
-  lastNametxt,
-  emailtxt,
-  rolId,
+  levelSelect,
   form
 ) {
   const payload = {
-    idRol: rolId.value,
-    username: usertxt.value.trim(),
-    firstName: nametxt.value.trim(),
-    lastName: lastNametxt.value.trim(),
-    email: emailtxt.value.trim(),
-    userPassword: generateRandomPassword().trim(),
+    name: nametxt.value.trim(),
+    status: levelSelect.value.trim()
   };
   try {
-    const res = await UserService.insertUser(payload);
+    const res = await RolService.insertRol(payload);
     form.reset();
     return res;
   } catch (err) {
-    Alerts.showToastCloseError(`No se pudo agregar al usuario ${err}`);
+    Alerts.showToastCloseError(`No se pudo agregar al rol ${err}`);
     ///Retornamos un false
     return { ok: false };
   }
 }
 
 ///Lo mismo que el insert pero ahora update,
-export async function updateUser(
-  usertxt,
+export async function updateRol(
   nametxt,
-  lastNametxt,
-  emailtxt,
-  roltxt,
+  levelSelect,
   form,
   id
 ) {
   const payload = {
-    idUser: id.value,
-    idRol: roltxt.value,
-    username: usertxt.value.trim(),
-    firstName: nametxt.value.trim(),
-    lastName: lastNametxt.value.trim(),
-    email: emailtxt.value.trim(),
+    idRol: id.value.trim(),
+    name: nametxt.value.trim(),
+    status: levelSelect.value.trim(),
   };
   try {
     ///Hacemos la peticion
-    const res = await UserService.updateUser(payload, id.value);
+    const res = await RolService.updateRol(payload, id.value);
     form.reset();
     return res;
   } catch (err) {
-    Alerts.showToastCloseError("No se pudo actualizar el usuario");
+    Alerts.showToastCloseError("No se pudo actualizar el rol");
     ///Retornamos un false
     return { ok: false };
   }
@@ -224,7 +186,7 @@ export async function updateUser(
 
 export function renderPagination(current, totalPages, container) {
   ///Aca accedemos a nuestro ul de pagination
-  const pagination = document.getElementById("userPagination");
+  const pagination = document.getElementById("rolPagination");
   if (!pagination) return;
   pagination.innerHTML = ""; ///Limpiamos la paginacion previa
 
@@ -276,18 +238,3 @@ export function renderPagination(current, totalPages, container) {
   pagination.appendChild(next);
 }
 
-///Funcion para generar contrasenia aleatoria
-function generateRandomPassword(length = 8) {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-    "abcdefghijklmnopqrstuvwxyz" +
-    "0123456789" +
-    "!@#$%^&*()_-+={}[]";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randIndex];
-  }
-  let castPassword = toString(password);
-  return castPassword;
-}
