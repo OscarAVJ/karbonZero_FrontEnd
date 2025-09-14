@@ -23,7 +23,7 @@ export async function startRouter() {
             <div class="row align-items-center">
                 <div class="col-md-6 order-md-2">
                     <div class="lc-block">
-                        <img src="../assets/imgs/BoredParrot.png"></img>
+                        <img class="img-fluid" src="../assets/imgs/BoredParrot.png"></img>
                     </div>
                 </div>
                 <div class="col-md-6 text-center text-md-start ">

@@ -159,9 +159,18 @@
     overflow-x: auto;
     max-width: 100%;
 }
-
+.main-scroll {
+  height: 100vh;          
+  overflow-y: auto;
+}
 @media (max-width: 768px) {
     .filters-bar .dropdown {
         display: none !important;
+    }
+}
+
+@media(max-widht:576px){
+    .dropdown-item::before{
+        transform: rotate(-90deg);
     }
 }
