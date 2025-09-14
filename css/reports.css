@@ -59,3 +59,17 @@
     background-color: #f25c5c;
     border-color: #f25c5c;
 }
+.cell [contenteditable="true"] {
+  outline: none;      
+  border: none;       
+  background: transparent;
+}
+.cell [contenteditable="true"]:focus {
+  background-color: #f8f9fa; 
+  border-radius: 4px;
+}
+@media print {
+  .controls {
+    display: none !important;
+  }
+}
