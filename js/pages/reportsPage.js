@@ -1,4 +1,4 @@
-import { addCellByNumber, exportToExcel, exportToPdf, loadResouceSelect, loadResourcesTable, loadTable, renderNotebook, validateValues, validateValuesToImport } from "../controllers/reportsController";
+import { addCellByNumber, exportToExcel, exportToPdf, exportToWord, loadResouceSelect, loadResourcesTable, loadTable, renderNotebook, validateValues, validateValuesToImport } from "../controllers/reportsController";
 import { getAllConsumptionsByFiltersMonth } from "../services/consumptionService";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
 import * as Alerts from '../../utils/alerts.js'
@@ -37,17 +37,20 @@ export async function render() {
                 </ul>
               </li>
               <li>
-                <a class="nav-item text-decoration-none"><button class="btn btn-outline-primary d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasInsertTable" aria-controls="offCanvasInsertTable"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-table-icon lucide-table"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>Insertar tabla</button>
+                <a class="nav-item text-decoration-none"><button class="btn btn-outline-secondary d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasInsertTable" aria-controls="offCanvasInsertTable"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-table-icon lucide-table"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>Insertar tabla</button>
                 </a>
               </li>                   
               <li>
-                  <button class="btn btn-outline-danger d-flex align-items-center gap-2" id="exportToPdf"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Exportar a pdf</button>
-              </li>  
+                  <button class="btn btn-outline-danger d-flex align-items-center gap-2" id="exportToPdf"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Exportar a PDF</button>
+              </li>
+              <li>
+                <a class="nav-item text-decoration-none"><button id="exportToWordBtn"class="btn btn-outline-primary d-flex align-items-center gap-2" type="button" aria-controls="offCanvasFilterData"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-type-icon lucide-file-type"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 13v-1h6v1"/><path d="M12 12v6"/><path d="M11 18h2"/></svg>Exportar a Word</button>
+                </a>
+              </li>    
               <li>
                 <a class="nav-item text-decoration-none"><button class="btn btn-outline-success d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasFilterData" aria-controls="offCanvasFilterData"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sheet-icon lucide-sheet"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="9" x2="9" y1="9" y2="21"/><line x1="15" x2="15" y1="9" y2="21"/></svg>Generar Excel</button>
                 </a>
-              </li>
-                     
+              </li>             
             </ul>
           </div>
         </div>
@@ -218,6 +221,8 @@ export async function afterRender() {
   const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
   const toastInput = document.getElementById('toastValue');
   const firstLoadNotebook = document.getElementById('firstLoadNotebook');
+  const exportToWordBtn = document.getElementById('exportToWordBtn');
+
 
   const notebook = document.getElementById('notebook');
   const exportToPdfBtn = document.getElementById('exportToPdf');
@@ -339,33 +344,43 @@ export async function afterRender() {
     toast.hide();
   });
 
+  ///Evento de exportar a excel
   exportExcel.addEventListener('click', async () => {
     await exportToExcel(initialDate, lastDate, resourceSelected, resources)
   });
+  ///Evento de exportar a pdf
   exportToPdfBtn.addEventListener('click', async () => {
     console.log(previewModalBody)
-    exportToPdf(notebook, previewModalBody, notebook);
+    exportToPdf(notebook);
+  });
+  ///Evento de exportar a word
+  exportToWordBtn.addEventListener('click', async () => {
+    console.log(previewModalBody)
+    exportToWord(notebook);
   });
 
-
+  ///Aca lo que hacemos el obtener lo que se esta mandando a buscar para incrustarlo en el notebook despues con la funcion de importTable
   async function getTableDataset(resource, init, end) {
     const data = await getAllConsumptionsByFiltersMonth(resource, init, end);
     if (data.length === 0) return null;
+    ///Obtenemos la data
     const dataset = {
       title: `Consumos ${resource ?? ""} (${init}–${end})`,
       columns: ['#', 'Recurso', 'Cantidad', 'Fecha', 'Costo'],
+      ///Iteramos las filas obtenidas
       rows: data.map((c, i) => [
         i + 1,
         c.resourcePurityName,
         c.quantity + " " + c.resourceMeasureUnit,
         (c.consumptionDate || '').split(' ')[0],
-        "$"+c.cost
+        "$" + c.cost
       ])
     };
     console.table(dataset)
     return dataset;
   }
 
+  ///Aca es el evento para insertar las tablas
   importTableBtn.addEventListener('click', async () => {
     tableToImport.innerHTML = "";
 
@@ -380,14 +395,19 @@ export async function afterRender() {
       return;
     }
 
+    ///Obtenemos la data
     const dataset = await getTableDataset(resourceName, initDate, finalDate);
     if (!dataset) {
       Alerts.showToastCloseInfo("No hay datos para los filtros seleccionados");
       return;
     }
+
+    ///Le pasamos el tipo de dato en este caso tabla, la data y contenedor osea el notebook
     addCellByNumber(10, dataset, notebook);
   });
 
+
+  ///Aca le asignamos a cada elemento desde el h1-h6 y el p que puedan abrir el toast
   if (toastTrigger1) {
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
     toastTrigger1.addEventListener('click', () => { toastBootstrap.show() })
@@ -418,6 +438,7 @@ export async function afterRender() {
   }
 }
 
+///Aca el loadCss
 function loadCSS() {
   const id = 'reports-css';
   if (!document.getElementById(id)) {
