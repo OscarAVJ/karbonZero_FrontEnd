@@ -26,11 +26,11 @@ export async function render() {
                     <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Encabezados</a>
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" id="liveToastBtnH1" data-number="1">H1</a></li>
-                      <li><a class="dropdown-item" id="liveToastBtnH2" data-number="2" data-number="2">H2</a></li>
-                      <li><a class="dropdown-item" id="liveToastBtnH3" data-number="3" data-number="3">H3</a></li>
-                      <li><a class="dropdown-item" id="liveToastBtnH4" data-number="4" data-number="4">H4</a></li>
-                      <li><a class="dropdown-item" id="liveToastBtnH5" data-number="5" data-number="5">H5</a></li>
-                      <li><a class="dropdown-item" id="liveToastBtnH6" data-number="6" data-number="6">H6</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH2" data-number="2">H2</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH3" data-number="3" >H3</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH4" data-number="4">H4</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH5" data-number="5" >H5</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH6" data-number="6">H6</a></li>
                     </ul>
                   </li>
                   <li><a class="dropdown-item" id="liveToastBtnP" data-number="7">Texto</a></li>
@@ -359,7 +359,7 @@ export async function afterRender() {
         c.resourcePurityName,
         c.quantity + " " + c.resourceMeasureUnit,
         (c.consumptionDate || '').split(' ')[0],
-        c.cost
+        "$"+c.cost
       ])
     };
     console.table(dataset)
