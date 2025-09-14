@@ -1,122 +1,421 @@
+import { addCellByNumber, exportToExcel, exportToPdf, loadResouceSelect, loadResourcesTable, loadTable, renderNotebook, validateValues, validateValuesToImport } from "../controllers/reportsController";
+import { getAllConsumptionsByFiltersMonth } from "../services/consumptionService";
+import { getAllResourcePuritiesList } from "../services/puritiesServices";
+import * as Alerts from '../../utils/alerts.js'
+
 export async function render() {
   loadCSS();
   return `
+  <div class="main-scroll">
     <div class="py-4">
       <h2 class="general-title">Reportes</h2>
-
-      <div class="advanced-filters-container p-4">
-        <h3 class="mb-4">Filtros avanzados</h3>
-        <div class="d-flex flex-wrap justify-content-start align-items-end gap-4 mb-3">
-          <div>
-            <label class="form-label">Recurso</label>
-            <div class="dropdown">
-              <button class="btn btn-outline d-flex align-items-center gap-2 px-3 rounded-3"
-                type="button" id="dropdownRecurso" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-box"></i> Recurso
-                <i class="bi bi-chevron-down ms-1"></i>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownRecurso">
-                <li><a class="dropdown-item" href="#">Agua</a></li>
-                <li><a class="dropdown-item" href="#">Electricidad</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <label class="form-label">Tipo de documento</label>
-            <div class="dropdown">
-              <button class="btn btn-outline d-flex align-items-center gap-2 px-3 rounded-3"
-                type="button" id="dropdownDocumento" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-file-earmark"></i> Tipo de documento
-                <i class="bi bi-chevron-down ms-1"></i>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownDocumento">
-                <li><a class="dropdown-item" href="#">PDF</a></li>
-                <li><a class="dropdown-item" href="#">Excel</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
-            <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
-              <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaInicio"
-                style="min-width: 140px; font-size: 0.9rem;">
-            </div>
-          </div>
-
-          <div>
-            <label for="fechaFin" class="form-label">Fecha de Finalización</label>
-            <div class="d-flex align-items-center border rounded-3 px-3 py-2" style="height: 45px;">
-              <input type="date" class="form-control border-0 p-0 shadow-none" id="fechaFin"
-                style="min-width: 140px; font-size: 0.9rem;">
-            </div>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top z-0">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav gap-2">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-type-icon lucide-type"><path d="M12 4v16"/><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M9 20h6"/></svg>
+                   Agregar elemento
+                </a>
+                <ul class="dropdown-menu" id="dropdown-menu-main">
+                  <li>
+                    <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Encabezados</a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" id="liveToastBtnH1" data-number="1">H1</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH2" data-number="2" data-number="2">H2</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH3" data-number="3" data-number="3">H3</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH4" data-number="4" data-number="4">H4</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH5" data-number="5" data-number="5">H5</a></li>
+                      <li><a class="dropdown-item" id="liveToastBtnH6" data-number="6" data-number="6">H6</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="dropdown-item" id="liveToastBtnP" data-number="7">Texto</a></li>
+                </ul>
+              </li>
+              <li>
+                <a class="nav-item text-decoration-none"><button class="btn btn-outline-primary d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasInsertTable" aria-controls="offCanvasInsertTable"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-table-icon lucide-table"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>Insertar tabla</button>
+                </a>
+              </li>                   
+              <li>
+                  <button class="btn btn-outline-danger d-flex align-items-center gap-2" id="exportToPdf"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Exportar a pdf</button>
+              </li>  
+              <li>
+                <a class="nav-item text-decoration-none"><button class="btn btn-outline-success d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasFilterData" aria-controls="offCanvasFilterData"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sheet-icon lucide-sheet"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="9" x2="9" y1="9" y2="21"/><line x1="15" x2="15" y1="9" y2="21"/></svg>Generar Excel</button>
+                </a>
+              </li>
+                     
+            </ul>
           </div>
         </div>
-      </div>
-
-      <div class="advanced-filters-container mt-4">
-        <h3 class="mb-4">Resumen</h3>
-
-        <div class="row">
-          <div class="col-md-3 d-flex flex-column gap-2">
-            <h5 class="fw-bold">Recursos:</h5>
-            <div>
-              <p>Agua</p>
-              <p>Gasolina</p>
-              <p>Gasolina</p>
-              <p>Diesel</p>
-            </div>
+      </nav>
+      <section>
+        <div class="container my-3">
+          <div id="notebook">
           </div>
-
-          <div class="col-md-3 d-flex flex-column gap-2">
-            <h5 class="fw-bold">Cantidad:</h5>
-            <div>
-              <p>Agua</p>
-              <p>Gasolina</p>
-              <p>Gasolina</p>
-              <p>Diesel</p>
+        </div>
+      </section>
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header d-flex justify-content-end">
+              <strong class="me-auto">Agrega tu contenido</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-          </div>
-
-          <div class="col-md-6 d-flex flex-column gap-2">
-            <h5 class="fw-bold">Opciones de creación:</h5>
-            <div class="row">
-              <div class="col-6 d-flex flex-column gap-2">
-                <div class="form-check custom-checkbox">
-                  <input class="form-check-input" type="checkbox" id="gastosMonetarios">
-                  <label class="form-check-label" for="gastosMonetarios">Incluir gastos monetarios</label>
-                </div>
-                <div class="form-check custom-checkbox">
-                  <input class="form-check-input" type="checkbox" id="co2">
-                  <label class="form-check-label" for="co2">Incluir toneladas de CO2 producidas</label>
-                </div>
-                <div class="form-check custom-checkbox">
-                  <input class="form-check-input" type="checkbox" id="totales">
-                  <label class="form-check-label" for="totales">Incluir totales</label>
-                </div>
-              </div>
-              <div class="col-6 d-flex flex-column gap-2">
-                <div class="form-check custom-checkbox">
-                  <input class="form-check-input" type="checkbox" id="agrupar">
-                  <label class="form-check-label" for="agrupar">Agrupar registros de un mismo recurso</label>
-                </div>
-                <div class="form-check custom-checkbox checkbox-danger">
-                  <input class="form-check-input" type="checkbox" id="grafico">
-                  <label class="form-check-label" for="grafico">Presentar como gráfico de barras</label>
-                </div>
+            <div class="toast-body">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="toastValue"placeholder="Agrega tu contendio" aria-label="Recipients username" aria-describedby="btn-create-element">
+              <button class="btn btn-outline-success" type="button" data-bs-dismiss="toast" id="btn-create-element"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-horizontal-icon lucide-send-horizontal"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/><path d="M6 12h16"/></svg></button>
               </div>
             </div>
           </div>
         </div>
+        
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offCanvasFilterData" aria-labelledby="offcanvasWithBothOptionsLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Filtros</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body container">
+            <p>Crea tablas en base a los filtros que selecciones.</p>
+              <div class="d-flex align-items-center gap-2">
+                <button id="exportExcelBtn"class="btn btn-outline-success d-flex aling-items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sheet-icon lucide-sheet"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="9" x2="9" y1="9" y2="21"/><line x1="15" x2="15" y1="9" y2="21"/></svg>Exportar a Excel</button>
+                <button type="button" id="previewBtn" class="btn btn-outline-primary d-flex aling-items-center gap-2" data-bs-toggle="modal" data-bs-target="#previewTable">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>Vista previa
+                </button>
+              </div>
 
-        <button type="button" class="kz-button-create mt-4">Generar reporte</button>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <div>
+                  <label for="fechaInicioReporte">Fecha inicio</label>
+                  <input id="fechaInicioReporte" class="form-control" type="date" />                
+                </div>
+                <div>
+                  <label for="fechaFinReporte">Fecha fin</label>
+                  <input id="fechaFinReporte" class="form-control" type="date" />                
+                </div>                
+              </div>
+              <div class="row mt-2">
+                <div class="col-8">
+                  <label for="selectResourceReport" class="form-label">Recurso</label>
+                  <select class="form-select" id="selectResourceReport" aria-label="Default select example">
+                    <option value="" disabled selected>Selecciona un recurso para filtrar</option>
+                  </select>
+                </div>
+                <div class="col-4 d-flex align-items-end">
+                  <button type="button" id="addResourceReport" 
+                          class="btn btn-outline-success d-flex align-items-center gap-2">
+                    Agregar
+                  </button>
+                </div>
+              </div>
+              <p class="mb-2 mt2">Agrega los recursos que quieres ver en tu excel</p>
+              <div class="table-responsive mt-2">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                        <th>Recurso</th>
+                        <th>Accion</th>
+                    </tr>
+                  </thead>
+                  <tbody id="TableToSelectResources">
+
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offCanvasInsertTable" aria-labelledby="offcanvasWithBothOptionsLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Filtros</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body container">
+            <p>Importa tablas a tu pagina en base a los filtros que selecciones.</p>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <div>
+                  <label for="fechaInicioReporte2">Fecha inicio</label>
+                  <input id="fechaInicioReporte2" class="form-control" type="date" />                
+                </div>
+                <div>
+                  <label for="fechaFinReporte2">Fecha fin</label>
+                  <input id="fechaFinReporte2" class="form-control" type="date" />                
+                </div>                
+              </div>
+              <div class="form-check m-2">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                  Checked checkbox
+                </label>
+              </div>
+              <div class="row mt-2">
+                <div class="col-8">
+                  <label for="selectResourceReport2" class="form-label">Recurso</label>
+                  <select class="form-select" id="selectResourceReport2" aria-label="Default select example">
+                    <option value="" selected>Selecciona un recurso para filtrar</option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <button id="importTableBtn"class="btn btn-outline-success d-flex aling-items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-import-icon lucide-import"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/></svg>Insertar</button>
+                <button type="button" id="previewBtn2" class="btn btn-outline-primary d-flex aling-items-center gap-2" data-bs-toggle="modal" data-bs-target="#previewTable">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>Vista previa
+                </button>
+              </div>
+              <div class="d-none table-responsive mt-2" id="loadTableToImport">
+                
+            </div>
+          </div>
+        </div>      
+      <div class="modal modal-dialog-center fade" id="previewTable" tabindex="-2" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Vista previa</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="previewModalBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
   `;
 }
+export async function afterRender() {
+  ///Referencia a los controles que abren un toast
+  const toastTrigger1 = document.querySelector('#liveToastBtnH1')
+  const toastTrigger2 = document.querySelector('#liveToastBtnH2')
+  const toastTrigger3 = document.querySelector('#liveToastBtnH3')
+  const toastTrigger4 = document.querySelector('#liveToastBtnH4')
+  const toastTrigger5 = document.querySelector('#liveToastBtnH5')
+  const toastTrigger6 = document.querySelector('#liveToastBtnH6')
+  const toastTriggerP = document.querySelector('#liveToastBtnP')
 
-export function afterRender() {
+  ///Referencia a MUCHOS controles, creo que los nombres son lo suficiente claros 
+  const toastLiveExample = document.getElementById('liveToast')
+  const previewBtn = document.getElementById('previewBtn');
+  const previewBtn2 = document.getElementById('previewBtn2');
+  const tableToImport = document.getElementById('loadTableToImport')
+  const exportExcel = document.getElementById('exportExcelBtn');
+  const initialDate = document.getElementById('fechaInicioReporte')
+  const lastDate = document.getElementById('fechaFinReporte')
+  const initialDate2 = document.getElementById('fechaInicioReporte2')
+  const lastDate2 = document.getElementById('fechaFinReporte2')
+  const resourceSelected = document.getElementById('selectResourceReport')
+  const resourceSelected2 = document.getElementById('selectResourceReport2')
+  const importTableBtn = document.getElementById('importTableBtn')
+  const previewModalBody = document.getElementById('previewModalBody')
+  const addResourceBtn = document.getElementById('addResourceReport')
+  const toastEl = document.getElementById('liveToast');
+  const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+  const toastInput = document.getElementById('toastValue');
+  const firstLoadNotebook = document.getElementById('firstLoadNotebook');
+
+  const notebook = document.getElementById('notebook');
+  const exportToPdfBtn = document.getElementById('exportToPdf');
+  const tableToSelectResource = document.getElementById('TableToSelectResources');
+
+  ///Inicializamos nuestro "cuaderno" vacio, osea que le pasamos los valores iniciales de notebook
+  renderNotebook(notebook);
+
+  ///Llenamos los 2 dropdowns, uno es el de exportar a excel y el otro de importar tabla
+  const data = await getAllResourcePuritiesList();
+
+  loadResouceSelect(data, resourceSelected);
+  loadResouceSelect(data, resourceSelected2);
+
+  ///Iniamos un array de recursos
+  let resources = [];
+
+  ///TODO: Hacer que esto sirva
+  tableToSelectResource.addEventListener('click', (e) => {
+    const deleteSelectedResource = e.target.closest(".btn-delete-resourceReport");
+    if (!deleteSelectedResource) return;
+    console.log('i am here')
+    const name = deleteSelectedResource.dataset.name;
+
+    const index = resources.findIndex(r => r.nameR === name);
+
+    if (index !== -1) {
+      resources.splice(index, 1);
+      loadResourcesTable(tableToSelectResource, resources.nameR);
+    }
+  });
+
+  ///Agregamos un registro a nuestra tabla (resources)
+  addResourceBtn.addEventListener('click', () => {
+    const value = resourceSelected.value?.trim();
+    if (!value) return;
+    ///Esto sera el valor de la columna name de nuestro tabla
+    const item = { nameR: value };
+    resources.push(item);
+    console.table(item)
+    ///Aca pueden ver como se renderiza la tabla
+    loadResourcesTable(tableToSelectResource, item);
+  });
+
+  ///Evento para visualizar previamente la informacion que se enviara a el excel
+  previewBtn.addEventListener('click', async () => {
+    previewModalBody.innerHTML = "";
+    const init = initialDate.value.split("-");
+    const final = lastDate.value.split("-");
+    const initDate = `${init[2]}/${init[1]}/${init[0]}`
+    const finalDate = `${final[2]}/${final[1]}/${final[0]}`
+    const resourceName = resourceSelected.value;
+
+    ///Validamos que los datos si esten
+    if (validateValues(initialDate.value, lastDate.value, resourceSelected.value) === false) {
+      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
+      return;
+    }
+    ///Creamos un elemento div
+    const container = document.createElement('div');
+    ///Posteriormente al body del modal le metemos ese div adentro
+    previewModalBody.appendChild(container)
+    ///Load
+    await loadTable(resourceName, initDate, finalDate, container);
+  });
+
+  ///Evento para visualizar previamente la informacion que se enviara al doc (contenedor de la informacion para pdf)
+  previewBtn2.addEventListener('click', async () => {
+    previewModalBody.innerHTML = "";
+    const init = initialDate2.value.split("-");
+    const final = lastDate2.value.split("-");
+    const initDate = `${init[2]}/${init[1]}/${init[0]}`
+    const finalDate = `${final[2]}/${final[1]}/${final[0]}`
+    const resourceName = resourceSelected2.value;
+
+    ///Validamos
+    if (validateValues(initialDate2.value, lastDate2.value, resourceSelected2.value) === false) {
+      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
+      return;
+    }
+    ///Lo mismo que en el de arriba
+    const container = document.createElement('div');
+    previewModalBody.appendChild(container)
+    await loadTable(resourceName, initDate, finalDate, container);
+  });
+
+
+
+  ///iniciamos nuestro selected number
+  let selectedNumber = null;
+
+  ///Aca se maneja el evento del select de los elementos
+  document.querySelector('#dropdown-menu-main').addEventListener('click', (e) => {
+    ///Accedemos al data-number, propiedad a la cual le asignamos valor desde render
+    const item = e.target.closest('[data-number]');
+    if (!item) return;
+    ///Y pues aca
+    selectedNumber = item.dataset.number;
+    toast.show();
+    toastInput.focus();
+  });
+
+  ///Este es el boton que tiene el popover, es el que crea los elementos
+  document.getElementById('btn-create-element').addEventListener('click', () => {
+    const text = toastInput.value.trim();
+    if (!text) {
+      Alerts.showToastCloseInfo('Escribe algo en el contenido')
+      return;
+    }
+
+    ///Lo agregamos a nuestro "cuaderno" con el formato
+    addCellByNumber(selectedNumber, text, notebook);
+
+    ///Limpiamos el toast
+    toastInput.value = '';
+
+    ///SelectedNumber vuelve a ser null
+    selectedNumber = null;
+    toast.hide();
+  });
+
+  exportExcel.addEventListener('click', async () => {
+    await exportToExcel(initialDate, lastDate, resourceSelected, resources)
+  });
+  exportToPdfBtn.addEventListener('click', async () => {
+    console.log(previewModalBody)
+    exportToPdf(notebook, previewModalBody, notebook);
+  });
+
+
+  async function getTableDataset(resource, init, end) {
+    const data = await getAllConsumptionsByFiltersMonth(resource, init, end);
+    if (data.length === 0) return null;
+    const dataset = {
+      title: `Consumos ${resource ?? ""} (${init}–${end})`,
+      columns: ['#', 'Recurso', 'Cantidad', 'Fecha', 'Costo'],
+      rows: data.map((c, i) => [
+        i + 1,
+        c.resourcePurityName,
+        c.quantity + " " + c.resourceMeasureUnit,
+        (c.consumptionDate || '').split(' ')[0],
+        c.cost
+      ])
+    };
+    console.table(dataset)
+    return dataset;
+  }
+
+  importTableBtn.addEventListener('click', async () => {
+    tableToImport.innerHTML = "";
+
+    const init = initialDate2.value.split("-");
+    const final = lastDate2.value.split("-");
+    const initDate = `${init[2]}/${init[1]}/${init[0]}`;
+    const finalDate = `${final[2]}/${final[1]}/${final[0]}`;
+    const resourceName = resourceSelected2.value;
+
+    if (!validateValuesToImport(initialDate2.value, lastDate2.value)) {
+      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso");
+      return;
+    }
+
+    const dataset = await getTableDataset(resourceName, initDate, finalDate);
+    if (!dataset) {
+      Alerts.showToastCloseInfo("No hay datos para los filtros seleccionados");
+      return;
+    }
+    addCellByNumber(10, dataset, notebook);
+  });
+
+  if (toastTrigger1) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger1.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTrigger2) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger2.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTrigger3) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger3.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTrigger4) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger4.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTrigger5) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger5.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTrigger6) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTrigger6.addEventListener('click', () => { toastBootstrap.show() })
+  }
+  if (toastTriggerP) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+    toastTriggerP.addEventListener('click', () => { toastBootstrap.show() })
+  }
 }
 
 function loadCSS() {
@@ -124,8 +423,10 @@ function loadCSS() {
   if (!document.getElementById(id)) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '../../css/reports.css'; 
+    link.href = '../../css/reports.css';
     link.id = id;
     document.head.appendChild(link);
   }
 }
+
+
