@@ -1,5 +1,6 @@
 import * as UserProfileController from "../controllers/userProfileController.js";
 import * as Alerts from "../../utils/alerts.js";
+import * as imageService from "../services/imageService.js"
 
 export async function render() {
   loadCSS();
@@ -12,7 +13,7 @@ export async function render() {
             <div class="profile-card row align-items-center g-3">
                 <div class="col-12 col-md-auto text-center">
                     <img id="profile-img"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1__nUveMs5K4VA2cdLheJMT6C-tqFQveppg&s"
+                        src=""
                         alt="Foto de perfil" class="rounded-circle img-fluid"
                         style="width: 100px; height: 100px; object-fit: cover;" />
                 </div>
@@ -60,6 +61,9 @@ export async function render() {
                             <div class="col mb-2">
                                 <label for="fileImg" class="form-label">Foto de perfil</label>
                                 <input type="file" id="fileImg" accept="image/*" />
+                            </div>
+                            <div class="col mb-2" d-none>
+                                <input type="hidden"  id="urlImg" class="form-control" placeholder="Url" >
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-center">
@@ -127,6 +131,7 @@ export async function render() {
         </div>
     </div>
 
+
   `;
 }
 export function afterRender() {
@@ -169,7 +174,24 @@ function loadUserData() {
   const hideNPassword = document.querySelector("#hideNewPassword");
   const hideNPIcon = hideNPassword.getElementsByTagName("i")[0];
 
+  const imageFileInput = document.getElementById("fileImg");
+  const imageUrlHidden = document.getElementById("urlImg");
+  const imagePreview = document.getElementById("profile-image")
+
   UserProfileController.reloadUserData(localStorage.getItem("user"));
+
+    if(imageFileInput && imagePreview){
+        imageFileInput.addEventListener("change", ()=>{
+            const file = imageFileInput?.[0];
+            if(file){
+                const reader = new FileReader();
+                render.onload = () => (imagePreview.src = render.result);
+                render.readAsDataURL(file);
+            } else{
+                imagePreview.src = imageUrlHidden?.value || "";
+            }
+        });
+    }
 
   // Logica para cargar el formulario de actualizar perfil
   editProfileBtn.addEventListener("click", () => {
@@ -202,6 +224,21 @@ function loadUserData() {
         Alerts.showToastCloseError("El correo electrónico no tiene una estructura válida");
         return;
     }
+
+     let finalImageURL = imageUrlHidden?.value || "";
+    const file = imageFileInput?.files?.[0];
+
+    if(file){
+        try{
+            const data = await imageService.uploadImageToFolder(file, "profileImage")
+            finalImageURL = data.url || ""
+        }
+        catch (err){
+            console.error("Error subiendo imagenes:" , err)
+             Alerts.showToastCloseError("No ha sido posible editar la foto de perfil");
+             return;
+        }
+    }
     
     if (isLoadingProfile) return;
     isLoadingProfile = true;
@@ -211,6 +248,7 @@ function loadUserData() {
       lastNametxt,
       usertxt,
       emailtxt,
+      finalImageURL,
       editProfileForm,
       localStorage.getItem("user")
     );
@@ -220,7 +258,7 @@ function loadUserData() {
 
     if (res?.ok) {
         await UserProfileController.reloadUserData(localStorage.getItem("user"));
-    };
+    };    
   });
 
   // Botones para mostrar constraseña
