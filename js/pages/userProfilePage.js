@@ -185,8 +185,8 @@ function loadUserData() {
             const file = imageFileInput?.[0];
             if(file){
                 const reader = new FileReader();
-                render.onload = () => (imagePreview.src = render.result);
-                render.readAsDataURL(file);
+                reader.onload = () => (imagePreview.src = reader.result);
+                reader.readAsDataURL(file);
             } else{
                 imagePreview.src = imageUrlHidden?.value || "";
             }
