@@ -1,8 +1,9 @@
 import * as Alerts from "../utils/alerts.js";
+import { renderKarbonZeroData } from "./controllers/sessionController.js";
 import * as AuthService from "./services/authService.js";
 
-document.addEventListener("pageshow", (e) => {
-
+document.addEventListener("pageshow", async(e) => {
+  await renderKarbonZeroData()
 })
 
 const password_input = document.getElementById("contraseñatxt");
@@ -44,8 +45,9 @@ document.getElementById("login-button").addEventListener("click", async () => {
       btnLogIn.innerHTML = "Ingresando...";
     }
     await AuthService.login({ email, userPassword })
-
+    
     const userInfo = await AuthService.getLoggedUser();
+    console.log(userInfo)
     if (userInfo.authenticated) {
       window.location.href = 'index.html';
     } else {

@@ -61,5 +61,5 @@ export const role ={
 
 ///El evento pageshow se dispara siempre que se cargue la pagina, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE
 window.addEventListener("pageshow", async()=>{
-    await renderKarbonZeroData();
+    // await renderKarbonZeroData();
 })
