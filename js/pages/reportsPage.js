@@ -2,6 +2,7 @@ import { addCellByNumber, exportToExcel, exportToPdf, exportToWord, loadResouceS
 import { getAllConsumptionsByFiltersMonth } from "../services/consumptionService";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
 import * as Alerts from '../../utils/alerts.js'
+import { getAllResources, getAllResourcesSP } from "../services/resourcesService.js";
 
 export async function render() {
   loadCSS();
@@ -232,7 +233,7 @@ export async function afterRender() {
   renderNotebook(notebook);
 
   ///Llenamos los 2 dropdowns, uno es el de exportar a excel y el otro de importar tabla
-  const data = await getAllResourcePuritiesList();
+  const data = await getAllResourcesSP();
 
   loadResouceSelect(data, resourceSelected);
   loadResouceSelect(data, resourceSelected2);
@@ -245,13 +246,13 @@ export async function afterRender() {
     const deleteSelectedResource = e.target.closest(".btn-delete-resourceReport");
     if (!deleteSelectedResource) return;
     console.log('i am here')
-    const name = deleteSelectedResource.dataset.name;
-
+    const name = deleteSelectedResource.dataset.id;
+    console.log(name)
     const index = resources.findIndex(r => r.nameR === name);
-
+    console.log(index)
     if (index !== -1) {
       resources.splice(index, 1);
-      loadResourcesTable(tableToSelectResource, resources.nameR);
+      loadResourcesTable(tableToSelectResource, resources);
     }
   });
 

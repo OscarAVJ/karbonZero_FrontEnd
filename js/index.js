@@ -1,9 +1,13 @@
+import { renderKarbonZeroData } from "./controllers/sessionController";
+
 const sidebar = document.querySelector(".sidebar");
 const sidebarToggler = document.querySelector(".sidebar-toggler");
 const mainWrapper = document.querySelector(".main-content");
 const sideBarLabels = document.querySelectorAll(".nav-label-info");
 const body = document.getElementsByTagName('body')[0];
-
+window.addEventListener("pageshow", async () => {
+    await renderKarbonZeroData();
+});
 /// Aca esta el comportamiento al hacer click y hacer pequenio el sidebar
 if (localStorage.getItem('sideBarCollapsed') === 'true') {
     sidebar.classList.add("collapsed");
@@ -23,24 +27,4 @@ sidebarToggler.addEventListener("click", () => {
     }
 });
 
-
-function open_login() {
-    window.location.href = "login.html";
-};
-
-document.getElementById('logout').addEventListener('click', () => {
-    setTimeout(function () {
-        body.style.opacity = 1;
-        (function fade() {
-            var opacity = parseFloat(body.style.opacity);
-
-            (body.style.opacity = opacity - 0.01) < 0.1 ? open_login() : setTimeout(fade, 1)
-        })();
-    }, 100);
-    
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("isRemembered");
-    localStorage.removeItem("user");
-    window.location.href = 'login.html';
-});
 

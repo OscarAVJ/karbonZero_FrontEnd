@@ -1,3 +1,5 @@
+import { renderKarbonZeroData } from "../controllers/sessionController";
+import { getLoggedUser } from "../services/authService";
 import { getAllResourcesConsumptionsCO2 } from "../services/dashboardService";
 import { getAllResourceConsumptionsCO2Total } from "../services/dashboardService";
 
@@ -39,6 +41,7 @@ export async function render() {
   `;
 }
 export function afterRender() {
+  renderKarbonZeroData()
   initDashboard();
 }
 function loadCSS() {
@@ -53,6 +56,8 @@ function loadCSS() {
 }
 
 async function initDashboard() {
+  const resp = await getLoggedUser();
+  console.log(resp)
   const general_data = await getAllResourceConsumptionsCO2Total();
   for (let resource in general_data) {
     general_data[resource] = parseFloat(general_data[resource].toFixed(4));

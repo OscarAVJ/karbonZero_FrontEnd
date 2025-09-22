@@ -1,10 +1,8 @@
 import * as Alerts from "../utils/alerts.js";
-import * as loginService from "./services/loginService.js";
+import * as AuthService from "./services/authService.js";
 
-document.addEventListener("DOMContentLoaded", (e) => {
-    if (localStorage.getItem("isRemembered") == "true") {
-      window.location.href = "index.html";
-    }
+document.addEventListener("pageshow", (e) => {
+
 })
 
 const password_input = document.getElementById("contraseñatxt");
@@ -23,32 +21,42 @@ hide_password.addEventListener("click", (e) => {
 
 document.getElementById("login-button").addEventListener("click", async () => {
   const email = document.getElementById("emailtxt").value.trim();
-  const password = document.getElementById("contraseñatxt").value.trim();
+  const userPassword = document.getElementById("contraseñatxt").value.trim();
+  const btnLogIn = document.querySelector('#login-button');
+  console.log(email, userPassword)
 
   if (!email) {
     Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
     return;
   }
 
-  if (!password) {
+  if (!userPassword) {
     Alerts.showToastCloseInfo("La contraseña es obligatoria");
     return;
   }
 
-  const validate = await loginService.validateLogin(email, password);
-  if (validate.authenticated) {
-    const remember = document.querySelector("#remenberCheckbox");
-    if (remember.checked) {
-        localStorage.setItem("isRemembered", "true");
+  let placeholderText;
+
+  try {
+    if (btnLogIn) {
+      placeholderText = btnLogIn.innerHTML;
+      btnLogIn.setAttribute("disabled", "disabled")
+      btnLogIn.innerHTML = "Ingresando...";
     }
-        
-    localStorage.setItem("isAuthenticated", "true");
+    await AuthService.login({ email, userPassword })
 
-    const user = await loginService.getUserByEmail(email);
-    localStorage.setItem("user", user.idUser);
-    window.location.href = "index.html";
-  } else {
-    Alerts.showToastCloseError("Usuario o contraseña incorrectos");
+    const userInfo = await AuthService.getLoggedUser();
+    if (userInfo.authenticated) {
+      window.location.href = 'index.html';
+    } else {
+      Alerts.showInfo('Error de cookie')
+    }
+  } catch (e) {
+    Alerts.showInfo('No fue posible ingresar al sistema')
+  } finally {
+    if (btnLogIn) {
+      btnLogIn.removeAttribute("disabled");
+      if (placeholderText) btnLogIn.innerHTML = placeholderText;
+    }
   }
-
 });

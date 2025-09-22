@@ -32,6 +32,24 @@ export async function getAllResources(currentPage = 0, currentSize = 10) {
     throw error;
   }
 }
+///Exporamos la funcion para poder importarla en nuestro controlador
+export async function getAllResourcesSP() {
+  try {
+    ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
+    const response = await fetch(
+      `${API_URL}apiResource/getAllResourcesSP`
+    );
+    ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
+    if (!response.ok) {
+      console.error(`Error fetching resources`);
+    }
+    ///Finalmente retornamos nuestra respuesta en formato json
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching resources: ${error}`);
+    throw error;
+  }
+}
 
 export async function getAllResourcesByName(searchName, currentPage = 0, currentSize = 10) {
   try {

@@ -49,7 +49,3 @@ export async function startRouter() {
     </section>`;
     }
 }
-
-if (localStorage.getItem('isAuthenticated') !== 'true') {
-    window.location.href = 'login.html';
-}
