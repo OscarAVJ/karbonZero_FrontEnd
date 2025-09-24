@@ -5,9 +5,9 @@ const sidebarToggler = document.querySelector(".sidebar-toggler");
 const mainWrapper = document.querySelector(".main-content");
 const sideBarLabels = document.querySelectorAll(".nav-label-info");
 const body = document.getElementsByTagName('body')[0];
-window.addEventListener("pageshow", async () => {
-    await renderKarbonZeroData();
-});
+// window.addEventListener("pageshow", async () => {
+//     await renderKarbonZeroData();
+// });
 /// Aca esta el comportamiento al hacer click y hacer pequenio el sidebar
 if (localStorage.getItem('sideBarCollapsed') === 'true') {
     sidebar.classList.add("collapsed");
