@@ -21,7 +21,7 @@ let dragId = null;
 export async function loadResouceSelect(data, container) {
     data.forEach(element => {
         container.innerHTML += `
-        <option value="${element.resourceName}">${element.resourceName} (${element.purity}) (${element.measureUnitName}):</option>
+        <option value="${element.name}">${element.name}</option>
         `
     })
 }

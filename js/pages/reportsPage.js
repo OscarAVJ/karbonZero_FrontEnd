@@ -2,6 +2,7 @@ import { addCellByNumber, exportToExcel, exportToPdf, exportToWord, loadResouceS
 import { getAllConsumptionsByFiltersMonth } from "../services/consumptionService";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
 import * as Alerts from '../../utils/alerts.js'
+import { getAllResources, getAllResourcesSP } from "../services/resourcesService.js";
 
 export async function render() {
   loadCSS();
@@ -149,13 +150,13 @@ export async function render() {
                 </div>                
               </div>
               <div class="form-check m-2">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                 <label class="form-check-label" for="flexCheckChecked">
-                  Checked checkbox
+                  Reporte general
                 </label>
               </div>
               <div class="row mt-2">
-                <div class="col-8">
+                <div class="col-8" id="selectResourceContainer">
                   <label for="selectResourceReport2" class="form-label">Recurso</label>
                   <select class="form-select" id="selectResourceReport2" aria-label="Default select example">
                     <option value="" selected>Selecciona un recurso para filtrar</option>
@@ -220,10 +221,9 @@ export async function afterRender() {
   const toastEl = document.getElementById('liveToast');
   const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
   const toastInput = document.getElementById('toastValue');
-  const firstLoadNotebook = document.getElementById('firstLoadNotebook');
   const exportToWordBtn = document.getElementById('exportToWordBtn');
-
-
+  const displayResourceOpt = document.getElementById('flexCheckChecked');
+  const selectResourceForTable = document.getElementById('selectResourceContainer')
   const notebook = document.getElementById('notebook');
   const exportToPdfBtn = document.getElementById('exportToPdf');
   const tableToSelectResource = document.getElementById('TableToSelectResources');
@@ -232,26 +232,25 @@ export async function afterRender() {
   renderNotebook(notebook);
 
   ///Llenamos los 2 dropdowns, uno es el de exportar a excel y el otro de importar tabla
-  const data = await getAllResourcePuritiesList();
+  const data = await getAllResourcesSP();
 
   loadResouceSelect(data, resourceSelected);
   loadResouceSelect(data, resourceSelected2);
 
   ///Iniamos un array de recursos
   let resources = [];
-
   ///TODO: Hacer que esto sirva
   tableToSelectResource.addEventListener('click', (e) => {
     const deleteSelectedResource = e.target.closest(".btn-delete-resourceReport");
     if (!deleteSelectedResource) return;
     console.log('i am here')
-    const name = deleteSelectedResource.dataset.name;
-
+    const name = deleteSelectedResource.dataset.id;
+    console.log(name)
     const index = resources.findIndex(r => r.nameR === name);
-
+    console.log(index)
     if (index !== -1) {
       resources.splice(index, 1);
-      loadResourcesTable(tableToSelectResource, resources.nameR);
+      loadResourcesTable(tableToSelectResource, resources);
     }
   });
 
@@ -343,7 +342,21 @@ export async function afterRender() {
     selectedNumber = null;
     toast.hide();
   });
-
+  
+  ///Lo inicializamos en true por que la primera vez que se le click va a estar checked y ya
+  let isChecked = true;
+  displayResourceOpt.addEventListener('click',()=>{
+    ///Si es true
+    if(isChecked){
+      selectResourceForTable.classList.add('d-none')
+      resourceSelected2.value = ""
+    }else{
+      ///Si es false
+      selectResourceForTable.classList.remove('d-none')
+    }
+    ///Invertimos su valor para el siguiente click, el cual sera para descheckearlo??
+    isChecked = !isChecked;
+  })
   ///Evento de exportar a excel
   exportExcel.addEventListener('click', async () => {
     await exportToExcel(initialDate, lastDate, resourceSelected, resources)

@@ -1,3 +1,5 @@
+import { auth, renderKarbonZeroData } from "../controllers/sessionController";
+import { getLoggedUser } from "../services/authService";
 import { getAllResourcesConsumptionsCO2 } from "../services/dashboardService";
 import { getAllResourceConsumptionsCO2Total } from "../services/dashboardService";
 
@@ -53,6 +55,11 @@ function loadCSS() {
 }
 
 async function initDashboard() {
+  // window.addEventListener("pageshow", async () => {
+  //   await renderKarbonZeroData()
+
+  // })
+  console.log(auth.ok)
   const general_data = await getAllResourceConsumptionsCO2Total();
   for (let resource in general_data) {
     general_data[resource] = parseFloat(general_data[resource].toFixed(4));
@@ -127,14 +134,11 @@ function loadCharts(data) {
     const tabItem = document.createElement("div");
     tabItem.className = "d-inline m-1";
     tabItem.innerHTML = `
-          <input type="checkbox" class="btn-check" href="#${
-            tab.id
-          }" id="check-${tab.id}" name="check-${tab.id}" ${
-      idx === 0 ? "checked" : ""
-    }>
-          <label class="btn btn-outline-success" for="check-${tab.id}">${
-      tab.name
-    }</label>
+          <input type="checkbox" class="btn-check" href="#${tab.id
+      }" id="check-${tab.id}" name="check-${tab.id}" ${idx === 0 ? "checked" : ""
+      }>
+          <label class="btn btn-outline-success" for="check-${tab.id}">${tab.name
+      }</label>
         `;
 
     consumptionList.appendChild(tabItem);

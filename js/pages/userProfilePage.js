@@ -1,5 +1,6 @@
 import * as UserProfileController from "../controllers/userProfileController.js";
 import * as Alerts from "../../utils/alerts.js";
+import { auth } from "../controllers/sessionController.js";
 import * as imageService from "../services/imageService.js"
 
 export async function render() {
@@ -174,11 +175,11 @@ function loadUserData() {
   const hideNPassword = document.querySelector("#hideNewPassword");
   const hideNPIcon = hideNPassword.getElementsByTagName("i")[0];
 
+  console.log(auth.user.idUser)
+  UserProfileController.reloadUserData(auth.user.id);
   const imageFileInput = document.getElementById("fileImg");
   const imageUrlHidden = document.getElementById("urlImg");
   const imagePreview = document.getElementById("profile-image")
-
-  UserProfileController.reloadUserData(localStorage.getItem("user"));
 
     if(imageFileInput && imagePreview){
         imageFileInput.addEventListener("change", ()=>{
@@ -195,8 +196,9 @@ function loadUserData() {
 
   // Logica para cargar el formulario de actualizar perfil
   editProfileBtn.addEventListener("click", () => {
+    console.log(auth.user.idUser)
     UserProfileController.loadUserModal(
-      localStorage.getItem("user"),
+      auth.user.id,
       firstNametxt,
       lastNametxt,
       usertxt,
@@ -250,15 +252,15 @@ function loadUserData() {
       emailtxt,
       finalImageURL,
       editProfileForm,
-      localStorage.getItem("user")
+      auth.user.id
     );
 
     profileModal.hide();
     isLoadingProfile = false;
 
     if (res?.ok) {
-        await UserProfileController.reloadUserData(localStorage.getItem("user"));
-    };    
+      await UserProfileController.reloadUserData(auth.user.id);
+    };
   });
 
   // Botones para mostrar constraseña
@@ -291,7 +293,7 @@ function loadUserData() {
         return;
     }
 
-    const valid = await UserProfileController.confirmPassword(localStorage.getItem("user"), oldPassword.value.trim())
+    const valid = await UserProfileController.confirmPassword(auth.user.id, oldPassword.value.trim())
     if (!valid) {
       Alerts.showToastCloseError("La contraseña no es correcta");
       return;
@@ -305,7 +307,7 @@ function loadUserData() {
     if (isLoadingPassword) return;
     isLoadingPassword = true;
 
-    await UserProfileController.updatePassword(newPassword.value.trim(), editPasswordForm, localStorage.getItem("user"))
+    await UserProfileController.updatePassword(newPassword.value.trim(), editPasswordForm, auth.user.id)
 
     passwordModal.hide()
     isLoadingPassword = false;

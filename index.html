@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/globalGrids.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./css/globalGrids.css">
     <title>Karbon Zero</title>
 </head>
 
@@ -25,7 +25,7 @@
 
         </header>
         <nav class="sidebar-nav">
-            <ul class="nav-list primary-nav">
+            <ul class="nav-list primary-nav mainMenu">
                 <h6 class="nav-label-info">Consumos</h6>
                 <li class="nav-item">
                     <a href="#dashboard" class="nav-link">
@@ -42,7 +42,7 @@
                         <span class="nav-tooltip">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="consumptions-menu">
                     <a href="#consumptions" class="nav-link">
                         <span class=""><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -58,7 +58,7 @@
                         <span class="nav-tooltip">Consumos</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="reports-menu">
                     <a href="#reports" class="nav-link">
                         <span><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -153,8 +153,10 @@
     <main id="app" class="main-content container">
 
     </main>
-    <script type="module" src="/js/app.js"></script>
-    <script src="/js/index.js"></script>
+    <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/index.js"></script>
+    <script type="module" src="./js/controllers/sessionController.js"></script>
+    <script type="module" src="./js/routes.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -163,4 +165,5 @@
         integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+
 </html>

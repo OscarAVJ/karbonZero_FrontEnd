@@ -3,7 +3,9 @@ import { APIURL as API_URL } from "../../utils/api_url.js";
 export async function getAllResourcesConsumptionsCO2() {
   try {
     const response = await fetch(
-      `${API_URL}apiResource/getAllResourcesConsumptionsCO2`
+      `${API_URL}apiResource/getAllResourcesConsumptionsCO2`, {
+      credentials: "include"
+    }
     );
 
     if (!response.ok) {
@@ -20,7 +22,9 @@ export async function getAllResourcesConsumptionsCO2() {
 export async function getAllResourceConsumptionsCO2Total() {
   try {
     const response = await fetch(
-      `${API_URL}apiResource/getAllResourceConsumptionsCO2Total`
+      `${API_URL}apiResource/getAllResourceConsumptionsCO2Total`, {
+      credentials: "include"
+    }
     );
 
     if (!response.ok) {

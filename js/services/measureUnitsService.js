@@ -3,7 +3,9 @@ import { APIURL } from "../../utils/api_url.js";
 
 export async function getAllMeasureUnitsList() {
   try {
-    const response = await fetch(`${APIURL}apiMeasure/getAllMeasureUnitsList`);
+    const response = await fetch(`${APIURL}apiMeasure/getAllMeasureUnitsList`, {
+      credentials: "include"
+    });
     if (!response.ok) {
       console.error("Error fetching measure units");
     }
@@ -19,7 +21,9 @@ export async function getAllMeasureUnits(currentPage = 0, currentSize = 10) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${APIURL}apiMeasure/getAllMeasureUnits?page=${currentPage}&size=${currentSize}`
+      `${APIURL}apiMeasure/getAllMeasureUnits?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -37,7 +41,9 @@ export async function getAllMeasureUnitsByName(searchName, currentPage = 0, curr
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${APIURL}apiMeasure/getMeasureUnitsByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${APIURL}apiMeasure/getMeasureUnitsByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -57,7 +63,9 @@ export async function getMeasureUnitById(id) {
   try {
     ///Hacemos la peticion a la api
     const response = await fetch(
-      `${APIURL}apiMeasure/getMeasureUnitById/${id}`
+      `${APIURL}apiMeasure/getMeasureUnitById/${id}`, {
+      credentials: "include",
+    }
     );
     ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
     const u = await response.json();
@@ -79,6 +87,7 @@ export async function insertMeasureUnit(payload) {
   try {
     ///Peticion para el insert y como lo queremos asi como su metodo
     const response = await fetch(`${APIURL}apiMeasure/insertMeasureUnit`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       ///Convertimos la respuesta a json
@@ -109,6 +118,7 @@ export async function updateMeasureUnit(payload, id) {
     const response = await fetch(
       `${APIURL}apiMeasure/updateMeasureUnit/${id.value}`,
       {
+        credentials: "include",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         ///lo hacemos json
@@ -149,6 +159,7 @@ export async function deleteMeasureUnit(id) {
     const response = await fetch(
       `${APIURL}apiMeasure/deleteMeasureUnit/${id}`,
       {
+        credentials: "include",
         method: "DELETE",
       }
     );

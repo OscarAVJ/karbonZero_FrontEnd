@@ -6,7 +6,9 @@ export async function getAllConversionUnits(currentPage = 0, currentSize = 10) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiMeasure/getAllConversionUnits?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiMeasure/getAllConversionUnits?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -24,7 +26,9 @@ export async function getAllConversionUnitsByName(searchName, currentPage = 0, c
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiMeasure/getConversionUnitsByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiMeasure/getConversionUnitsByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -44,7 +48,9 @@ export async function getConversionUnitById(id) {
   try {
     ///Hacemos la peticion a la api
     const response = await fetch(
-      `${API_URL}apiMeasure/getConversionUnitById/${id}`
+      `${API_URL}apiMeasure/getConversionUnitById/${id}`, {
+      credentials: "include"
+    }
     );
     ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
     const u = await response.json();
@@ -66,6 +72,7 @@ export async function insertConversionUnit(payload) {
   try {
     ///Peticion para el insert y como lo queremos asi como su metodo
     const response = await fetch(`${API_URL}apiMeasure/insertConversionUnit`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       ///Convertimos la respuesta a json
@@ -99,6 +106,7 @@ export async function updateConversionUnit(payload, id) {
     const response = await fetch(
       `${API_URL}apiMeasure/updateConversionUnit/${id.value}`,
       {
+        credentials: "include",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         ///lo hacemos json
@@ -140,6 +148,7 @@ export async function deleteConversionUnit(id) {
     const response = await fetch(
       `${API_URL}apiMeasure/deleteConversionUnit/${id}`,
       {
+        credentials: "include",
         method: "DELETE",
       }
     );

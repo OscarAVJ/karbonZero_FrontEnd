@@ -3,7 +3,9 @@ import * as Alerts from "../../utils/alerts.js";
 
 export async function getAllResourcesList() {
   try {
-    const response = await fetch(`${API_URL}apiResource/getAllResourcesList`);
+    const response = await fetch(`${API_URL}apiResource/getAllResourcesList`, {
+      credentials: "include"
+    });
     if (!response.ok) {
       console.error("Error fetching resources");
     }
@@ -19,7 +21,29 @@ export async function getAllResources(currentPage = 0, currentSize = 10) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiResource/getAllResources?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiResource/getAllResources?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
+    );
+    ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
+    if (!response.ok) {
+      console.error(`Error fetching resources`);
+    }
+    ///Finalmente retornamos nuestra respuesta en formato json
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching resources: ${error}`);
+    throw error;
+  }
+}
+///Exporamos la funcion para poder importarla en nuestro controlador
+export async function getAllResourcesSP() {
+  try {
+    ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
+    const response = await fetch(
+      `${API_URL}apiResource/getAllResourcesList`, {
+      credentials: "include"
+    }
     );
     ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
     if (!response.ok) {
@@ -37,7 +61,9 @@ export async function getAllResourcesByName(searchName, currentPage = 0, current
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiResource/getResourcesByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiResource/getResourcesByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Pues aca evaluamos si la respuesta fue buena y si no fue mandamos el error
     if (!response.ok) {
@@ -56,7 +82,9 @@ export async function getResourcesById(id) {
   ///Try para intentar
   try {
     ///Hacemos la peticion a la api
-    const response = await fetch(`${API_URL}apiResource/getResourceById/${id}`);
+    const response = await fetch(`${API_URL}apiResource/getResourceById/${id}`, {
+      credentials: "include"
+    });
     ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
     const u = await response.json();
     ///lo mismo de arriba
@@ -77,6 +105,7 @@ export async function insertResource(payload) {
   try {
     ///Peticion para el insert y como lo queremos asi como su metodo
     const response = await fetch(`${API_URL}apiResource/insertResource`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       ///Convertimos la respuesta a json
@@ -108,6 +137,7 @@ export async function updateResource(payload, id) {
     const response = await fetch(
       `${API_URL}apiResource/updateResource/${id.value}`,
       {
+        credentials: "include",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         ///lo hacemos json
@@ -147,11 +177,13 @@ export async function deleteResource(id) {
   try {
     const response = await fetch(`${API_URL}apiResource/deleteResource/${id}`, {
       method: "DELETE",
+      credentials: "include",
+
     });
 
     if (!response.ok) {
-        console.error(`Error deleting resource: ${response.status}`);
-        return false;
+      console.error(`Error deleting resource: ${response.status}`);
+      return false;
     }
 
     Alerts.showToastCloseSuccess("Recurso eliminado exitosamente");

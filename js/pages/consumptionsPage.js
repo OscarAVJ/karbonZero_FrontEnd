@@ -3,6 +3,7 @@ import * as ConsumptionService from "../services/consumptionService";
 import * as Alerts from "../../utils/alerts";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
 import { getAllMeasureUnitsList } from "../services/measureUnitsService";
+import { getLoggedUser } from "../services/authService";
 
 export async function render() {
   return `
@@ -256,7 +257,9 @@ async function consumptionsProcess() {
 
     if (isLoading) return;
     isLoading = true;
-
+    const authUser = await getLoggedUser();
+    console.log(authUser)
+    console.log(authUser.user.id);
     let res;
     if (idConsumption.value) {
       res = await consumptionController.updateConsumption(
@@ -265,7 +268,7 @@ async function consumptionsProcess() {
         quantitytxt,
         date,
         costtxt,
-        localStorage.getItem("user"),
+        authUser.user.id,
         consumptionForm
       );
     } else {
@@ -274,7 +277,7 @@ async function consumptionsProcess() {
         quantitytxt,
         date,
         costtxt,
-        localStorage.getItem("user"),
+        authUser.user.id,
         consumptionForm
       );
     }
