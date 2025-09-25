@@ -273,12 +273,11 @@ function generateRandomPassword(length = 8) {
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
     "abcdefghijklmnopqrstuvwxyz" +
     "0123456789" +
-    "!@#$%^&*()_-+={}[]";
+    "!@#$%^&*";
   let password = "";
   for (let i = 0; i < length; i++) {
     const randIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randIndex];
   }
-  let castPassword = toString(password);
+  let castPassword = toString(password); 
   return castPassword;
 }
