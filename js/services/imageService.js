@@ -10,6 +10,7 @@ export async function uploadProfileImage(file) {
   const res = await fetch(`${IMAGE_API}/upload`, {
     method: "POST",
     body: formData,
+    credentials: "include"
   });
 
   if (!res.ok) {
@@ -26,7 +27,8 @@ export async function uploadImageToFolder(file, folder){
 
     const res = await fetch (`${IMAGE_API}/upload-to-folder`,{
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: "include"
     });
 
     return res.json();
