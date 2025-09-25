@@ -1,6 +1,6 @@
 import * as UserService from "../services/userService.js";
 import * as Alerts from "../../utils/alerts.js";
-
+import defaultPfp from '../../assets/imgs/defaultPfp.png'
 export async function reloadUserData(userId) {
   try {
     const user = await UserService.getUserById(userId);
@@ -15,7 +15,7 @@ export async function reloadUserData(userId) {
     if (user.imageProfile) {
       profileImg.src = user.imageProfile;
     } else {
-      profileImg.src = "https://via.placeholder.com/100?text=Sin+Foto"; // opcional: placeholder
+      profileImg.src = defaultPfp;
     }
   } catch (err) {
     console.error(err);
