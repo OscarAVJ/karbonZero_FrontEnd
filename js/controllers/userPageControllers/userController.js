@@ -71,6 +71,22 @@ async function renderData(container) {
     reload(container);
   });
 
+  // Aca definimos que hace el botón de eliminar
+  container.addEventListener("click", async e => {
+    const btn = e.target.closest(".btn-ban-user");
+    if (!btn) return;
+    const id = btn.dataset.id;
+
+    let ok;
+    if (btn.dataset.disabled == 0) {
+        ok = await UserService.banUser(id);
+    } else {
+        ok = await UserService.unbanUser(id);
+    }
+
+    if (ok) await reload(container);
+  })
+
   ///Aca definimos que hace nuestro boton de eliminar
   container.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-delete-user");
@@ -116,6 +132,7 @@ export function loadUsersTable(users, tab) {
                 <th>Usuario</th>
                 <th>Rol</th>
                 <th>Correo</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
           </thead>
@@ -123,16 +140,20 @@ export function loadUsersTable(users, tab) {
             ${users
               .map(
                 (u, i) => `
-              <tr>
+              <tr ${u.disabled == 1 ? 'class="table-secondary"' : ''}>
                 <td>${baseIndex + i + 1}</td>
                 <td>${u.firstName} ${u.lastName}</td>
                 <td>${u.username}</td>
                 <td>${u.nameRol}</td>
                 <td>${u.email}</td>
+                <td>${u.disabled == 1 ? "Bloqueado" : "Activo"}</td>
                 <td>
                     <button class="btn btn-sm btn-success me-1 btn-edit-user" data-id="${
                       u.idUser
                     }" data-bs-toggle="modal" data-bs-target="#usersModal"><i class="bi bi-pencil-fill"></i></button>
+                    <button class="btn btn-sm btn-warning btn-ban-user me-1" data-disabled="${u.disabled}" data-id="${
+                      u.idUser
+                    }"><i class="bi bi-person-fill-slash"></i></button>
                     <button class="btn btn-sm btn-danger btn-delete-user" data-id="${
                       u.idUser
                     }"><i class="bi bi-trash-fill"></i></button>

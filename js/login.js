@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (userInfo.authenticated) {
         window.location.href = 'index.html';
       } else {
-        Alerts.showInfo('Error de cookie')
+        Alerts.showToastCloseError('Error de autenticación')
       }
     } catch (e) {
-      Alerts.showInfo('No fue posible ingresar al sistema')
+      Alerts.showToastCloseError('No fue posible ingresar al sistema')
     } finally {
       if (btnLogIn) {
         btnLogIn.removeAttribute("disabled");
