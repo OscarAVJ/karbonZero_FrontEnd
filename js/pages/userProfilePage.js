@@ -175,7 +175,6 @@ function loadUserData() {
   const hideNPassword = document.querySelector("#hideNewPassword");
   const hideNPIcon = hideNPassword.getElementsByTagName("i")[0];
 
-  console.log(auth.user.idUser)
   UserProfileController.reloadUserData(auth.user.id);
   const imageFileInput = document.getElementById("fileImg");
   const imageUrlHidden = document.getElementById("urlImg");
@@ -196,7 +195,6 @@ function loadUserData() {
 
   // Logica para cargar el formulario de actualizar perfil
   editProfileBtn.addEventListener("click", () => {
-    console.log(auth.user.idUser)
     UserProfileController.loadUserModal(
       auth.user.id,
       firstNametxt,
