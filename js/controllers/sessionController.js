@@ -13,7 +13,7 @@ export async function renderKarbonZeroData() {;
     if (isLogin) {
       auth.ok = false;
       auth.user = null;
-      return; // no llamamos a /me aquí
+      return;
     }
     const info = await AuthService.getLoggedUser();
     auth.ok = !!info?.authenticated; 
