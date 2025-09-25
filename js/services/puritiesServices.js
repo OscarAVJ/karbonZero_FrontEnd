@@ -4,7 +4,9 @@ import { APIURL as API_URL } from "../../utils/api_url.js";
 export async function getAllResourcePuritiesList() {
   try {
     const response = await fetch(
-      `${API_URL}apiResource/getAllResourcePuritiesList`
+      `${API_URL}apiResource/getAllResourcePuritiesList`, {
+      credentials: "include"
+    }
     );
     if (!response.ok) {
       console.error("Error fetching resource purities");
@@ -24,7 +26,9 @@ export async function getAllResourcePurities(
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiResource/getAllResourcePurities?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiResource/getAllResourcePurities?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -46,7 +50,9 @@ export async function getAllResourcePuritiesByName(
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiResource/getResourcePuritiesByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiResource/getResourcePuritiesByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -66,7 +72,9 @@ export async function getResourcePurityById(id) {
   try {
     ///Hacemos la peticion a la api
     const response = await fetch(
-      `${API_URL}apiResource/getResourcePurityById/${id}`
+      `${API_URL}apiResource/getResourcePurityById/${id}`, {
+      credentials: "include"
+    }
     );
     ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
     const u = await response.json();
@@ -88,6 +96,7 @@ export async function insertResourcePurity(payload) {
   try {
     ///Peticion para el insert y como lo queremos asi como su metodo
     const response = await fetch(`${API_URL}apiResource/insertResourcePurity`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       ///Convertimos la respuesta a json
@@ -119,6 +128,7 @@ export async function updateResourcePurity(payload, id) {
     const response = await fetch(
       `${API_URL}apiResource/updateResourcePurity/${id.value}`,
       {
+        credentials: "include",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         ///lo hacemos json
@@ -160,6 +170,7 @@ export async function deleResourcePurity(id) {
     const response = await fetch(
       `${API_URL}apiResource/deleteResourcePurity/${id}`,
       {
+        credentials: "include",
         method: "DELETE",
       }
     );

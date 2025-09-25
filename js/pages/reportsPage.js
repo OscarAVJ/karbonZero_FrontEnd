@@ -150,13 +150,13 @@ export async function render() {
                 </div>                
               </div>
               <div class="form-check m-2">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                 <label class="form-check-label" for="flexCheckChecked">
-                  Checked checkbox
+                  Reporte general
                 </label>
               </div>
               <div class="row mt-2">
-                <div class="col-8">
+                <div class="col-8" id="selectResourceContainer">
                   <label for="selectResourceReport2" class="form-label">Recurso</label>
                   <select class="form-select" id="selectResourceReport2" aria-label="Default select example">
                     <option value="" selected>Selecciona un recurso para filtrar</option>
@@ -221,10 +221,9 @@ export async function afterRender() {
   const toastEl = document.getElementById('liveToast');
   const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
   const toastInput = document.getElementById('toastValue');
-  const firstLoadNotebook = document.getElementById('firstLoadNotebook');
   const exportToWordBtn = document.getElementById('exportToWordBtn');
-
-
+  const displayResourceOpt = document.getElementById('flexCheckChecked');
+  const selectResourceForTable = document.getElementById('selectResourceContainer')
   const notebook = document.getElementById('notebook');
   const exportToPdfBtn = document.getElementById('exportToPdf');
   const tableToSelectResource = document.getElementById('TableToSelectResources');
@@ -240,7 +239,6 @@ export async function afterRender() {
 
   ///Iniamos un array de recursos
   let resources = [];
-
   ///TODO: Hacer que esto sirva
   tableToSelectResource.addEventListener('click', (e) => {
     const deleteSelectedResource = e.target.closest(".btn-delete-resourceReport");
@@ -344,7 +342,21 @@ export async function afterRender() {
     selectedNumber = null;
     toast.hide();
   });
-
+  
+  ///Lo inicializamos en true por que la primera vez que se le click va a estar checked y ya
+  let isChecked = true;
+  displayResourceOpt.addEventListener('click',()=>{
+    ///Si es true
+    if(isChecked){
+      selectResourceForTable.classList.add('d-none')
+      resourceSelected2.value = ""
+    }else{
+      ///Si es false
+      selectResourceForTable.classList.remove('d-none')
+    }
+    ///Invertimos su valor para el siguiente click, el cual sera para descheckearlo??
+    isChecked = !isChecked;
+  })
   ///Evento de exportar a excel
   exportExcel.addEventListener('click', async () => {
     await exportToExcel(initialDate, lastDate, resourceSelected, resources)

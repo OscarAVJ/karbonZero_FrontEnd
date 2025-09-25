@@ -1,13 +1,12 @@
-import { renderKarbonZeroData } from "./controllers/sessionController";
-
+import { auth, renderKarbonZeroData } from "./controllers/sessionController";
+import * as AuthService from './services/authService.js'
 const sidebar = document.querySelector(".sidebar");
 const sidebarToggler = document.querySelector(".sidebar-toggler");
 const mainWrapper = document.querySelector(".main-content");
 const sideBarLabels = document.querySelectorAll(".nav-label-info");
 const body = document.getElementsByTagName('body')[0];
-// window.addEventListener("pageshow", async () => {
-//     await renderKarbonZeroData();
-// });
+const logoutBtn = document.getElementById('logout')
+
 /// Aca esta el comportamiento al hacer click y hacer pequenio el sidebar
 if (localStorage.getItem('sideBarCollapsed') === 'true') {
     sidebar.classList.add("collapsed");
@@ -26,5 +25,14 @@ sidebarToggler.addEventListener("click", () => {
         localStorage.removeItem('sideBarCollapsed');
     }
 });
-
+// window.addEventListener('DOMContentLoaded', () => {
+//         logoutBtn.addEventListener("click", async () => {
+//             console.log('here')
+//             await AuthService.logout();
+//             auth.ok = false;
+//             auth.user = null;
+//             window.location.replace("login.html");
+//         });
+    
+// })
 
