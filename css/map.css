@@ -31,3 +31,12 @@
     object-fit: contain;
     border-radius: 12px;
 }
+
+#map path:nth-child(odd) {
+    stroke: #aaa;
+    fill: rgba(0, 0, 0, 0)
+}
+#map path:nth-child(even) {
+    stroke: #aaa;
+        fill: rgba(0, 0, 0, 0)
+}

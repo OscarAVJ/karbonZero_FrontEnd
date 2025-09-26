@@ -1,32 +1,50 @@
+import * as MapController from "../controllers/mapController.js"
+
 export async function render() {
-    loadCSS(); 
-    return `
+  loadCSS();
+  return `
     <div class="container-fluid p-4 full-height-map d-flex flex-column justify-content-start">
         <h2 class="general-title">Mapa de CO₂</h2>
 
-        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-3">
-            <input type="text" class="form-control custom-search-input" placeholder="El Salvador">
-            <button class="kz-button-create">Buscar</button>
-        </div>
+        <form class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-3">
+                <div class="col-6">
+                    <select class="form-select" aria-label="Países" id="countriesSelect">
+                        <option value="El_Salvador">El Salvador</option>
+                    </select>
+                </div>
+                <button id="searchButton" class="kz-button-create">Buscar</button>
+        </form>
 
-        <div class="advanced-filters-container map-container mx-auto flex-grow-1 d-flex align-items-center justify-content-center">
-            <img src="https://static.vecteezy.com/system/resources/previews/002/549/177/non_2x/doodle-map-of-el-salvador-with-states-free-vector.jpg"
-                alt="Mapa de El Salvador" class="map-img img-fluid">
+        <div id="mapContainer" class="advanced-filters-container map-container mx-auto flex-grow-1 d-flex align-items-center justify-content-center">
+            <svg id="map" class="w-100 h-100">
+            </svg>
         </div>
     </div>
 
   `;
 }
-export function afterRender() {
-}
 
 function loadCSS() {
-  const id = 'reports-css';
+  const id = "reports-css";
   if (!document.getElementById(id)) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '../../css/map.css'; 
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../css/map.css";
     link.id = id;
     document.head.appendChild(link);
   }
+}
+
+export function afterRender() {
+  renderMap();
+}
+
+async function renderMap() {
+    const mapContainer = document.querySelector("#mapContainer");
+    const countriesS = document.querySelector("#countriesSelect");
+    const searchButton = document.querySelector("#searchButton");
+
+    searchButton.addEventListener("click", async (e) => {
+        MapController.reloadMap(mapContainer, countriesS.value);
+    });
 }
