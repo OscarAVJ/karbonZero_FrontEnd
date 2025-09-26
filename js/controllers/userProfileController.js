@@ -68,7 +68,7 @@ export async function updateProfile(
     firstName: firstNametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
-    imageProfile: imageUrl || null,
+    imageProfile: imageUrl||user.imageProfile || null,
   };
   try {
     ///Hacemos la peticion
@@ -94,7 +94,8 @@ export async function updatePassword(
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    userPassword: password
+    userPassword: password,
+    imageProfile: user.imageProfile
   };
   try {
     ///Hacemos la peticion
