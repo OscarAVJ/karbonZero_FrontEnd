@@ -75,20 +75,6 @@ export async function render() {
             </div>
         </div>
         <div class="advanced-filters-container p-4">
-            <h4 class="fw-bold mb-3">Apariencia</h4>
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <span class="fw-semibold">Modo oscuro</span>
-                <div class="form-check form-switch m-0">
-                    <input type="checkbox" id="darkModeToggle" class="custom-switch-xl">
-                </div>
-            </div>
-            <div class="mb-4">
-                <label for="languageSelect" class="fw-semibold mb-1">Idioma</label>
-                <select id="languageSelect" class="form-select">
-                    <option value="es">Español</option>
-                    <option value="en">Inglés</option>
-                </select>
-            </div>
             <button class="btn btn-success kz-button-create w-100" data-bs-toggle="modal"
                 data-bs-target="#contraseñaModal" id="editPassword">Cambiar contraseña</button>
         </div>
