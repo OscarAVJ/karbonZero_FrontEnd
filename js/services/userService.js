@@ -186,7 +186,7 @@ export async function banUser(id) {
     }
   
     try {
-      const res = await fetch(`${API_URL}/apiUser/updateDisabled/${id}`, {
+      const res = await fetch(`${API_URL}apiUser/updateDisabled/${id}`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -222,7 +222,7 @@ export async function banUser(id) {
     }
   
     try {
-      const res = await fetch(`${API_URL}/apiUser/updateDisabled/${id}`, {
+      const res = await fetch(`${API_URL}apiUser/updateDisabled/${id}`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

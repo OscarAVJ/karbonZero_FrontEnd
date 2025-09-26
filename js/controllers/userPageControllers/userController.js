@@ -1,5 +1,6 @@
 import * as UserService from "../../services/userService.js";
 import * as Alerts from "../../../utils/alerts.js";
+import {auth} from "../sessionController.js";
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 
 ///Nuestro metodo de inicio, lo llamamos en el userPage.js
@@ -79,7 +80,11 @@ async function renderData(container) {
 
     let ok;
     if (btn.dataset.disabled == 0) {
-        ok = await UserService.banUser(id);
+      if (auth.user.id == btn.dataset.id) {
+        Alerts.showToastCloseInfo("No se puede bloquear a usted mismo");
+        return;
+      }
+      ok = await UserService.banUser(id);
     } else {
         ok = await UserService.unbanUser(id);
     }
