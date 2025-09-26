@@ -18,7 +18,6 @@ export async function renderKarbonZeroData() {;
     const info = await AuthService.getLoggedUser();
     auth.ok = !!info?.authenticated; 
     auth.user = info?.user ?? null;
-    console.log(auth);
     if (auth.ok) {
         document.getElementById("logout")?.addEventListener("click", async () => {
           await AuthService.logout();            
@@ -39,7 +38,6 @@ export async function renderKarbonZeroData() {;
 
 ///Esta funcion nos sirve para poder saber el usuario esta auth y si no mandarlo al login
 export async function isAuth(redirect = true) {
-    console.log('I have been activated')
     try {
         const info = await AuthService.getLoggedUser()
         auth.ok = !!info?.authenticated

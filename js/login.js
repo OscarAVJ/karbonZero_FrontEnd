@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const email = document.getElementById("emailtxt").value.trim();
     const userPassword = document.getElementById("contraseñatxt").value.trim();
     const btnLogIn = document.querySelector('#login-button');
-    console.log(email, userPassword)
+    const checkRememberMe = document.querySelector("#rememberCheckbox")
 
     if (!email) {
       Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
@@ -42,18 +42,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnLogIn.setAttribute("disabled", "disabled")
         btnLogIn.innerHTML = "Ingresando...";
       }
-      await AuthService.login(email, userPassword)
+
+      if (checkRememberMe.checked) {
+        await AuthService.login(email, userPassword);
+      } else {
+        await AuthService.shortLogin(email, userPassword);
+      }
 
       const userInfo = await AuthService.getLoggedUser();
-      console.log(userInfo)
 
       if (userInfo.authenticated) {
         window.location.href = 'index.html';
       } else {
-        Alerts.showInfo('Error de cookie')
+        Alerts.showToastCloseError('Error de autenticación')
       }
     } catch (e) {
-      Alerts.showInfo('No fue posible ingresar al sistema')
+      Alerts.showToastCloseError('No fue posible ingresar al sistema')
     } finally {
       if (btnLogIn) {
         btnLogIn.removeAttribute("disabled");
