@@ -1,28 +1,36 @@
 import * as MapService from "../services/mapService.js";
 
 import { select } from "https://esm.sh/d3-selection";
-import { geoPath, geoMercator } from "https://esm.sh/d3-geo";
+import { geoPath, geoEquirectangular } from "https://esm.sh/d3-geo";
 
-export async function reloadMap(mapContainer, text) {
+export async function reloadMap(mapContainer, text, scaleRange) {
   //   try {
   const res = await MapService.getGeoData(text);
   const geoJson = res.data;
 
-  console.log(geoJson)
+  document.querySelector("#map").innerHTML = "";
+
   const width = mapContainer.offsetWidth;
   const height = mapContainer.offsetHeight;
 
-  let projection = geoMercator();
-  projection.fitSize([width, height], geoJson);
+  const projection = geoEquirectangular();
+  projection.center(geoJson.properties.center)
+  projection.translate([width / 2, height / 2])
 
-  let geoGenerator = geoPath().projection(projection);
+  projection.scale(geoJson.properties.scale)
+  scaleRange.value = geoJson.properties.scale;
 
-  select("#map")
-    .selectAll("path")
-    .data(geoJson.features)
-    .enter()
-    .append("path")
-    .attr("d", geoGenerator);
+  const geoGenerator = geoPath().projection(projection);
+
+  const u = select('#map')
+    .selectAll('path')
+    .data(geoJson.features);
+
+  u.enter()
+    .append('path')
+    .attr('d', geoGenerator);
+
+
   //   } catch (err) {
   //         console.log(err)
   //   }

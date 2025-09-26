@@ -1,9 +1,9 @@
-import { APIURL as API_URL } from "../../utils/api_url";
+import { APIGLOBAL as GLOBAL_URL } from "../../utils/api_url";
 
 export async function getGeoData (country) {
     try {
         const response = await fetch(
-          `${API_URL}apiMap/getCountryGeo/${country}`
+          `${GLOBAL_URL}apiMap/getCountryGeo/${country}`
         );
 
         if (!response.ok) {
