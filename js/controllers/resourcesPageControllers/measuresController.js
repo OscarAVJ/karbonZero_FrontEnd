@@ -1,5 +1,6 @@
 import * as Alerts from "../../../utils/alerts.js";
 import * as MeasureService from "../../services/measuresService.js";
+import { role } from '../../controllers/sessionController.js';
 
 ///Funcion de init
 export async function initMeasure(container) {
@@ -171,6 +172,7 @@ function loadMeasuresTable(measures, tab) {
           </tbody>
         </table>
     </div>`;
+    role.applyPermissions();
 }
 
 export async function insertMeasure(nametxt, form) {

@@ -3,6 +3,7 @@ import * as rolController from "../controllers/userPageControllers/rolController
 import { initAllUsersTabs } from "../controllers/userPageControllers/userInitController.js"
 import { getAllRolesList } from "../services/rolService.js";
 import * as Alerts from "../../utils/alerts.js";
+import { role } from '../controllers/sessionController.js';
 
 ///Esto es lo que va suceder al ingresar a la pagina, lo definimos en routes.js
 ///Aca mas que todo mandamos el html, titulos, contenedores, y modales
@@ -284,6 +285,7 @@ export function render() {
 
 ///Esto es lo que pasa cuando ya hemos renderizado nuestra pagina
 export async function afterRender() {
+  role.applyPermissions();
     const container = document.getElementById("users-root");
     await initAllUsersTabs(container);
     userProcess();

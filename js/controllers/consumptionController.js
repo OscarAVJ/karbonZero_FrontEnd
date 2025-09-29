@@ -1,5 +1,6 @@
 import * as Alerts from "../../utils/alerts.js";
 import * as ConsumptionService from "../services/consumptionService.js";
+import { role } from '../controllers/sessionController.js';
 
 export async function initConsumption(container) {
   renderConsumptionData(container);
@@ -36,6 +37,7 @@ export async function reload(container) {
 }
 
 export function renderPagination(current, totalPages, container) {
+  role.applyPermissions();
   const pagination = document.getElementById("consumptionPagination");
   if (!pagination) return;
   pagination.innerHTML = ""; ///Limpiamos la paginacion previa

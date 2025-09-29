@@ -9,6 +9,7 @@ import { getAllResourcesList } from "../services/resourcesService.js";
 import { showToastCloseInfo } from "../../utils/alerts.js";
 import { getAllMeasuresList } from "../services/measuresService.js";
 import * as Alerts from "../../utils/alerts.js";
+import { role } from '../controllers/sessionController.js';
 
 export async function render() {
   return `
@@ -401,6 +402,7 @@ export async function render() {
 }
 
 export async function afterRender() {
+  role.applyPermissions();
   const container = document.getElementById("resources-root");
   await initAllResourcesTabs(container);
 

@@ -1,5 +1,6 @@
 import * as Alerts from "../../../utils/alerts.js";
 import * as PuritiesService from "../../services/puritiesServices.js";
+import { role } from '../../controllers/sessionController.js';
 
 ///Funcion de init
 export async function initPurity(container) {
@@ -182,6 +183,7 @@ function loadResourcesPurityTable(puritites, tab) {
         </table>
     </div>
    `;
+    role.applyPermissions();
 }
 
 export function loadResources(resources, resourceSelect) {

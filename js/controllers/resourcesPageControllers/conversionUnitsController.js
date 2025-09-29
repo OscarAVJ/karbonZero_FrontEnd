@@ -1,5 +1,6 @@
 import * as Alerts from "../../../utils/alerts.js";
 import * as ConversionUnitsService from "../../services/conversionUnitsService.js";
+import { role } from '../../controllers/sessionController.js';
 
 ///Funcion de init
 export async function initConversionUnits(container) {
@@ -203,6 +204,7 @@ function loadConversionUnits(conversion, tab) {
           </tbody>
         </table>
     </div>`;
+    role.applyPermissions();
 }
 export function loadResources(resources, resourceSelect) {
   resources.forEach((element) => {
