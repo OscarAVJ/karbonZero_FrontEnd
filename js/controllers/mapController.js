@@ -138,7 +138,9 @@ export function updateScale(mapContainer, zoomInBtn, ZoomOutBtn) {
   }
   async function zoomOutLoop() {
     if (!isHolding) return;
-    maps.scale -= 1000;
+    if (maps.scale > 1000) {
+      maps.scale -= 1000;
+    }
     updateMap(mapContainer);
     requestAnimationFrame(zoomOutLoop); // volver a llamar en el siguiente frame
   }
