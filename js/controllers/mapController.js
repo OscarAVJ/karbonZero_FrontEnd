@@ -15,9 +15,10 @@ export const maps = {
   originalScale: 0,
   scale: 0,
   consumptions: [],
+  states: [],
 };
 
-export async function loadMap(mapContainer, text) {
+export async function loadMap(mapContainer, barContainer, text) {
   const res = await MapService.getGeoData(text);
   const geoJson = res.data;
 
@@ -64,8 +65,50 @@ export async function loadMap(mapContainer, text) {
     ...foods.data,
   ];
 
-  console.log(maps);
+  maps.states = [];
+  // Iteramos los estados
+  for (let state of geoJson.features) {
+    let total = 0;
+
+    // Calculamos cuantos consumos tiene ese estado
+    for (let consumption of maps.consumptions) {
+        if (d3.polygonContains(state.geometry.coordinates[0], [
+          consumption.longitude,
+          consumption.latitude,
+        ])) {
+        total += consumption.total;
+      }
+    }
+
+    // Agregamos los estados al JSON para volver ha hacer las gráficas sin hacer peticiones al servidos
+    maps.states.push({
+      name: state.properties.shapeName,
+      coordinates: state.geometry.coordinates[0],
+      total: total,
+    });
+  }
+  console.log(maps)
+
   updateMap(mapContainer);
+  loadBarChart(barContainer);
+}
+
+function updateMap(mapContainer) {
+  if (!maps.geoJson) {
+    return;
+  }
+
+  const map = document.querySelector("#map");
+  const projection = getProjection(mapContainer);
+  const geoGenerator = d3.geoPath().projection(projection);
+
+  map.innerHTML = "";
+  // Cargamos los departamentos en el DOM
+  for (let polygon of maps.geoJson.features) {
+    map.innerHTML += `<path d="${geoGenerator(polygon)}"></path>`;
+  }
+
+  loadPoints(geoGenerator, map);
 }
 
 async function loadPoints(pathGenerator, map) {
@@ -83,37 +126,6 @@ async function loadPoints(pathGenerator, map) {
       circle
     )}"></path>`;
   }
-}
-
-function getColor(n) {
-  // TODO: Crear un gradiente de color "más cientifico"
-
-  if (n > 10) {
-    n = 10;
-  }
-
-  const r = (255 * n) / 10;
-  const g = (255 * (10 - n)) / 10;
-  const b = 0;
-  return [r, g, b];
-}
-
-function updateMap(mapContainer) {
-  if (!maps.geoJson) {
-    return;
-  }
-
-  const map = document.querySelector("#map");
-  map.innerHTML = "";
-
-  const projection = getProjection(mapContainer);
-
-  const geoGenerator = d3.geoPath().projection(projection);
-
-  const u = d3.select("#map").selectAll("path").data(maps.geoJson.features);
-  u.enter().append("path").attr("d", geoGenerator);
-
-  loadPoints(geoGenerator, map);
 }
 
 function getProjection(mapContainer) {
@@ -201,4 +213,89 @@ export function updateCenter(e, mapContainer) {
 
   maps.center = newCenter;
   updateMap(mapContainer);
+}
+
+export async function loadBarChart(barContainer) {
+  if (!maps.geoJson) return;
+
+  // Debemos limpiar el antiguo gráfico para evitar sobreescribirlo
+  document.querySelector("#barChart").innerHTML = "";
+
+  const width = barContainer.clientWidth;
+  const height = barContainer.clientHeight;
+  const margin = { top: 30, right: 30, bottom: 90, left: 50 };
+
+  // Tenemos que seleccionar el svg con los métodos de d3
+  const svg = d3
+    .select("#barChart")
+    .attr("width", width - 32);
+    ;
+
+  const xScale = d3
+    .scaleBand()
+    .domain(maps.states.map((d) => d.name))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(maps.states, (d) => d.total)])
+    .nice()
+    .range([height - margin.bottom, margin.top]);
+
+  // Add X-axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(xScale))
+    .attr("class", "axis")
+    .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+  // Add Y-axis
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(yScale))
+    .attr("class", "axis");
+  // Draw bars
+  svg
+    .selectAll(".bar")
+    .data(maps.states)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", (d) => xScale(d.name))
+    .attr("y", (d) => yScale(d.total))
+    .attr("width", xScale.bandwidth())
+    .attr("height", (d) => height - margin.bottom - yScale(d.total))
+    .attr("style", (d) => {
+      const colors = getColor(d.total, 1000);
+      return `fill: rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, 100)`;
+    });
+
+  // Add labels
+  svg
+    .selectAll(".label")
+    .data(maps.states)
+    .enter()
+    .append("text")
+    .attr("class", "label")
+    .attr("x", (d) => xScale(d.name) + xScale.bandwidth() / 2)
+    .attr("y", (d) => yScale(d.total) - 5)
+    .attr("text-anchor", "middle")
+    .text((d) => d.total);
+}
+
+function getColor(n, base = 10) {
+  // TODO: Crear un gradiente de color "más cientifico"
+
+  if (n > base) {
+    n = base;
+  }
+
+  const r = (255 * n) / base;
+  const g = (255 * (base - n)) / base;
+  const b = 0;
+  return [r, g, b];
 }
