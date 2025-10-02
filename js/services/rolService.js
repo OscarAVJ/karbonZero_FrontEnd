@@ -4,7 +4,9 @@ import { APIURL as API_URL } from "../../utils/api_url";
 ///Exportamos la funcion para poder importarla en nuestro controlador
 export async function getAllRolesList() {
   try {
-    const response = await fetch(`${API_URL}apiUser/getAllRolesList`);
+    const response = await fetch(`${API_URL}apiUser/getAllRolesList`, {
+      credentials: "include"
+    });
     if (!response.ok) {
       console.error("Error fetching roles");
     }
@@ -19,7 +21,9 @@ export async function getAllRoles(currentPage = 0, currentSize = 10) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiUser/getAllRoles?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiUser/getAllRoles?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -37,7 +41,9 @@ export async function getRolById(id) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiUser/getRolById/${id}`
+      `${API_URL}apiUser/getRolById/${id}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -59,7 +65,9 @@ export async function getAllRolesByName(
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiUser/getRolesByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiUser/getRolesByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include",
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -75,49 +83,52 @@ export async function getAllRolesByName(
 
 ///Metodo para insertar roles, le pasamos payload como parametro
 export async function insertRol(payload) {
-    try {
-        const response = await fetch(`${API_URL}apiUser/insertRol`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        ///Transformamos la data a json 
-        
-        if (response.ok) {
-            Alerts.showToastCloseSuccess("Rol creado exitosamente");
-        } else {
-            console.error(`Error creating rol: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return { ok: true, data };
-    } catch (err) {
-        console.error(`Error creating rol: ${err}`);
-        return { ok: false, data: null, error: err };
+  try {
+    const response = await fetch(`${API_URL}apiUser/insertRol`, {
+      credentials: "include",
+
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    ///Transformamos la data a json 
+
+    if (response.ok) {
+      Alerts.showToastCloseSuccess("Rol creado exitosamente");
+    } else {
+      console.error(`Error creating rol: ${response.status}`);
     }
+
+    const data = await response.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error(`Error creating rol: ${err}`);
+    return { ok: false, data: null, error: err };
+  }
 }
 
 // Método para actualizar un rol, necesita el payload y el id
 export async function updateRol(payload, id) {
-    try {
-        const response = await fetch(`${API_URL}apiUser/updateRol/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        
-        if (response.ok) {
-            Alerts.showToastCloseSuccess("Rol actualizado exitosamente");
-        } else {
-            console.error(`Error updating rol: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return { ok: true, data};
-    } catch (err) {
-        console.error(`Error updating rol: ${err}`);
-        return { ok: false, data: null, error: err };
+  try {
+    const response = await fetch(`${API_URL}apiUser/updateRol/${id}`, {
+      credentials: "include",
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      Alerts.showToastCloseSuccess("Rol actualizado exitosamente");
+    } else {
+      console.error(`Error updating rol: ${response.status}`);
     }
+
+    const data = await response.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error(`Error updating rol: ${err}`);
+    return { ok: false, data: null, error: err };
+  }
 }
 
 // Método para eliminar un rol
@@ -139,6 +150,7 @@ export async function deleteRol(id) {
   try {
     ///Peticion
     const response = await fetch(`${API_URL}apiUser/deleteRol/${id}`, {
+      credentials: "include",
       method: "DELETE",
     });
     ///Ahi un return en caso de error

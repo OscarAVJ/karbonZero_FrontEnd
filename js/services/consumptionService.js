@@ -9,7 +9,9 @@ export async function convertMeasureUnit(
 ) {
   try {
     const response = await fetch(
-      `${API_URL}apiMeasure/convertMeasureUnit?idMeasureUnit1=${idMeasureUni1}&idMeasureUnit2=${idMeasureUnit2}&idResource=${idResource}&value=${value}`
+      `${API_URL}apiMeasure/convertMeasureUnit?idMeasureUnit1=${idMeasureUni1}&idMeasureUnit2=${idMeasureUnit2}&idResource=${idResource}&value=${value}`, {
+      credentials: "include"
+    }
     );
 
     if (!response.ok) {
@@ -26,7 +28,9 @@ export async function convertMeasureUnit(
 export async function getConsumptionById(id) {
   try {
     const response = await fetch(
-      `${API_URL}apiConsumption/getConsumptionById/${id}`
+      `${API_URL}apiConsumption/getConsumptionById/${id}`, {
+      credentials: "include"
+    }
     );
     if (!response.ok) {
       console.error(`Error fetching consumption: ${response.status}`);
@@ -41,7 +45,9 @@ export async function getConsumptionById(id) {
 export async function getAllConsumptions(currentPage = 0, currentSize = 10) {
   try {
     const response = await fetch(
-      `${API_URL}apiConsumption/getAllConsumptions?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiConsumption/getAllConsumptions?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     if (!response.ok) {
       console.error(`Error fetching consumptions: ${response.status}`);
@@ -54,7 +60,7 @@ export async function getAllConsumptions(currentPage = 0, currentSize = 10) {
 }
 
 export async function getAllConsumptionsByFilters(
-  searchName, 
+  searchName,
   searchYear,
   searchMonth,
   currentPage = 0,
@@ -62,20 +68,22 @@ export async function getAllConsumptionsByFilters(
 ) {
   try {
     let params = `?page=${currentPage}&size=${currentSize}`;
-    
+
     if (searchName) {
-        params += `&name=${searchName}`;
+      params += `&name=${searchName}`;
     }
 
     if (searchYear) {
-        params += `&year=${searchYear}`;
-        if (searchMonth) {
-            params += `&month=${searchMonth}`;
-        }
+      params += `&year=${searchYear}`;
+      if (searchMonth) {
+        params += `&month=${searchMonth}`;
+      }
     }
 
     const response = await fetch(
-      `${API_URL}apiConsumption/getConsumptionsByFilters` + params
+      `${API_URL}apiConsumption/getConsumptionsByFilters` + params, {
+      credentials: "include"
+    }
     );
     if (!response.ok) {
       console.error(`Error fetching consumptions: ${response.status}`);
@@ -87,9 +95,46 @@ export async function getAllConsumptionsByFilters(
   }
 }
 
+export async function getAllConsumptionsByFiltersMonth(
+  searchName,
+  start,
+  end,
+) {
+  try {
+    let params = ``;
+
+    if (searchName) {
+      params += `&name=${searchName}`;
+    }
+
+    if (start) {
+      params += `&start=${start}`;
+      if (end) {
+        params += `&end=${end}`;
+      }
+    }
+
+    const response = await fetch(
+      `${API_URL}apiConsumption/getConsumptionsByFiltersM?` + params, {
+      credentials: "include"
+    }
+    );
+    if (!response.ok) {
+      console.error(`Error fetching consumptions: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching consumptions: ", error);
+    throw error;
+  }
+}
+
+
 export async function insertConsumption(payload) {
   try {
     const response = await fetch(`${API_URL}apiConsumption/insertConsumption`, {
+      credentials: "include",
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -114,6 +159,7 @@ export async function updateConsumption(id, payload) {
       `${API_URL}apiConsumption/updateConsumption/${id}`,
       {
         method: "PUT",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       }
@@ -147,12 +193,13 @@ export async function deleteConsumption(id) {
     Alerts.showToastCloseError("Proceso cancelado");
     return false;
   }
-  
+
   try {
     const response = await fetch(
       `${API_URL}apiConsumption/deleteConsumption/${id}`,
       {
         method: "DELETE",
+        credentials: "include",
       }
     );
     if (!response.ok) {

@@ -1,6 +1,6 @@
 import * as UserService from "../services/userService.js";
 import * as Alerts from "../../utils/alerts.js";
-
+import defaultPfp from '../../assets/imgs/defaultPfp.png'
 export async function reloadUserData(userId) {
   try {
     const user = await UserService.getUserById(userId);
@@ -11,6 +11,12 @@ export async function reloadUserData(userId) {
       "#profile-username"
     ).textContent = `@${user.username}`;
     document.querySelector("#profile-email").textContent = user.email;
+    const profileImg = document.querySelector("#profile-img");
+    if (user.imageProfile) {
+      profileImg.src = user.imageProfile;
+    } else {
+      profileImg.src = defaultPfp;
+    }
   } catch (err) {
     console.error(err);
   }
@@ -48,11 +54,13 @@ export async function updateProfile(
   firstNametxt,
   lastNametxt,
   userNametxt,
-  emailtxt,
+  emailtxt, 
+  imageUrl,
   form,
   userId
 ) {
   const user = await UserService.getUserById(userId);
+   const imageUrlHidden = document.getElementById("urlImg");
   const payload = {
     idUser: userId,
     idRol: user.idRol,
@@ -60,6 +68,7 @@ export async function updateProfile(
     firstName: firstNametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
+    imageProfile: imageUrl||user.imageProfile || null,
   };
   try {
     ///Hacemos la peticion
@@ -85,7 +94,8 @@ export async function updatePassword(
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    userPassword: password
+    userPassword: password,
+    imageProfile: user.imageProfile
   };
   try {
     ///Hacemos la peticion
@@ -97,3 +107,5 @@ export async function updatePassword(
     return { ok: false };
   }
 }
+
+

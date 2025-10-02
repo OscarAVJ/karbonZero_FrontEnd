@@ -1,40 +1,50 @@
-.advanced-filters-container {
-    background: #FFFDFD;
-    box-shadow: 0px 4px 12px rgba(0, 69, 49, 0.25); 
-    border-radius: 20px;
-    padding: 20px 40px 40px 40px;
+
+.notebook-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid #eee;
 }
 
-.custom-switch-xl {
-    width: 4.2rem;
-    height: 2rem;
-    background-color: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 2rem;
-    appearance: none;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    cursor: pointer;
-    display: inline-block;
+.cell {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 14px 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .02);
 }
 
-.custom-switch-xl::before {
-    content: "";
-    position: absolute;
-    top: 0.2rem;
-    left: 0.2rem;
-    width: 1.6rem;
-    height: 1.6rem;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
+.cell-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.custom-switch-xl:checked {
-    background-color: #016045;
-    border-color: #016045;
+.drag-handle {
+    cursor: grab;
+    user-select: none;
+    font-size: 18px;
+    color: #888;
 }
 
-.custom-switch-xl:checked::before {
-    transform: translateX(2rem);
+.cell-type {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.text-editor[contenteditable="true"] {
+    min-height: 80px;
+    outline: none;
+}
+
+.text-editor:empty:before {
+    content: "Write here…";
+    color: #999;
+}
+
+.drag-over {
+    outline: 2px dashed #0d6efd;
 }

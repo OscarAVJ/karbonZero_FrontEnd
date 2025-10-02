@@ -3,7 +3,9 @@ import { APIURL as API_URL } from "../../utils/api_url.js";
 
 export async function getAllMeasuresList() {
   try {
-    const response = await fetch(`${API_URL}apiMeasure/getAllMeasuresList`);
+    const response = await fetch(`${API_URL}apiMeasure/getAllMeasuresList`, {
+      credentials: "include"
+    });
 
     if (!response.ok) {
       console.error("Error fetching measures");
@@ -20,7 +22,9 @@ export async function getAllMeasures(currentPage = 0, currentSize = 10) {
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiMeasure/getAllMeasures?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiMeasure/getAllMeasures?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -38,7 +42,9 @@ export async function getAllMeasuresByName(searchName, currentPage = 0, currentS
   try {
     ///Hacemos la peticion a nuestra api/ API_URL esta definida en .env.local ahorita es = localhost:8080/
     const response = await fetch(
-      `${API_URL}apiMeasure/getMeasuresByName/${searchName}?page=${currentPage}&size=${currentSize}`
+      `${API_URL}apiMeasure/getMeasuresByName/${searchName}?page=${currentPage}&size=${currentSize}`, {
+      credentials: "include"
+    }
     );
     ///Si esta malo pues aja, mandamos error
     if (!response.ok) {
@@ -57,7 +63,9 @@ export async function getMeasureById(id) {
   ///Try para intentar
   try {
     ///Hacemos la peticion a la api
-    const response = await fetch(`${API_URL}apiMeasure/getMeasureById/${id}`);
+    const response = await fetch(`${API_URL}apiMeasure/getMeasureById/${id}`, {
+      credentials: "include"
+    });
     ///Guardamos la respuesta en una variable, por que pues solo es uno va, u hace referencia usuario
     const u = await response.json();
     ///lo mismo de arriba
@@ -77,6 +85,7 @@ export async function insertMeasure(payload) {
   try {
     ///Peticion para el insert y como lo queremos asi como su metodo
     const response = await fetch(`${API_URL}apiMeasure/insertMeasure`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       ///Convertimos la respuesta a json
@@ -108,6 +117,7 @@ export async function updateMeasure(payload, id) {
     const response = await fetch(
       `${API_URL}apiMeasure/updateMeasure/${id.value}`,
       {
+        credentials: "include",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         ///lo hacemos json
@@ -147,6 +157,7 @@ export async function deleteMeasure(id) {
   try {
     ///Si el usuario acepta hacemos la peticion
     const response = await fetch(`${API_URL}apiMeasure/deleteMeasure/${id}`, {
+      credentials: "include",
       method: "DELETE",
     });
 

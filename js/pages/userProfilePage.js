@@ -1,5 +1,7 @@
 import * as UserProfileController from "../controllers/userProfileController.js";
 import * as Alerts from "../../utils/alerts.js";
+import { auth } from "../controllers/sessionController.js";
+import * as imageService from "../services/imageService.js"
 
 export async function render() {
   loadCSS();
@@ -12,7 +14,7 @@ export async function render() {
             <div class="profile-card row align-items-center g-3">
                 <div class="col-12 col-md-auto text-center">
                     <img id="profile-img"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1__nUveMs5K4VA2cdLheJMT6C-tqFQveppg&s"
+                        src=""
                         alt="Foto de perfil" class="rounded-circle img-fluid"
                         style="width: 100px; height: 100px; object-fit: cover;" />
                 </div>
@@ -61,6 +63,9 @@ export async function render() {
                                 <label for="fileImg" class="form-label">Foto de perfil</label>
                                 <input type="file" id="fileImg" accept="image/*" />
                             </div>
+                            <div class="col mb-2" d-none>
+                                <input type="hidden"  id="urlImg" class="form-control" placeholder="Url" >
+                            </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-center">
                             <button type="submit" class="btn kz-button-create">Guardar</button>
@@ -70,20 +75,6 @@ export async function render() {
             </div>
         </div>
         <div class="advanced-filters-container p-4">
-            <h4 class="fw-bold mb-3">Apariencia</h4>
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <span class="fw-semibold">Modo oscuro</span>
-                <div class="form-check form-switch m-0">
-                    <input type="checkbox" id="darkModeToggle" class="custom-switch-xl">
-                </div>
-            </div>
-            <div class="mb-4">
-                <label for="languageSelect" class="fw-semibold mb-1">Idioma</label>
-                <select id="languageSelect" class="form-select">
-                    <option value="es">Español</option>
-                    <option value="en">Inglés</option>
-                </select>
-            </div>
             <button class="btn btn-success kz-button-create w-100" data-bs-toggle="modal"
                 data-bs-target="#contraseñaModal" id="editPassword">Cambiar contraseña</button>
         </div>
@@ -127,6 +118,7 @@ export async function render() {
         </div>
     </div>
 
+
   `;
 }
 export function afterRender() {
@@ -169,12 +161,28 @@ function loadUserData() {
   const hideNPassword = document.querySelector("#hideNewPassword");
   const hideNPIcon = hideNPassword.getElementsByTagName("i")[0];
 
-  UserProfileController.reloadUserData(localStorage.getItem("user"));
+  UserProfileController.reloadUserData(auth.user.id);
+  const imageFileInput = document.getElementById("fileImg");
+  const imageUrlHidden = document.getElementById("urlImg");
+  const imagePreview = document.getElementById("profile-image")
+
+    if(imageFileInput && imagePreview){
+        imageFileInput.addEventListener("change", ()=>{
+            const file = imageFileInput?.[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = () => (imagePreview.src = reader.result);
+                reader.readAsDataURL(file);
+            } else{
+                imagePreview.src = imageUrlHidden?.value || "";
+            }
+        });
+    }
 
   // Logica para cargar el formulario de actualizar perfil
   editProfileBtn.addEventListener("click", () => {
     UserProfileController.loadUserModal(
-      localStorage.getItem("user"),
+      auth.user.id,
       firstNametxt,
       lastNametxt,
       usertxt,
@@ -202,6 +210,21 @@ function loadUserData() {
         Alerts.showToastCloseError("El correo electrónico no tiene una estructura válida");
         return;
     }
+
+     let finalImageURL = imageUrlHidden?.value || "";
+    const file = imageFileInput?.files?.[0];
+
+    if(file){
+        try{
+            const data = await imageService.uploadImageToFolder(file, "profileImage")
+            finalImageURL = data.url || ""
+        }
+        catch (err){
+            console.error("Error subiendo imagenes:" , err)
+             Alerts.showToastCloseError("No ha sido posible editar la foto de perfil");
+             return;
+        }
+    }
     
     if (isLoadingProfile) return;
     isLoadingProfile = true;
@@ -211,15 +234,16 @@ function loadUserData() {
       lastNametxt,
       usertxt,
       emailtxt,
+      finalImageURL,
       editProfileForm,
-      localStorage.getItem("user")
+      auth.user.id
     );
 
     profileModal.hide();
     isLoadingProfile = false;
 
     if (res?.ok) {
-        await UserProfileController.reloadUserData(localStorage.getItem("user"));
+      await UserProfileController.reloadUserData(auth.user.id);
     };
   });
 
@@ -253,7 +277,7 @@ function loadUserData() {
         return;
     }
 
-    const valid = await UserProfileController.confirmPassword(localStorage.getItem("user"), oldPassword.value.trim())
+    const valid = await UserProfileController.confirmPassword(auth.user.id, oldPassword.value.trim())
     if (!valid) {
       Alerts.showToastCloseError("La contraseña no es correcta");
       return;
@@ -267,7 +291,7 @@ function loadUserData() {
     if (isLoadingPassword) return;
     isLoadingPassword = true;
 
-    await UserProfileController.updatePassword(newPassword.value.trim(), editPasswordForm, localStorage.getItem("user"))
+    await UserProfileController.updatePassword(newPassword.value.trim(), editPasswordForm, auth.user.id)
 
     passwordModal.hide()
     isLoadingPassword = false;
