@@ -4,8 +4,10 @@ import * as Alerts from "../../utils/alerts";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
 import { getAllMeasureUnitsList } from "../services/measureUnitsService";
 import { getLoggedUser } from "../services/authService";
+import { role } from '../controllers/sessionController';
 
 export async function render() {
+  role.applyPermissions();
   return `
     <!-- Consumptions Section -->
     <div class="py-4" id="consumptions-root">

@@ -169,6 +169,7 @@ export function loadUsersTable(users, tab) {
           </tbody>
         </table>
     </div>`;
+    role.applyPermissions();
 }
 
 ///Aca llenamos nuestros roles, la funcionalidad esta en page

@@ -1,5 +1,6 @@
 import * as Alerts from "../../../utils/alerts.js";
 import * as ResourceService from "../../services/resourcesService.js";
+import { role } from '../../controllers/sessionController.js';
 
 ///Funcion de init
 export async function initResource(container) {
@@ -182,6 +183,8 @@ function loadResourcesTable(resources, tab) {
           </tbody>
         </table>
     </div>`;
+    
+    role.applyPermissions();
 }
 
 export function loadMeasureUnits(measureUnits, measureSelect) {

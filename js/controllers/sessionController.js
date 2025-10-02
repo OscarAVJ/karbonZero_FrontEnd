@@ -64,10 +64,33 @@ export function getUserAuthorities(authority) {
 export const role = {
     hasStatus0: () => getUserStatus() === 0 || getUserAuthorities("ROLE_0"),
     hasStatus1: () => getUserStatus() === 1 || getUserAuthorities("ROLE_1"),
-    hasStatus2: () => getUserStatus() === 2 || getUserAuthorities("ROLE_2")
-}
+    hasStatus2: () => getUserStatus() === 2 || getUserAuthorities("ROLE_2"),
+
+    applyPermissions() {
+       if (this.hasStatus1()) {
+         document.querySelectorAll(".kz-button-create").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-consumption").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-consumption").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-resource").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-resource").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-purity").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-purity").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-measure").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-measure").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-conversionUnit").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-conversionUnit").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-measureUnit").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-measureUnit").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-edit-user").forEach(btn => btn.style.display = "none");
+         document.querySelectorAll(".btn-delete-user").forEach(btn => btn.style.display = "none");
+        }
+    }
+};
+
 
 // ///El evento pageshow se dispara siempre que se cargue la pagina, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE, SIEMPRE
 window.addEventListener("pageshow", async () => {
   await renderKarbonZeroData();
+  //Se pone aca para qué cuando se refresque la pagina se vuelva a ejecutar el metodo y se aplique la condicion
+   role.applyPermissions();
 });
