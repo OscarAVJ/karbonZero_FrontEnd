@@ -15,6 +15,7 @@ export const maps = {
   originalScale: 0,
   scale: 0,
   consumptions: [],
+  consumptionsTotal: 0,
   states: [],
 };
 
@@ -58,37 +59,53 @@ export async function loadMap(mapContainer, barContainer, text) {
   );
 
   // Todos los consumos serán evaluados igual, así que vale la pena unirlos
-  maps.consumptions = [
+  const consumptions = [
     ...transports.data,
     ...services.data,
     ...fuels.data,
     ...foods.data,
   ];
+  maps.consumptions = [];
 
-  maps.states = [];
-  // Iteramos los estados
-  for (let state of geoJson.features) {
-    let total = 0;
+  maps.states = {};
 
-    // Calculamos cuantos consumos tiene ese estado
-    for (let consumption of maps.consumptions) {
-        if (d3.polygonContains(state.geometry.coordinates[0], [
+  for (let consumption of consumptions) {
+    // Obtenemos más consumos de los necesarios, unos no son del país y despúes debemos eliminarlos
+    let findState = false;
+    maps.consumptionsTotal += consumption.total;
+
+    for (let state of geoJson.features) {
+      // Si el estado no existe en el JSON, lo agregamos
+      if (!(state.properties.shapeName in maps.states)) {
+        maps.states[state.properties.shapeName] = {
+          name: state.properties.shapeName,
+          coordinates: state.geometry.coordinates[0],
+          total: 0,
+        };
+      }
+
+      // Comprobamos si el consumo esta en ese estado
+      if (
+        d3.polygonContains(state.geometry.coordinates[0], [
           consumption.longitude,
           consumption.latitude,
-        ])) {
-        total += consumption.total;
+        ])
+      ) {
+        // Si lo esta, lo agregamos al total del estado
+        maps.states[state.properties.shapeName].total += consumption.total;
+        findState = true;
+        break;
       }
     }
 
-    // Agregamos los estados al JSON para volver ha hacer las gráficas sin hacer peticiones al servidos
-    maps.states.push({
-      name: state.properties.shapeName,
-      coordinates: state.geometry.coordinates[0],
-      total: total,
-    });
-  }
-  console.log(maps)
+    if (findState) {
+      // Eliminamos los consumos que no corresponden a ningun estado (y por lo tanto al país)
+      maps.consumptions.push(consumption);
+      continue;
+    }
 
+    maps.consumptionsTotal -= consumption.total;
+  }
   updateMap(mapContainer);
   loadBarChart(barContainer);
 }
@@ -112,13 +129,15 @@ function updateMap(mapContainer) {
 }
 
 async function loadPoints(pathGenerator, map) {
+  const mean = maps.consumptionsTotal / maps.consumptions.length;
+
   for (let consumption of maps.consumptions) {
     let circle = d3
       .geoCircle()
       .center([consumption.longitude, consumption.latitude])
       .radius(50 / maps.originalScale)();
 
-    const color = getColor(consumption.total);
+    const color = getColor(consumption.total, mean / 2);
 
     map.innerHTML += `<path style="fill: rgba(${color[0]}, ${color[1]}, ${
       color[2]
@@ -226,19 +245,15 @@ export async function loadBarChart(barContainer) {
   const margin = { top: 30, right: 30, bottom: 90, left: 50 };
 
   // Tenemos que seleccionar el svg con los métodos de d3
-  const svg = d3
-    .select("#barChart")
-    .attr("width", width - 32);
-    ;
-
+  const svg = d3.select("#barChart").attr("width", width - 32);
   const xScale = d3
     .scaleBand()
-    .domain(maps.states.map((d) => d.name))
+    .domain(Object.values(maps.states).map((d) => d.name))
     .range([margin.left, width - margin.right])
     .padding(0.1);
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(maps.states, (d) => d.total)])
+    .domain([0, d3.max(Object.values(maps.states), (d) => d.total)])
     .nice()
     .range([height - margin.bottom, margin.top]);
 
@@ -259,9 +274,13 @@ export async function loadBarChart(barContainer) {
     .call(d3.axisLeft(yScale))
     .attr("class", "axis");
   // Draw bars
+
+  const sum = Object.values(maps.states).reduce((p, a) => p + a.total, 0);
+  const length = Object.keys(maps.states).length;
+  const mean = sum / length;
   svg
     .selectAll(".bar")
-    .data(maps.states)
+    .data(Object.values(maps.states))
     .enter()
     .append("rect")
     .attr("class", "bar")
@@ -270,14 +289,14 @@ export async function loadBarChart(barContainer) {
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - margin.bottom - yScale(d.total))
     .attr("style", (d) => {
-      const colors = getColor(d.total, 1000);
+      const colors = getColor(d.total, mean / 2);
       return `fill: rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, 100)`;
     });
 
   // Add labels
   svg
     .selectAll(".label")
-    .data(maps.states)
+    .data(Object.values(maps.states))
     .enter()
     .append("text")
     .attr("class", "label")
@@ -288,8 +307,6 @@ export async function loadBarChart(barContainer) {
 }
 
 function getColor(n, base = 10) {
-  // TODO: Crear un gradiente de color "más cientifico"
-
   if (n > base) {
     n = base;
   }
