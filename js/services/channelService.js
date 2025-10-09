@@ -27,6 +27,25 @@ export async function getCompany() {
   return info.ok ? info.json() : { authenticated: false };
 }
 
+export async function getPostApproved() {
+  try {
+    const res = await fetch(`${API_URL}apiChannel/getChannelPostApproved`, {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      console.error(`Error getting the posts: ${res.status}`);
+      return { ok: false, data: null };
+    }
+
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error(`Error getting the posts: ${err}`);
+    return { ok: false, data: null };
+  }
+}
+
 export async function getPostNoApproved() {
   try {
     const res = await fetch(`${API_URL}apiChannel/getChannelPostNoApproved`, {
@@ -42,6 +61,25 @@ export async function getPostNoApproved() {
     return { ok: true, data };
   } catch (err) {
     console.error(`Error getting the posts: ${err}`);
+    return { ok: false, data: null };
+  }
+}
+
+export async function getChannelData() {
+  try {
+    const res = await fetch(`${API_URL}apiChannel/getChannel`, {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      console.error(`Error getting the channel: ${res.status}`);
+      return { ok: false, data: null };
+    }
+
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error(`Error getting the channel: ${err}`);
     return { ok: false, data: null };
   }
 }

@@ -5,7 +5,6 @@ const processedIds = new Set();
 export async function loadPendingMessages(chatContainer) {
   const messages = await channelService.getPostNoApproved();
 
-  console.log(messages.data);
   chatContainer.innerHTML = "";
 
   messages.data.forEach((m) => {
@@ -29,7 +28,7 @@ export async function loadPendingMessages(chatContainer) {
   });
 }
 
-export function initializeEventListeners(chatContainer) {
+export function initializeEventListeners(chatContainer, chatContent) {
   chatContainer.addEventListener("click", async (e) => {
     const approveBtn = e.target.closest(".approve-button");
     const deleteBtn = e.target.closest(".no-approve-button");
@@ -47,7 +46,10 @@ export function initializeEventListeners(chatContainer) {
 
       try {
         const ok = await channelService.approvePost(id);
-        if (ok) await loadPendingMessages(chatContainer);
+        if (ok) {
+            await loadPendingMessages(chatContainer);
+            await loadPosts(chatContent);
+        }
       } finally {
         processedIds.delete(id);
       }
@@ -70,4 +72,27 @@ export function initializeEventListeners(chatContainer) {
       }
     }
   });
+}
+
+export async function loadPosts (chatContent) {
+    const posts = await channelService.getPostApproved();
+
+    chatContent.innerHTML = "";
+    posts.data.forEach((p) => {
+      chatContent.innerHTML += `
+    <div style="background: white; padding: 10px; border-radius: 10px; max-width: 75%; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <div style="color: #007C65; font-weight: bold; font-size:1.2rem">${p.title}</div>
+      <img src="${p.imagePath}" alt="Publicación"
+        style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; margin-bottom: 6px;" />
+      <div style="font-size: 0.9rem; color: #333;">${p.descript}</div>
+      <figcaption class="my-1" style="font-size: .875em; color: #6c757d">
+        <cite>${p.userName}</cite>
+      </figcaption>
+    </div>
+  `;
+    });
+}
+
+export async function loadChannelData(channelName, channelImg) {
+
 }

@@ -14,9 +14,9 @@ export async function render() {
         <div style="width: 50%; min-width: 300px; display: flex; flex-direction: column; padding: 1rem;">
             <div
                 style="display: flex; align-items: center; gap: 0.6rem; font-weight: bold; font-size: 1.2rem; color: #007C65; margin-bottom: 1rem;">
-                <img src="img/logorical.png"
+                <img id="channelImg" src="img/logorical.png"
                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" />
-                Ricaldone
+                <p id="channelName">Compañía</p>
             </div>
 
             <div id="chat-content"
@@ -126,33 +126,15 @@ function loadCSS() {
 async function initChannel() {
   const chatList = document.querySelector("#chat-list");
   ChannelController.loadPendingMessages(chatList);
-  ChannelController.initializeEventListeners(chatList);
 
-  const publicaciones = [
-    {
-      fecha: "20 de marzo",
-      texto: "Exposición día del agua 20-03-2025",
-      imagen: "img/tierrachat.avif",
-    },
-    {
-      fecha: "22 de marzo",
-      texto: "¡Feliz día del agua!",
-      imagen: "img/aguachat.webp",
-    },
-  ];
+  const chatContent = document.querySelector("#chat-content");
+  ChannelController.loadPosts(chatContent);
 
-  const chatContent = document.getElementById("chat-content");
-  chatContent.innerHTML = "";
-  publicaciones.forEach((p) => {
-    chatContent.innerHTML += `
-    <div style="background: white; padding: 10px; border-radius: 10px; max-width: 75%; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      <div style="font-size: 0.75rem; color: #777; margin-bottom: 4px;">${p.fecha}</div>
-      <img src="${p.imagen}" alt="Publicación"
-        style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; margin-bottom: 6px;" />
-      <div style="font-size: 0.9rem; color: #333;">${p.texto}</div>
-    </div>
-  `;
-  });
+  const channelImg = document.querySelector("#channelImg");
+  const channelName = document.querySelector("#channelName");
+  ChannelController.loadChannelData(channelName, channelImg);
+
+  ChannelController.initializeEventListeners(chatList, chatContent);
 
   document.querySelectorAll(".dropdown-section").forEach((section) => {
     const title = section.querySelector(".dropdown-title");
