@@ -1,5 +1,6 @@
 import * as RolService from "../../services/rolService.js";
 import * as Alerts from "../../../utils/alerts.js";
+import {role} from "../sessionController.js";
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 
 ///Nuestro metodo de inicio, lo llamamos en el userPage.js
@@ -136,6 +137,7 @@ export function loadRolesTable(users, tab) {
           </tbody>
         </table>
     </div>`;
+    role.applyPermissions();
 }
 
 

@@ -1,0 +1,24 @@
+.approve-button {
+    background-color: #007C65;
+    color: #ddd;
+    border: none;
+    border-radius: 5px
+}
+
+.approve-button:hover {
+    background-color: #ddd;
+    color: #007C65;
+}
+
+.no-approve-button {
+    background-color: #e74c3c;
+    color: #ddd;
+    border: none;
+    border-radius: 5px
+
+}
+
+.no-approve-button:hover {
+    background-color: #ddd;
+    color: #e74c3c;
+}
