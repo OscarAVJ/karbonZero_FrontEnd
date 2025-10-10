@@ -55,11 +55,6 @@ function loadCSS() {
 }
 
 async function initDashboard() {
-  // window.addEventListener("pageshow", async () => {
-  //   await renderKarbonZeroData()
-
-  // })
-  console.log(auth.ok)
   const general_data = await getAllResourceConsumptionsCO2Total();
   for (let resource in general_data) {
     general_data[resource] = parseFloat(general_data[resource].toFixed(4));

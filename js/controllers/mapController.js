@@ -303,7 +303,7 @@ export async function loadBarChart(barContainer) {
     .attr("x", (d) => xScale(d.name) + xScale.bandwidth() / 2)
     .attr("y", (d) => yScale(d.total) - 5)
     .attr("text-anchor", "middle")
-    .text((d) => d.total);
+    .text((d) => Math.round(d.total) + " tCo2");
 }
 
 function getColor(n, base = 10) {

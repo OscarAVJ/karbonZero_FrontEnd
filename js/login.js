@@ -1,5 +1,5 @@
 import * as Alerts from "../utils/alerts.js";
-import { renderKarbonZeroData } from "./controllers/sessionController.js";
+import { auth, renderKarbonZeroData } from "./controllers/sessionController.js";
 import * as AuthService from "./services/authService.js";
 
 
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userPassword = document.getElementById("contraseñatxt").value.trim();
     const btnLogIn = document.querySelector('#login-button');
     const checkRememberMe = document.querySelector("#rememberCheckbox")
-
     if (!email) {
       Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
       return;
@@ -50,7 +49,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const userInfo = await AuthService.getLoggedUser();
-
       if (userInfo.authenticated) {
         window.location.href = 'index.html';
       } else {
