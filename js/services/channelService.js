@@ -84,6 +84,28 @@ export async function getChannelData() {
   }
 }
 
+export async function updateChannelData(payload) {
+  try {
+    const res = await fetch(`${API_URL}apiChannel/updateChannel`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      console.error(`Error updating the channel: ${res.status}`);
+      return { ok: false, data: null };
+    }
+
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (err) {
+    console.error(`Error updating the channel: ${err}`);
+    return { ok: false, data: null };
+  }
+}
+
 export async function approvePost(id) {
   try {
     const res = await fetch(`${API_URL}apiChannel/approvePost/${id}`, {

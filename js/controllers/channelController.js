@@ -1,4 +1,5 @@
 import * as channelService from "../services/channelService.js";
+import * as Alerts from "../../utils/alerts.js"
 
 const processedIds = new Set();
 
@@ -93,6 +94,29 @@ export async function loadPosts (chatContent) {
     });
 }
 
-export async function loadChannelData(channelName, channelImg) {
+export async function loadChannelData(chNm1, chNm2, chDc, chImg1, chImg2) {
+    const channel = await channelService.getChannelData()
+    chNm1.textContent = channel.data.name;
+    chNm2.textContent = channel.data.name;
 
+    chDc.textContent = channel.data.descript;
+
+    chImg1.src = channel.data.imagePath;
+    chImg2.src = channel.data.imagePath;
+}
+
+export async function updateChannelData (channelName, channelDescription, channelImg, form) {
+    const payload = {
+        name: channelName,
+        descript: channelDescription,
+        imagePath: channelImg
+    }
+    try {
+        const res = await channelService.updateChannelData(payload)
+        form.reset()
+        return res
+    } catch (err) {
+        Alerts.showToastCloseError("No se pudo actualizar la información del canal")
+        return {ok: false}
+    }
 }

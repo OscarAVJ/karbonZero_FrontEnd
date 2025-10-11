@@ -1,4 +1,6 @@
 import * as ChannelController from "../controllers/channelController.js";
+import * as ImageService from "../services/imageService.js";
+import * as Alerts from "../../utils/alerts.js";
 
 export async function render() {
   loadCSS();
@@ -14,95 +16,120 @@ export async function render() {
         <div style="width: 50%; min-width: 300px; display: flex; flex-direction: column; padding: 1rem;">
             <div
                 style="display: flex; align-items: center; gap: 0.6rem; font-weight: bold; font-size: 1.2rem; color: #007C65; margin-bottom: 1rem;">
-                <img id="channelImg" src="img/logorical.png"
-                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" />
-                <p id="channelName">Compañía</p>
+                <img id="channelImg" src="logo.png"
+                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="Logo" />
+                <p id="channelName">Canal</p>
             </div>
 
             <div id="chat-content"
                 style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 1rem; background: #eeeeee; padding: 1rem; border-radius: 10px; overflow-y: auto;">
             </div>
 
+            <!--
             <div style="display: flex; align-items: center; margin-top: 1rem;">
                 <input type="text" placeholder="Escribe un mensaje"
                     style="flex: 1; padding: 0.6rem 1rem; border-radius: 30px; border: 1px solid #ccc;" />
                 <button
                     style="margin-left: 0.5rem; background-color: #007C65; color: white; border: none; border-radius: 12%; width: 42px; height: 42px; font-size: 1.2rem;">➤</button>
             </div>
+            -->
         </div>
         <div
             style="width: 25%; min-width: 200px; padding: 1rem; display: flex; flex-direction: column; overflow-y: auto;">
-            <div style="text-align: center; margin-bottom: 1rem;">
-                <img src="img/logorical.png" style="width: 110px; height: auto;" alt="Logo" />
+            <div style="display: flex; text-align: center; justify-content: center; align-items: end; margin-bottom: 1rem;">
+                <img id="bigChannelImg" src="../../assets/imgs/defaultPfp.png" style="width: 110px; height: auto;" alt="Logo"/>
+                <button class="btn edit-button" id="channelNameEdit" data-bs-toggle="modal" data-bs-target="#imgModal"><i class="bi bi-pencil-fill"></i></button>
+
             </div>
 
-            <div style="text-align: center; font-weight: bold; color: #007C65; margin-bottom: 0.8rem;">
-                Información general
-            </div>
+            <h5 style="text-align: center; font-weight: bold; color: #007C65; margin-bottom: 0.8rem;">
+                Información del canal
+            </h5>
 
             <div style="font-size: 0.95rem; line-height: 1.5; color: #007C65; margin-bottom: 1rem;">
-                <p><strong>Institución:</strong><br>Instituto Técnico Ricaldone</p>
-                <p><strong>Nombre:</strong><br>Juan Pablo López</p>
-                <p><strong>Correo Electrónico:</strong><br>juanp123@gmail.com</p>
-            </div>
-
-            <div style="flex-grow: 1; display: flex; flex-direction: column;">
-                <div class="dropdown-section"
-                    style="border-top: 1px solid #ccc; cursor: default; padding: 0.6rem 0; user-select: none;">
-                    <div class="dropdown-title"
-                        style="display: flex; align-items: center; justify-content: space-between;">
-                        <span style="color: #007C65; font-weight: bold;">Información adicional</span>
-                        <iconify-icon class="arrow" icon="mdi:play"
-                            style="color: #007C65; font-size: 24px; cursor: pointer; transition: transform 0.3s ease;"></iconify-icon>
+                <div>
+                    <div>
+                        <h6 class="d-inline"><strong>Nombre:</strong></h6>
+                        <button class="btn edit-button" id="channelNameEdit" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-fill"></i></button>
                     </div>
-                    <div class="dropdown-content"
-                        style="display: none; color: gray; font-size: 0.95rem; margin-top: 0.6rem; padding-left: 0.5rem;">
-                        Aún no se encuentra nada.
-                    </div>
+                    <p id="channelNameLabel">KarbonZero</p>
                 </div>
-
-                <div class="dropdown-section"
-                    style="border-top: 1px solid #ccc; cursor: default; padding: 0.6rem 0; user-select: none;">
-                    <div class="dropdown-title"
-                        style="display: flex; align-items: center; justify-content: space-between;">
-                        <span style="color: #007C65; font-weight: bold;">Archivos compartidos</span>
-                        <iconify-icon class="arrow" icon="mdi:play"
-                            style="color: #007C65; font-size: 24px; cursor: pointer; transition: transform 0.3s ease;"></iconify-icon>
+                <div>
+                    <div>
+                        <h6 class="d-inline"><strong>Descripción:</strong></h6>
+                        <button class="btn edit-button" id="channelNameEdit" data-bs-toggle="modal" data-bs-target="#descriptionModal"><i class="bi bi-pencil-fill"></i></button>
                     </div>
-                    <div class="dropdown-content"
-                        style="display: none; color: gray; font-size: 0.95rem; margin-top: 0.6rem; padding-left: 0.5rem;">
-                        Aún no se encuentra nada.
-                    </div>
-                </div>
-
-                <div class="dropdown-section"
-                    style="border-top: 1px solid #ccc; cursor: default; padding: 0.6rem 0; user-select: none;">
-                    <div class="dropdown-title"
-                        style="display: flex; align-items: center; justify-content: space-between;">
-                        <span style="color: #007C65; font-weight: bold;">Links compartidos</span>
-                        <iconify-icon class="arrow" icon="mdi:play"
-                            style="color: #007C65; font-size: 24px; cursor: pointer; transition: transform 0.3s ease;"></iconify-icon>
-                    </div>
-                    <div class="dropdown-content"
-                        style="display: none; color: gray; font-size: 0.95rem; margin-top: 0.6rem; padding-left: 0.5rem;">
-                        Aún no se encuentra nada.
-                    </div>
-                </div>
-                
-                <div class="dropdown-section"
-                    style="border-top: 1px solid #ccc; cursor: default; padding: 0.6rem 0; user-select: none;">
-                    <div class="dropdown-title"
-                        style="display: flex; align-items: center; justify-content: space-between;">
-                        <span style="color: #007C65; font-weight: bold;">Documentos compartidos</span>
-                        <iconify-icon class="arrow" icon="mdi:play"
-                            style="color: #007C65; font-size: 24px; cursor: pointer; transition: transform 0.3s ease;"></iconify-icon>
-                    </div>
-                    <div class="dropdown-content"
-                        style="display: none; color: gray; font-size: 0.95rem; margin-top: 0.6rem; padding-left: 0.5rem;">
-                        Aún no se encuentra nada.
-                    </div>
+                    <p id="channelDescriptionLabel">Descripción del canal</p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content kz-modal-mongo border-0">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h4 class="kz-modal-title">Editar</h4>
+                <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                    data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="editForm">
+                <div class="modal-body mx-3">
+                    <div class="row g-2 mb-3">
+                       <input id="editTxt" type="text" class="form-control" placeholder="Nombre">
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn kz-button-create">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content kz-modal-mongo border-0">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h4 class="kz-modal-title">Editar</h4>
+                <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                    data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="descriptionForm">
+                <div class="modal-body mx-3">
+                    <div class="row g-2 mb-3">
+                       <textarea id="descriptionTxt" type="text" class="form-control" placeholder="Descripción"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn kz-button-create">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content kz-modal-mongo border-0">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h4 class="kz-modal-title">Editar</h4>
+                <button type="button" class="btn-close" style="position: absolute; right: 1rem; top: 1rem;"
+                    data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="imgForm">
+                <div class="modal-body mx-3">
+                    <div class="row g-2 mb-3">
+                        <div class="col mb-2">
+                            <input class="form-control" type="file" id="fileImg" accept="image/*" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn kz-button-create">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -131,67 +158,149 @@ async function initChannel() {
   ChannelController.loadPosts(chatContent);
 
   const channelImg = document.querySelector("#channelImg");
+  const bigChannelImg = document.querySelector("#bigChannelImg");
   const channelName = document.querySelector("#channelName");
-  ChannelController.loadChannelData(channelName, channelImg);
 
   ChannelController.initializeEventListeners(chatList, chatContent);
 
-  document.querySelectorAll(".dropdown-section").forEach((section) => {
-    const title = section.querySelector(".dropdown-title");
-    const content = section.querySelector(".dropdown-content");
-    const arrow = section.querySelector(".arrow");
+  const editModal = document.querySelector("#editModal");
+  const bsEditModal = bootstrap.Modal.getOrCreateInstance(editModal);
+  const editForm = document.querySelector("#editForm");
+  const editTxt = document.querySelector("#editTxt");
+  const editLabel = document.querySelector("#channelNameLabel");
 
-    title.addEventListener("click", () => {
-      const isOpen = content.style.display === "block";
+  const descriptModal = document.querySelector("#descriptionModal");
+  const bsDesModal = bootstrap.Modal.getOrCreateInstance(descriptModal);
+  const descriptionForm = document.querySelector("#descriptionForm");
+  const descriptionTxt = document.querySelector("#descriptionTxt");
+  const descriptionLabel = document.querySelector("#channelDescriptionLabel");
 
-      // Cierra todos
-      document
-        .querySelectorAll(".dropdown-content")
-        .forEach((c) => (c.style.display = "none"));
-      document
-        .querySelectorAll(".arrow")
-        .forEach((a) => (a.style.transform = "rotate(0deg)"));
+  await ChannelController.loadChannelData(
+    editLabel,
+    channelName,
+    descriptionLabel,
+    channelImg,
+    bigChannelImg
+  );
 
-      if (!isOpen) {
-        content.style.display = "block";
-        arrow.style.transform = "rotate(90deg)";
-      }
-    });
+  let isLoading;
+  editForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    setTimeout(() => {
-      document.querySelectorAll(".check-icon").forEach((el) => {
-        el.addEventListener(
-          "mouseover",
-          () => (el.style.transform = "scale(1.2)")
-        );
-        el.addEventListener(
-          "mouseout",
-          () => (el.style.transform = "scale(1)")
-        );
-        el.addEventListener("click", () => {
-          el.style.color = "#005d3c";
-          el.style.transform = "scale(1.4)";
-          setTimeout(() => (el.style.transform = "scale(1)"), 150);
-        });
-      });
+    if (!editTxt.value.trim()) {
+      bsEditModal.hide();
+      return;
+    }
 
-      document.querySelectorAll(".close-icon").forEach((el) => {
-        el.addEventListener(
-          "mouseover",
-          () => (el.style.transform = "scale(1.2)")
-        );
-        el.addEventListener(
-          "mouseout",
-          () => (el.style.transform = "scale(1)")
-        );
-        el.addEventListener("click", () => {
-          el.style.color = "#7c0000";
-          el.style.transform = "scale(1.4)";
-          setTimeout(() => (el.style.transform = "scale(1)"), 150);
-        });
-      });
-    }, 100);
+    if (isLoading) return;
+    isLoading = true;
+
+    const res = await ChannelController.updateChannelData(
+      editTxt.value.trim(),
+      descriptionLabel.textContent,
+      bigChannelImg.src,
+      editForm
+    );
+
+    bsEditModal.hide();
+    isLoading = false;
+
+    if (res?.ok) {
+      await ChannelController.loadChannelData(
+        editLabel,
+        channelName,
+        descriptionLabel,
+        channelImg,
+        bigChannelImg
+      );
+      Alerts.showToastCloseInfo("Información del canal actualizada");
+    }
   });
+
+  let isLoading2;
+  descriptionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!descriptionTxt.value.trim()) {
+      bsDesModal.hide();
+      return;
+    }
+
+    if (isLoading2) return;
+    isLoading2 = true;
+
+    const res = await ChannelController.updateChannelData(
+      editLabel.textContent,
+      descriptionTxt.value.trim(),
+      bigChannelImg.src,
+      descriptionForm
+    );
+
+    bsDesModal.hide();
+    isLoading2 = false;
+
+    if (res?.ok) {
+      await ChannelController.loadChannelData(
+        editLabel,
+        channelName,
+        descriptionLabel,
+        channelImg,
+        bigChannelImg
+      );
+      Alerts.showToastCloseInfo("Información del canal actualizada");
+    }
+  });
+
+  const imgModal = document.querySelector("#imgModal");
+  const bsImgModal = bootstrap.Modal.getOrCreateInstance(imgModal);
+  const imgForm = document.querySelector("#imgForm");
+  const imageFileInput = document.getElementById("fileImg");
+
+  let isLoading3;
+  imgForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    let finalImageURL = "";
+    const file = imageFileInput?.files?.[0];
+
+    if (file) {
+      try {
+        const data = await ImageService.uploadImageToFolder(file, "channelImg");
+        finalImageURL = data.url || "";
+      } catch (err) {
+        console.error("Error subiendo imagenes:", err);
+        Alerts.showToastCloseError(
+          "No ha sido posible editar la foto del canal"
+        );
+        return;
+      }
+    }
+
+    if (isLoading3) return;
+    isLoading3 = true;
+
+    let res = await ChannelController.updateChannelData(
+      editLabel.textContent,
+      descriptionLabel.textContent,
+      finalImageURL,
+      imgForm
+    );
+
+    bsImgModal.hide();
+    isLoading3 = false;
+
+    if (res?.ok) {
+      await ChannelController.loadChannelData(
+        editLabel,
+        channelName,
+        descriptionLabel,
+        channelImg,
+        bigChannelImg
+      );
+      Alerts.showToastCloseInfo("Información del canal actualizada");
+    }
+  });
+
   const styleResponsive = document.createElement("style");
   styleResponsive.innerHTML = `
   @media (max-width: 768px) {
