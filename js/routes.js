@@ -7,7 +7,8 @@ const routes = {
     'map': () => import('../js/pages/mapPage.js'),
     'resources': () => import('../js/pages/resourcesPage.js'),
     'users': () => import('../js/pages/usersPage.js'),
-    'userProfile': () => import('../js/pages/userProfilePage.js')
+    'userProfile': () => import('../js/pages/userProfilePage.js'),
+    'channel': () => import("../js/pages/channelPage.js")
 }
 
 export async function startRouter() {

@@ -1,9 +1,9 @@
 import * as Alerts from "../utils/alerts.js";
 import { auth, renderKarbonZeroData } from "./controllers/sessionController.js";
 import * as AuthService from "./services/authService.js";
+import * as ChannelService from "./services/channelService.js";
 
-
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const password_input = document.getElementById("contraseñatxt");
   const hide_password = document.getElementById("hide-password");
   const icon = hide_password.getElementsByTagName("i")[0];
@@ -18,51 +18,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  document.getElementById("login-button").addEventListener("click", async () => {
-    const email = document.getElementById("emailtxt").value.trim();
-    const userPassword = document.getElementById("contraseñatxt").value.trim();
-    const btnLogIn = document.querySelector('#login-button');
-    const checkRememberMe = document.querySelector("#rememberCheckbox")
-    if (!email) {
-      Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
-      return;
-    }
+  document
+    .getElementById("login-button")
+    .addEventListener("click", async () => {
+      const email = document.getElementById("emailtxt").value.trim();
+      const userPassword = document
+        .getElementById("contraseñatxt")
+        .value.trim();
+      const btnLogIn = document.querySelector("#login-button");
+      const checkRememberMe = document.querySelector("#rememberCheckbox");
 
-    if (!userPassword) {
-      Alerts.showToastCloseInfo("La contraseña es obligatoria");
-      return;
-    }
-
-    let placeholderText;
-
-    try {
-      if (btnLogIn) {
-        placeholderText = btnLogIn.innerHTML;
-        btnLogIn.setAttribute("disabled", "disabled")
-        btnLogIn.innerHTML = "Ingresando...";
+      if (!email) {
+        Alerts.showToastCloseInfo("El correo electrónico es obligatorio");
+        return;
       }
 
-      if (checkRememberMe.checked) {
-        await AuthService.login(email, userPassword);
-      } else {
-        await AuthService.shortLogin(email, userPassword);
+      if (!userPassword) {
+        Alerts.showToastCloseInfo("La contraseña es obligatoria");
+        return;
       }
 
-      const userInfo = await AuthService.getLoggedUser();
-      if (userInfo.authenticated) {
-        window.location.href = 'index.html';
-      } else {
-        Alerts.showToastCloseError('Error de autenticación')
-      }
-    } catch (e) {
-      Alerts.showToastCloseError('No fue posible ingresar al sistema')
-    } finally {
-      if (btnLogIn) {
-        btnLogIn.removeAttribute("disabled");
-        if (placeholderText) btnLogIn.innerHTML = placeholderText;
-      }
-    }
-  });
+      let placeholderText;
 
-})
+      try {
+        if (btnLogIn) {
+          placeholderText = btnLogIn.innerHTML;
+          btnLogIn.setAttribute("disabled", "disabled");
+          btnLogIn.innerHTML = "Ingresando...";
+        }
 
+        if (checkRememberMe.checked) {
+          await AuthService.login(email, userPassword);
+        } else {
+          await AuthService.shortLogin(email, userPassword);
+        }
+        try {
+          await ChannelService.companyLogin();
+        } catch {
+          Alerts.showToastCloseError("No fue posible acceder a canales");
+        }
+
+        const userInfo = await AuthService.getLoggedUser();
+
+        if (userInfo.authenticated) {
+          window.location.href = "index.html";
+        } else {
+          Alerts.showToastCloseError("Error de autenticación");
+        }
+      } catch (e) {
+        Alerts.showToastCloseError("No fue posible ingresar al sistema");
+      } finally {
+        if (btnLogIn) {
+          btnLogIn.removeAttribute("disabled");
+          if (placeholderText) btnLogIn.innerHTML = placeholderText;
+        }
+      }
+    });
+});

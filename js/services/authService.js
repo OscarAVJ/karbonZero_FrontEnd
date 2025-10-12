@@ -1,4 +1,4 @@
-import { APIURL as API_URL } from '../../utils/api_url.js'
+import { APIURL as API_URL } from "../../utils/api_url.js";
 
 ///Funciones de logIn (Devuelven cookies de diferente duración)
 
@@ -44,26 +44,29 @@ export async function login(email, password) {
 
 export async function getLoggedUser() {
   const info = await fetch(`${API_URL}apiAuth/me`, {
-    credentials: "include"
+    credentials: "include",
   });
-  return info.ok ? info.json() : { authenticated: false }; 
+  return info.ok ? info.json() : { authenticated: false };
 }
-
 
 export async function logout() {
   try {
     const response = await fetch(`${API_URL}apiAuth/logout`, {
       method: "POST",
-      credentials: "include"
+      credentials: "include",
     });
 
     if (!response.ok) {
-      console.error(`Error cerrando la sesión del usuario actual: ${response.status}`);
+      console.error(
+        `Error cerrando la sesión del usuario actual: ${response.status}`
+      );
       return { ok: false };
     }
     return { ok: true };
   } catch (err) {
-    console.error(`Error cerrando la sesión del usuario actual: ${response.status}`);
+    console.error(
+      `Error cerrando la sesión del usuario actual: ${response.status}`
+    );
     return { ok: false };
   }
 }

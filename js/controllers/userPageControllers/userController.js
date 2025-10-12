@@ -1,7 +1,6 @@
 import * as UserService from "../../services/userService.js";
 import * as Alerts from "../../../utils/alerts.js";
-import {auth} from "../sessionController.js";
-import { role } from '../../controllers/sessionController.js';
+import {auth, role} from "../sessionController.js";
 
 ///Con import podemos acceder a todos los metodos exportados de X archivo
 

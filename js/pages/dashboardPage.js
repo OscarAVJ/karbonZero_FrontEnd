@@ -27,11 +27,11 @@ export async function render() {
             </div>
             <div class="tab-pane fade" id="specific">
                 <div id="time-buttons" class="d-none d-md-block my-2">
-                    <button class="btn kz-button-create" id="one-month">1M</button>
-                    <button class="btn kz-button-create" id="three-months">3M</button>
-                    <button class="btn kz-button-create" id="six-months">6M</button>
-                    <button class="btn kz-button-create" id="one-year">1Y</button>
-                    <button class="btn kz-button-create" id="all">ALL</button>
+                    <button class="btn kz-button" id="one-month">1M</button>
+                    <button class="btn kz-button" id="three-months">3M</button>
+                    <button class="btn kz-button" id="six-months">6M</button>
+                    <button class="btn kz-button" id="one-year">1Y</button>
+                    <button class="btn kz-button" id="all">ALL</button>
                 </div>
                 <div id="consumptions-selection"></div>
                 <div id="consumption-chart"></div>
@@ -55,6 +55,10 @@ function loadCSS() {
 }
 
 async function initDashboard() {
+  // window.addEventListener("pageshow", async () => {
+  //   await renderKarbonZeroData()
+
+  // })
   const general_data = await getAllResourceConsumptionsCO2Total();
   for (let resource in general_data) {
     general_data[resource] = parseFloat(general_data[resource].toFixed(4));
