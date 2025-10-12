@@ -241,5 +241,36 @@ export async function banUser(id) {
     } catch (err) {
       Alerts.showToastCloseError("No ha sido posible desbloquear el usuario", err);
     }
+}
+
+export async function sendRecoveryEmail(email) {
+  try {
+    const response = await fetch(`${API_URL}apiAuth/forgotPassword`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+    return response;
+  } catch (err) {
+    console.error('Error enviando correo de recuperación:', err);
+    throw err;
   }
-  
+}
+
+export async function verifyRecoveryCode(code) {
+  try {
+    const response = await fetch(`${API_URL}apiAuth/verifyCode`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    });
+    return response;
+  } catch (err) {
+    console.error('Error verificando código:', err);
+    throw err;
+  }
+}  
