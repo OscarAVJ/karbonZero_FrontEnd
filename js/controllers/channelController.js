@@ -1,5 +1,6 @@
 import * as channelService from "../services/channelService.js";
-import * as Alerts from "../../utils/alerts.js"
+import * as Alerts from "../../utils/alerts.js";
+import { role } from "../controllers/sessionController.js";
 
 const processedIds = new Set();
 
@@ -27,6 +28,7 @@ export async function loadPendingMessages(chatContainer) {
         </div>
       `;
   });
+  role.applyPermissions();
 }
 
 export function initializeEventListeners(chatContainer, chatContent) {
@@ -48,8 +50,8 @@ export function initializeEventListeners(chatContainer, chatContent) {
       try {
         const ok = await channelService.approvePost(id);
         if (ok) {
-            await loadPendingMessages(chatContainer);
-            await loadPosts(chatContent);
+          await loadPendingMessages(chatContainer);
+          await loadPosts(chatContent);
         }
       } finally {
         processedIds.delete(id);
@@ -73,50 +75,81 @@ export function initializeEventListeners(chatContainer, chatContent) {
       }
     }
   });
+
+  chatContent.addEventListener("click", async (e) => {
+    const deleteBtn = e.target.closest(".btn-delete-post");
+    const id = deleteBtn.dataset.id;
+
+    if (processedIds.has(id)) {
+      console.log("Ya se está procesando este post");
+      return;
+    }
+
+    processedIds.add(id);
+    deleteBtn.disabled = true;
+
+    try {
+      const ok = await channelService.deletePost(id);
+      if (ok) await loadPosts(chatContent);
+    } finally {
+      processedIds.delete(id);
+    }
+  });
 }
 
-export async function loadPosts (chatContent) {
-    const posts = await channelService.getPostApproved();
+export async function loadPosts(chatContent) {
+  const posts = await channelService.getPostApproved();
 
-    chatContent.innerHTML = "";
-    posts.data.forEach((p) => {
-      chatContent.innerHTML += `
+  chatContent.innerHTML = "";
+  posts.data.forEach((p) => {
+    chatContent.innerHTML += `
     <div style="background: white; padding: 10px; border-radius: 10px; max-width: 75%; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
       <div style="color: #007C65; font-weight: bold; font-size:1.2rem">${p.title}</div>
       <img src="${p.imagePath}" alt="Publicación"
         style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; margin-bottom: 6px;" />
       <div style="font-size: 0.9rem; color: #333;">${p.descript}</div>
-      <figcaption class="my-1" style="font-size: .875em; color: #6c757d">
-        <cite>${p.userName}</cite>
-      </figcaption>
+      <div class="d-flex justify-content-between">
+        <figcaption class="my-1" style="font-size: .875em; color: #6c757d">
+            <cite>${p.userName}</cite>
+        </figcaption>
+        <button class="btn btn-sm btn-danger btn-delete-post" data-id="${p.idChannelPost}"><i class="bi bi-trash-fill"></i></button>
+      </div>
     </div>
   `;
-    });
+  });
+  role.applyPermissions();
 }
 
 export async function loadChannelData(chNm1, chNm2, chDc, chImg1, chImg2) {
-    const channel = await channelService.getChannelData()
-    chNm1.textContent = channel.data.name;
-    chNm2.textContent = channel.data.name;
+  const channel = await channelService.getChannelData();
+  chNm1.textContent = channel.data.name;
+  chNm2.textContent = channel.data.name;
 
-    chDc.textContent = channel.data.descript;
+  chDc.textContent = channel.data.descript;
 
-    chImg1.src = channel.data.imagePath;
-    chImg2.src = channel.data.imagePath;
+  chImg1.src = channel.data.imagePath;
+  chImg2.src = channel.data.imagePath;
 }
 
-export async function updateChannelData (channelName, channelDescription, channelImg, form) {
-    const payload = {
-        name: channelName,
-        descript: channelDescription,
-        imagePath: channelImg
-    }
-    try {
-        const res = await channelService.updateChannelData(payload)
-        form.reset()
-        return res
-    } catch (err) {
-        Alerts.showToastCloseError("No se pudo actualizar la información del canal")
-        return {ok: false}
-    }
+export async function updateChannelData(
+  channelName,
+  channelDescription,
+  channelImg,
+  form
+) {
+  const payload = {
+    name: channelName,
+    descript: channelDescription,
+    imagePath: channelImg,
+  };
+  try {
+    const res = await channelService.updateChannelData(payload);
+    form.reset();
+    return res;
+  } catch (err) {
+    Alerts.showToastCloseError(
+      "No se pudo actualizar la información del canal"
+    );
+    return { ok: false };
+  }
 }

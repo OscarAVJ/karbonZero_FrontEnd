@@ -1,4 +1,5 @@
 import { APIURL as API_URL } from "../../utils/api_url.js";
+import * as Alerts from "../../utils/alerts.js"
 
 export async function companyLogin() {
   try {
@@ -127,6 +128,20 @@ export async function approvePost(id) {
 }
 
 export async function deletePost(id) {
+  const result = await Swal.fire({
+    title: "¿Estas seguro de que quieres eliminar a este post?",
+    showDenyButton: true,
+    confirmButtonText: "Eliminar",
+    confirmButtonColor: "#DF4646",
+    denyButtonColor: "#6d6c6c",
+    denyButtonText: `Cancelar`,
+  });
+
+  if (!result.isConfirmed) {
+    Alerts.showToastCloseError("Proceso cancelado");
+    return false;
+  }
+
   try {
     const res = await fetch(`${API_URL}apiChannel/deletePost/${id}`, {
       method: "DELETE",
@@ -137,11 +152,11 @@ export async function deletePost(id) {
       console.error(`Error deleting the post: ${res.status}`);
       return { ok: false };
     }
+    Alerts.showToastCloseInfo("Post eliminado correctamente")
     return { ok: true };
-
   } catch (err) {
     console.error(`Error deleting the post: ${err}`);
-    return { ok: false};
+    return { ok: false };
   }
 }
 

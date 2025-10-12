@@ -132,6 +132,18 @@ export const role = {
       document
         .querySelectorAll(".btn-edit-rol")
         .forEach((btn) => (btn.style.display = "none"));
+      document
+        .querySelectorAll(".approve-button")
+        .forEach((btn) => (btn.style.display = "none")); 
+      document
+        .querySelectorAll(".no-approve-button")
+        .forEach((btn) => (btn.style.display = "none"));
+      document
+        .querySelectorAll(".edit-button")
+        .forEach((btn) => (btn.style.display = "none"));
+      document
+        .querySelectorAll(".btn-delete-post")
+        .forEach((btn) => (btn.style.display = "none"));
     }
   },
 };
