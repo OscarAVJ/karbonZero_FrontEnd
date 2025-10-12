@@ -1,5 +1,5 @@
 import * as Alerts from "../utils/alerts.js";
-import { renderKarbonZeroData } from "./controllers/sessionController.js";
+import { auth, renderKarbonZeroData } from "./controllers/sessionController.js";
 import * as AuthService from "./services/authService.js";
 import * as ChannelService from "./services/channelService.js";
 

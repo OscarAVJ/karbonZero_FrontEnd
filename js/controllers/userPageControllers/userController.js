@@ -97,6 +97,10 @@ async function renderData(container) {
   container.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-delete-user");
     if (!btn) return;
+    if(auth.user.id === btn.dataset.id){
+      Alerts.showToastCloseInfo("No puedes eliminar tu propio usuario")
+      return;
+    }
     const id = btn.dataset.id;
     const ok = await UserService.deleteUser(id);
     ///En caso de que nos devuelva un true recargamos
@@ -198,7 +202,8 @@ export async function insertUser(
     firstName: nametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
-    userPassword: generateRandomPassword().trim(),
+    userPassword: generateRandomPassword(),
+    disabled:0
   };
   try {
     const res = await UserService.insertUser(payload);
@@ -228,6 +233,7 @@ export async function updateUser(
     firstName: nametxt.value.trim(),
     lastName: lastNametxt.value.trim(),
     email: emailtxt.value.trim(),
+    disabled:0
   };
   try {
     ///Hacemos la peticion
@@ -296,16 +302,13 @@ export function renderPagination(current, totalPages, container) {
 }
 
 ///Funcion para generar contrasenia aleatoria
-function generateRandomPassword(length = 8) {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-    "abcdefghijklmnopqrstuvwxyz" +
-    "0123456789" +
-    "!@#$%^&*";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randIndex = Math.floor(Math.random() * charset.length);
+function generateRandomPassword (longitud = 8) {
+  let result = "";
+  const abc = "a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N S T O P Q R S T W X Y Z".split(" ");
+  for(let i=0;i<=longitud;i++) {
+    const random = Math.floor(Math.random() * abc.length);
+    result += abc[random]
   }
-  let castPassword = toString(password); 
-  return castPassword;
-}
+  return result;
+};
+

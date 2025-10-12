@@ -42,6 +42,10 @@ body {
     border-radius: 50%;
 }
 
+.sidebar.collapsed .header-logo{
+    display: none;
+}
+
 .sidebar-header .toggler {
     position: absolute;
     right: 20px;
