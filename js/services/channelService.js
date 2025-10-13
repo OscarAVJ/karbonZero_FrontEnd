@@ -1,4 +1,4 @@
-import { APIURL as API_URL } from "../../utils/api_url.js";
+import { APIGLOBAL as API_URL } from "../../utils/api_url.js";
 import * as Alerts from "../../utils/alerts.js"
 
 export async function companyLogin() {

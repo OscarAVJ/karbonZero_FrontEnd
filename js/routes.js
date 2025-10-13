@@ -12,49 +12,46 @@ const routes = {
 }
 
 export async function startRouter() {
-    window.addEventListener('pageshow',async()=>{
-        const res = await isAuth()
-        if(!res) window.location.replace('login.html')
-    })
-    const routeName = location.hash.slice(1) || 'dashboard';
-    const app = document.getElementById('app');
-    const viewLoader = routes[routeName];
-    window.addEventListener('hashchange', async()=>{
-        await isAuth();
-    })
-    if (viewLoader) {
-        const module = await viewLoader();
-        app.innerHTML = await module.render();
-        if (module.afterRender) module.afterRender();
-    } else {
-        app.innerHTML = `<section class="d-flex align-items-center min-vh-100 py-5">
-        <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-md-6 order-md-2">
-                    <div class="lc-block">
-                        <img class="img-fluid" src="../assets/imgs/BoredParrot.png"></img>
-                    </div>
-                </div>
-                <div class="col-md-6 text-center text-md-start ">
-                    <div class="lc-block mb-3">
-                        <div editable="rich">
-                            <!-- <h1 class="fw-bold text-success">PAGE NOT FOUND!<br></h1> -->
-                        </div>
-                    </div>
-                    <div class="lc-block mb-3">
-                        <div editable="rich">
-                            <h1 class="display-1 fw-bold text-success">Error 404</h1>
+  // Bloquea acceso si no hay sesión
+  const guard = async () => {
+    const ok = await isAuth();
+    if (!ok) window.location.replace('/login.html'); // usa absoluto
+    return ok;
+  };
 
-                        </div>
-                    </div>
-                    <div class="lc-block mb-5">
-                        <div editable="rich">
-                            <p class="rfs-11 fw-light"> La pagina que estas buscando fue movida, eliminada o puede que nunca haya existido.</p>
-                        </div>
-                    </div>
-                </div>
+  // Renderiza la página según el hash
+  const render = async () => {
+    const routeName = location.hash.slice(1) || 'dashboard';
+    const viewLoader = routes[routeName];
+    const app = document.getElementById('app');
+
+    if (!viewLoader) {
+      app.innerHTML = `
+        <section class="d-flex align-items-center min-vh-100 py-5">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6 order-md-2">
+                <img class="img-fluid" src="/imgs/BoredParrot.png" alt="">
+              </div>
+              <div class="col-md-6 text-center text-md-start">
+                <h1 class="display-1 fw-bold text-success">Error 404</h1>
+                <p class="rfs-11 fw-light">La página que buscas fue movida, eliminada o nunca existió.</p>
+              </div>
             </div>
-        </div>
-    </section>`;
+          </div>
+        </section>`;
+      return;
     }
+
+    const module = await viewLoader();
+    app.innerHTML = await module.render();
+    if (module.afterRender) module.afterRender();
+  };
+
+  window.addEventListener('pageshow', guard);
+  window.addEventListener('hashchange', async () => {
+    if (await guard()) await render();
+  });
+
+  if (await guard()) await render();
 }
