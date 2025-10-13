@@ -1,4 +1,5 @@
 import { sendRecoveryEmail } from '../services/userService.js';
+import * as Alerts from '../../utils/alerts.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('recoveryEmail');
@@ -14,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Por favor, ingresa tu correo electrónico.');
       return;
     }
-    console.log('Enviando código de recuperación a:', email);
     try {
       // Llamar al backend para enviar el código
       const res = await sendRecoveryEmail(email);

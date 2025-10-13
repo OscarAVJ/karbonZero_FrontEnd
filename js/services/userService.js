@@ -243,18 +243,32 @@ export async function banUser(id) {
     }
 }
 
+export async function putUserPassword(id, passwordUser) {
+
+  const res = await fetch(`${API_URL}apiUser/updateUserPassword/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify( passwordUser ),
+  });
+  return res;
+}
+
+
 export async function sendRecoveryEmail(email) {
   try {
-    const response = await fetch(`${API_URL}apiAuth/forgotPassword`, {
+    const res = await fetch(`${API_URL}apiAuth/forgotPassword`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email }),
     });
-    return response;
+    return res;
   } catch (err) {
-    console.error('Error enviando correo de recuperación:', err);
+    Alerts.showToastCloseError("Error enviando correo de recuperación: ", err);
     throw err;
   }
 }
@@ -270,7 +284,7 @@ export async function verifyRecoveryCode(code) {
     });
     return response;
   } catch (err) {
-    console.error('Error verificando código:', err);
+    Alerts.showToastCloseError("Error verificando código: ", err);
     throw err;
   }
 }  
