@@ -24,7 +24,7 @@ export async function loadMap(mapContainer, barContainer, text) {
     <section class="d-flex align-items-center py-5">
           <div class="container py-5">
             <div class="row align-items-center">
-              <div class="col-md-6 text-center text-md-start">
+              <div class="text-center text-md-start">
                 <p class="display-3 fw-bold text-success">Espere mientras cargamos el mapa!</p>
               </div>
             </div>
