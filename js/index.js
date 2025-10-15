@@ -70,7 +70,7 @@ btnCloseMobile?.addEventListener("click", closeMobile);
 backdrop?.addEventListener("click", closeMobile);
 window.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeMobile(); });
 
-document.querySelectorAll(".sidebar .nav-link").forEach(a=>{
+document.querySelectorAll(".sidebar .nav-link-side").forEach(a=>{
   a.addEventListener("click", ()=>{
     if (!MQ_DESKTOP.matches) closeMobile();
   });
