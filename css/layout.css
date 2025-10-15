@@ -1,5 +1,4 @@
-
-
+/* === TU CSS (desktop) SIN CAMBIOS === */
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +10,9 @@ body {
     min-height: 100vh;
     background-color: #fff;
 }
-
+#closeMenu{
+    display: none;
+}
 .sidebar {
     width: 200px;
     position: fixed;
@@ -19,7 +20,6 @@ body {
     height: 100%;
     transition: 0.4s ease;
     z-index: 1000;
-    
 }
 
 .sidebar.collapsed {
@@ -99,10 +99,9 @@ body {
 /* TODO */
 .sidebar.collapsed .sidebar-nav .primary-nav {
     transform: translateY(65px);
-
 }
 
-.sidebar-nav .nav-link {
+.sidebar-nav .nav-link-side {
     color: white;
     display: flex;
     white-space: nowrap;
@@ -114,16 +113,16 @@ body {
     transition: 0.4s ease;
 }
 
-.sidebar-nav .nav-link:hover {
+.sidebar-nav .nav-link-side:hover {
     color: #016045;
     background-color: #fff;
 }
 
-.sidebar-nav .nav-link .nav-label {
+.sidebar-nav .nav-link-side .nav-label {
     transition: opacity 0.4 ease;
 }
 
-.sidebar.collapsed .sidebar-nav .nav-link .nav-label {
+.sidebar.collapsed .sidebar-nav .nav-link-side .nav-label {
     opacity: 0;
     pointer-events: none;
 }
@@ -166,20 +165,15 @@ body {
 }
 
 
-/* El contenido principal ocupa el resto del espacio */
 .main-content {
-    margin-left: 232px;
-    /* 200px ancho sidebar + 16px*2 de margen */
+    margin-left: 232px; 
     width: calc(100% - 232px);
-    overflow-x: auto;
-    /* Solo scroll horizontal si la tabla lo necesita */
+    overflow-x: auto;   
 }
 
-/* Cuando el sidebar está colapsado */
 .sidebar.collapsed~.main-content,
 .main-content.collapsed {
-    margin-left: 101px;
-    /* 85px ancho sidebar colapsado + 16px*2 */
+    margin-left: 101px; 
     width: calc(100% - 101px);
 }
 
@@ -201,4 +195,90 @@ body {
 
 .shadow-toast {
   box-shadow: 10px 20px 5px 20px rgba(37, 104, 45, 0.637);
+}
+
+.btn-mobile-open{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:1100;
+  height:44px;
+  width:44px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  display:none;            /* solo en móvil */
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.sidebar-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(2px);
+  z-index:999;
+  display:none;            
+}
+
+.sidebar-close{ display:none; }
+@media (max-width: 991.98px){
+  .sidebar{
+    display:flex;
+    flex-direction:column;
+    width:min(86vw, 360px);
+    height:calc(100dvh - 24px);
+    margin:12px;
+    border-radius:20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    transform:translateX(-110%);      
+    z-index:1200;                     
+  }
+  .sidebar.open{ transform:translateX(0); }
+  .sidebar.collapsed{ width:min(86vw, 360px); }  
+
+  .sidebar-header{
+    flex:0 0 auto;
+  }
+
+  .sidebar-nav{
+    flex:1 1 auto;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:12px;
+  }
+
+  .sidebar-nav .secondary-nav{
+    position:static !important;
+    bottom:auto; width:100%;
+    margin-top:16px;            
+    padding-bottom:0;
+    box-shadow:none;
+  }
+
+  .main-content{
+    margin-left:0 !important;
+    width:100% !important;
+  }
+
+  /* Botones y tooltips en móvil */
+  #closeMenu{ display:block; }
+  #toggler{ display:none; }
+  .sidebar-header .sidebar-toggler{ display:none; }
+  .sidebar-close{ display:flex; }
+  .sidebar-nav .nav-tooltip{ display:none !important; }
+
+  .btn-mobile-open{
+    display:block;
+    position:fixed; top:12px; right:12px; z-index:1000;
+  }
+  .sidebar-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.35);
+    backdrop-filter:blur(2px); z-index:1100; display:none;
+  }
+  .sidebar-backdrop.is-visible{ display:block; }
+
+  body:has(.sidebar.open) .btn-mobile-open{
+    opacity:0; pointer-events:none;
+  }
 }

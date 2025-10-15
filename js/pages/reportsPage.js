@@ -319,7 +319,7 @@ export async function afterRender() {
   ///Este es el boton que tiene el popover, es el que crea los elementos
   document.getElementById('btn-create-element').addEventListener('click', () => {
     const text = toastInput.value.trim();
-    if (!text) {
+    if (text.length === 0 ) {
       Alerts.showToastCloseInfo('Escribe algo en el contenido')
       return;
     }

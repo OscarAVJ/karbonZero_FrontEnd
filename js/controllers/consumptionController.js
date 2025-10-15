@@ -87,16 +87,40 @@ export function renderPagination(current, totalPages, container) {
   });
   pagination.appendChild(next);
 }
-
 export async function renderConsumptionData(container) {
+  const consumptionsTab = document.getElementById("tabContent");
+
+  if (consumptionsTab) {
+    consumptionsTab.classList.add("d-flex", "justify-content-center", "align-items-center");
+    consumptionsTab.style.minHeight = "240px";
+    consumptionsTab.innerHTML = `
+      <div class="dot-spinner">
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+      </div>`;
+  }
+
   let consumptions;
   try {
-    consumptions = await ConsumptionService.getAllConsumptions(
-      currentPage,
-      currentSize
-    );
+    consumptions = await ConsumptionService.getAllConsumptions(currentPage, currentSize);
+
+    if (consumptionsTab) {
+      consumptionsTab.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      consumptionsTab.style.minHeight = "";
+      consumptionsTab.innerHTML = "";
+    }
+
+    loadConsumptionsTable(consumptions.content, consumptionsTab);
+    renderPagination(consumptions.number, consumptions.totalPages, container);
+
   } catch (err) {
     console.log(err);
+    if (consumptionsTab) {
+      consumptionsTab.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      consumptionsTab.style.minHeight = "";
+    }
     return (container.innerHTML = `<section class="d-flex align-items-center justify-content-center min-vh-100 py-5">
         <div class="container py-5">
             <div class="row align-items-center">
@@ -122,10 +146,6 @@ export async function renderConsumptionData(container) {
     </section>`);
   }
 
-  const consumptionsTab = document.getElementById("tabContent");
-  loadConsumptionsTable(consumptions.content, consumptionsTab);
-  renderPagination(consumptions.number, consumptions.totalPages, container);
-
   const sizeSelector = document.getElementById("itemsSelect");
   sizeSelector.addEventListener("change", () => {
     currentSize = parseInt(sizeSelector.value);
@@ -133,7 +153,6 @@ export async function renderConsumptionData(container) {
     reload(container);
   });
 
-  ///Delete method
   container.addEventListener("click", async (e) => {
     const deleteBtnConsumptions = e.target.closest(".btn-delete-consumption");
     if (!deleteBtnConsumptions) return;
@@ -142,7 +161,6 @@ export async function renderConsumptionData(container) {
     if (ok) await reload(container);
   });
 
-  ///Update method
   container.addEventListener("click", async (e) => {
     const editBtnConsumptions = e.target.closest(".btn-edit-consumption");
     if (!editBtnConsumptions) return;
@@ -155,8 +173,7 @@ export async function renderConsumptionData(container) {
       const unitySelect = document.querySelector("#unidadSelect");
       const puritytxt = document.querySelector("#purezatxt");
 
-      document.querySelector("#idConsumptionHidden").value =
-        consumption.idConsumption;
+      document.querySelector("#idConsumptionHidden").value = consumption.idConsumption;
 
       resourceSelect.disabled = true;
       resourceSelect.value = consumption.idResourcePurity;
@@ -164,14 +181,14 @@ export async function renderConsumptionData(container) {
 
       document.querySelector("#cantidadtxt").value = consumption.quantity;
       document.querySelector("#costotxt").value = consumption.cost;
-      document.querySelector("#fecha").value =
-        consumption.consumptionDate.substring(0, 10);
+      document.querySelector("#fecha").value = consumption.consumptionDate.substring(0, 10);
     } catch (err) {
       Alerts.showToastCloseError("No se puso cargar el consumo");
       console.log(err);
     }
   });
 }
+
 
 ///Metodo para cargar tabla
 function loadConsumptionsTable(consumptions, tab) {

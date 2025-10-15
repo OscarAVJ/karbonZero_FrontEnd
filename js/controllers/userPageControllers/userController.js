@@ -45,26 +45,45 @@ export async function reload(container) {
   }
 }
 
-///Funcion para renderizar los datos asi como los eventos de nuestro formulario
+///Función para renderizar los datos así como los eventos de nuestro formulario
 async function renderData(container) {
-  ///Variables con nuestro tabList y el contenido(nuestra tabla)
   const tabContent = container.querySelector("#userTable");
 
-  let users;
-  ///Llenamos los usuarios
-  try {
-    ///traemos el json en data
-    users = await UserService.getAllUsers(currentPage, currentSize);
-    ///Llamamos al renderPagination para que carge cuando inicie todo
-    renderPagination(users.number, users.totalPages, container);
-  } catch (error) {
-    console.error(error);
-    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`);
+  if (tabContent) {
+    tabContent.classList.add("d-flex", "justify-content-center", "align-items-center");
+    tabContent.style.minHeight = "240px";
+    tabContent.innerHTML = `
+      <div class="dot-spinner">
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+      </div>`;
   }
 
-  ///Cargamos datos, pasamos nuestros usuarios y nuestro contenedor
-  loadUsersTable(users.content, tabContent);
-  renderPagination(users.number, users.totalPages, container);
+  let users;
+  try {
+    users = await UserService.getAllUsers(currentPage, currentSize);
+    renderPagination(users.number, users.totalPages, container);
+
+    if (tabContent) {
+      tabContent.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      tabContent.style.minHeight = "";
+      tabContent.innerHTML = "";
+    }
+
+    loadUsersTable(users.content, tabContent);
+    renderPagination(users.number, users.totalPages, container);
+
+  } catch (error) {
+    console.error(error);
+    usersIsLoading = false;
+    if (tabContent) {
+      tabContent.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      tabContent.style.minHeight = "";
+    }
+    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los usuarios.</p>`);
+  }
 
   const sizeSelector = document.getElementById("itemsUserSelect");
   sizeSelector.addEventListener("change", () => {
@@ -73,7 +92,6 @@ async function renderData(container) {
     reload(container);
   });
 
-  // Aca definimos que hace el botón de eliminar
   container.addEventListener("click", async e => {
     const btn = e.target.closest(".btn-ban-user");
     if (!btn) return;
@@ -87,27 +105,24 @@ async function renderData(container) {
       }
       ok = await UserService.banUser(id);
     } else {
-        ok = await UserService.unbanUser(id);
+      ok = await UserService.unbanUser(id);
     }
 
     if (ok) await reload(container);
-  })
+  });
 
-  ///Aca definimos que hace nuestro boton de eliminar
   container.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-delete-user");
     if (!btn) return;
-    if(auth.user.id === btn.dataset.id){
-      Alerts.showToastCloseInfo("No puedes eliminar tu propio usuario")
+    if (auth.user.id === btn.dataset.id) {
+      Alerts.showToastCloseInfo("No puedes eliminar tu propio usuario");
       return;
     }
     const id = btn.dataset.id;
     const ok = await UserService.deleteUser(id);
-    ///En caso de que nos devuelva un true recargamos
     if (ok) await reload(container);
   });
 
-  ///Aca lo que hacemos es llenar el formulario de editar, puesto que eso es lo que hace el boton, abrir con datos, quien se encarga de enviar el PUT es en page
   container.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".btn-edit-user");
     if (!editBtn) return;
@@ -126,6 +141,7 @@ async function renderData(container) {
     }
   });
 }
+
 
 ///Aca cargamos nuestros usuarios, nada nuevo, eso si en lugar del id mandamos un numero, por que pues si, usamos RAW, xdnt
 export function loadUsersTable(users, tab) {
