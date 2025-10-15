@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       if (res.ok) {
-        alert('Se ha enviado un código al correo ingresado.');
+        Alerts.showToastCloseInfo("Se ha enviado un código al correo ingresado.");
 
         // Guardamos el correo en localStorage para usarlo después
         localStorage.setItem('recoveryEmail', email);
