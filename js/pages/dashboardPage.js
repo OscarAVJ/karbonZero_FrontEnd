@@ -4,6 +4,7 @@ import { getAllResourcesConsumptionsCO2 } from "../services/dashboardService";
 import { getAllResourceConsumptionsCO2Total } from "../services/dashboardService";
 
 export async function render() {
+  loadCSS()
   return `
     <!-- Consumptions Section -->
     <div class="py-4">
@@ -42,159 +43,164 @@ export async function render() {
 export function afterRender() {
   initDashboard();
 }
+function loadCSS() {
+  const id = "reports-css";
+  if (!document.getElementById(id)) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../css/dashboard.css";
+    link.id = id;
+    document.head.appendChild(link);
+  }
+}
 
+let isLoading = false;
 
 async function initDashboard() {
-  // window.addEventListener("pageshow", async () => {
-  //   await renderKarbonZeroData()
+  isLoading = true;
 
-  // })
-  const general_data = await getAllResourceConsumptionsCO2Total();
-  for (let resource in general_data) {
-    general_data[resource] = parseFloat(general_data[resource].toFixed(4));
+  const mainChart = document.querySelector("#main-chart");
+
+  try {
+    const general_data_raw = await getAllResourceConsumptionsCO2Total();
+    const general_data = {};
+    for (let resource in general_data_raw) {
+      general_data[resource] = parseFloat(general_data_raw[resource].toFixed(4));
+    }
+
+    const specific_data_raw = await getAllResourcesConsumptionsCO2();
+    const specific_data = specific_data_raw.map((resource) => {
+      const pairs = Object.entries(resource.data).map(([k, v]) => [
+        k,
+        parseFloat(v).toFixed(4),
+      ]);
+      pairs.sort((a, b) => a[0].localeCompare(b[0]));
+      return { ...resource, data: pairs };
+    });
+
+    const chartsData = {
+      general: { id: "general", name: "General", data: general_data },
+      specific: specific_data,
+    };
+
+    isLoading = false;
+
+    loadCharts(chartsData);
+  } finally {
+    isLoading = false;
   }
-
-  const specific_data = await getAllResourcesConsumptionsCO2();
-  specific_data.forEach((resource) => {
-    resource.data = Object.entries(resource.data);
-    resource.data.forEach((entry) => {
-      entry[1] = parseFloat(entry[1]).toFixed(4);
-    });
-    resource.data.sort((a, b) => {
-      return a[0].localeCompare(b[0]);
-    });
-  });
-
-  const chartsData = {
-    general: {
-      id: "general",
-      name: "General",
-      data: general_data,
-    },
-    specific: specific_data,
-  };
-
-  loadCharts(chartsData);
 }
+
 
 function loadMainChart(json) {
   var options = {
     series: Object.values(json),
     labels: Object.keys(json),
-    chart: {
-      type: "donut",
-      height: "750px",
-    },
+    chart: { type: "donut", height: "750px" },
     responsive: [
       {
         breakpoint: 700,
         options: {
-          legend: {
-            position: "bottom",
-          },
-          chart: {
-            height: "auto",
-          },
+          legend: { position: "bottom" },
+          chart: { height: "auto" },
         },
       },
     ],
-    legend: {
-      fontSize: "20px",
-    },
+    legend: { fontSize: "20px" },
   };
 
   const chart = new ApexCharts(document.getElementById("main-chart"), options);
   chart.render();
 }
 
+let consumptionChart = null;
+let listener = false;
 function loadCharts(data) {
+  ///!LIMPIAMOS EL CHARTselection para eviar duplicados al cargar el chart
+  const consumptionList = document.getElementById("consumptions-selection");
+  consumptionList.innerHTML = "";
+
+  if (consumptionChart) {
+    try { consumptionChart.destroy(); } catch {}
+    consumptionChart = null;
+  }
+
   loadMainChart(data.general.data);
 
-  const consumptionList = document.getElementById("consumptions-selection");
-
   const options = getChartConfig();
-  const chart = new ApexCharts(
+  consumptionChart = new ApexCharts(
     document.getElementById("consumption-chart"),
     options
   );
-  chart.render();
+  consumptionChart.render();
 
   data.specific.forEach((tab, idx) => {
     const tabItem = document.createElement("div");
     tabItem.className = "d-inline m-1";
     tabItem.innerHTML = `
-          <input type="checkbox" class="btn-check" href="#${tab.id
-      }" id="check-${tab.id}" name="check-${tab.id}" ${idx === 0 ? "checked" : ""
-      }>
-          <label class="btn btn-outline-success" for="check-${tab.id}">${tab.name
-      }</label>
-        `;
-
+      <input type="checkbox" class="btn-check" id="check-${tab.id}" name="check-${tab.id}" ${idx===0 ? "checked" : ""}>
+      <label class="btn btn-outline-success" for="check-${tab.id}">${tab.name}</label>
+    `;
     consumptionList.appendChild(tabItem);
 
-    document
-      .getElementById("check-" + tab.id)
-      .addEventListener("change", (e) => {
-        updateChart(data, chart);
-      });
+    //  por chip (no se duplicará porque limpiamos antes)
+    document.getElementById(`check-${tab.id}`).addEventListener("change", () => {
+      updateChart(data, consumptionChart);
+    });
   });
 
-  updateChart(data, chart);
+  updateChart(data, consumptionChart);
 
-  document.querySelector("#one-month").addEventListener("click", function (e) {
-    chart.zoomX(
-      new Date("01 Jan 2025").getTime(),
-      new Date("01 Feb 2025").getTime()
-    );
-  });
-  document
-    .querySelector("#three-months")
-    .addEventListener("click", function (e) {
-      chart.zoomX(
+  if (!listener) {
+    document.querySelector("#one-month").addEventListener("click", function () {
+      consumptionChart.zoomX(
+        new Date("01 Jan 2025").getTime(),
+        new Date("01 Feb 2025").getTime()
+      );
+    });
+    document.querySelector("#three-months").addEventListener("click", function () {
+      consumptionChart.zoomX(
         new Date("01 Jan 2025").getTime(),
         new Date("01 April 2025").getTime()
       );
     });
-  document.querySelector("#six-months").addEventListener("click", function (e) {
-    chart.zoomX(
-      new Date("01 Jan 2025").getTime(),
-      new Date("01 July 2025").getTime()
-    );
-  });
-  document.querySelector("#one-year").addEventListener("click", function (e) {
-    chart.zoomX(
-      new Date("01 Jan 2025").getTime(),
-      new Date("01 Jan 2026").getTime()
-    );
-  });
-  document.querySelector("#all").addEventListener("click", function (e) {
-    chart.zoomX(
-      new Date("01 Jan 2025").getTime(),
-      new Date("01 Feb 2026").getTime()
-    );
-  });
+    document.querySelector("#six-months").addEventListener("click", function () {
+      consumptionChart.zoomX(
+        new Date("01 Jan 2025").getTime(),
+        new Date("01 July 2025").getTime()
+      );
+    });
+    document.querySelector("#one-year").addEventListener("click", function () {
+      consumptionChart.zoomX(
+        new Date("01 Jan 2025").getTime(),
+        new Date("01 Jan 2026").getTime()
+      );
+    });
+    document.querySelector("#all").addEventListener("click", function () {
+      consumptionChart.zoomX(
+        new Date("01 Jan 2025").getTime(),
+        new Date("01 Feb 2026").getTime()
+      );
+    });
+    listener = true;
+  }
 }
+
 
 function updateChart(data, chart) {
-  const series = [];
+  if (isLoading) return;
 
-  const consumptions = document.querySelectorAll(
-    "#consumptions-selection input[type='checkbox']"
-  );
-  for (var consumption of consumptions) {
+  const series = [];
+  const consumptions = document.querySelectorAll("#consumptions-selection input[type='checkbox']");
+  for (const consumption of consumptions) {
     if (consumption.checked) {
-      const dcon = data.specific.find(
-        (obj) => obj.id == consumption.id.replace("check-", "")
-      );
-      series.push({
-        name: dcon.name,
-        data: dcon.data,
-      });
+      const dcon = data.specific.find((obj) => obj.id == consumption.id.replace("check-", ""));
+      series.push({ name: dcon.name, data: dcon.data });
     }
   }
-
   chart.updateSeries(series);
 }
+
 
 function getChartConfig() {
   return {

@@ -12,14 +12,11 @@ const routes = {
 }
 
 export async function startRouter() {
-  // Bloquea acceso si no hay sesión
   const guard = async () => {
     const ok = await isAuth();
-    if (!ok) window.location.replace('/login.html'); // usa absoluto
+    if (!ok) window.location.replace('/login.html');
     return ok;
   };
-
-  // Renderiza la página según el hash
   const render = async () => {
     const routeName = location.hash.slice(1) || 'dashboard';
     const viewLoader = routes[routeName];

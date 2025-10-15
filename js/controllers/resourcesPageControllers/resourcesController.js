@@ -92,42 +92,53 @@ export function renderResourcePagination(current, totalPages, container) {
   });
   pagination.appendChild(next);
 }
-
 ///Renderizado de elementos
 async function renderResourceData(container) {
+  const resourcesContainer = document.querySelector("#resourceTable");
+
+  if (resourcesContainer) {
+    resourcesContainer.classList.add("d-flex", "justify-content-center", "align-items-center");
+    resourcesContainer.style.minHeight = "240px";
+    resourcesContainer.innerHTML = `
+      <div class="dot-spinner">
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div><div class="dot-spinner__dot"></div>
+      </div>`;
+  }
+
   let resources;
   try {
     resources = await ResourceService.getAllResources(currentPage, currentSize);
-  } catch (err) {
-    console.error(err);
-    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
-  }
 
-  ///Los mandamos en
-  const resourcesContainer = document.querySelector("#resourceTable");
-  loadResourcesTable(resources.content, resourcesContainer);
+    if (resourcesContainer) {
+      resourcesContainer.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      resourcesContainer.style.minHeight = "";
+      resourcesContainer.innerHTML = "";
+    }
 
-  // Selector de la paginación
-  const sizeSelector = document.querySelector("#resourceItemsSelect");
-  sizeSelector.addEventListener("change", () => {
-    currentSize = parseInt(sizeSelector.value);
-    currentPage = 0;
-    reload(container);
-  });
+    loadResourcesTable(resources.content, resourcesContainer);
 
-  ///Delete method
-  container.addEventListener("click", async (e) => {
-    const deleteBtnResources = e.target.closest(".btn-delete-resource");
-    if (!deleteBtnResources) return;
-    const id = deleteBtnResources.dataset.id;
-    const ok = await ResourceService.deleteResource(id);
-    if (ok) reload(container);
-  });
+    const sizeSelector = document.querySelector("#resourceItemsSelect");
+    sizeSelector.addEventListener("change", () => {
+      currentSize = parseInt(sizeSelector.value);
+      currentPage = 0;
+      reload(container);
+    });
 
-  ///Cargar los datos al editar
-  container.addEventListener("click", async (e) => {
-    const editResourceBtn = e.target.closest(".btn-edit-resource");
-    if (editResourceBtn) {
+    container.addEventListener("click", async (e) => {
+      const deleteBtnResources = e.target.closest(".btn-delete-resource");
+      if (!deleteBtnResources) return;
+      const id = deleteBtnResources.dataset.id;
+      const ok = await ResourceService.deleteResource(id);
+      if (ok) reload(container);
+    });
+
+    container.addEventListener("click", async (e) => {
+      const editResourceBtn = e.target.closest(".btn-edit-resource");
+      if (!editResourceBtn) return;
+
       const id = editResourceBtn.dataset.id;
       try {
         const resource = await ResourceService.getResourcesById(id);
@@ -139,10 +150,18 @@ async function renderResourceData(container) {
         Alerts.showToastCloseError("No se puso cargar el recurso");
         console.log(err);
       }
-      return;
+    });
+
+  } catch (err) {
+    console.error(err);
+    if (resourcesContainer) {
+      resourcesContainer.classList.remove("d-flex", "justify-content-center", "align-items-center");
+      resourcesContainer.style.minHeight = "";
     }
-  });
+    return (container.innerHTML = `<p class="text-danger">No se pudieron cargar los recursos.</p>`);
+  }
 }
+
 
 ///Metodo para cargar tabla
 function loadResourcesTable(resources, tab) {

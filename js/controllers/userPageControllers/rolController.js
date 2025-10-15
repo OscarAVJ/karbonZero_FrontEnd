@@ -48,7 +48,7 @@ export async function reload(container) {
 async function renderData(container) {
   ///Variables con nuestro tabList y el contenido(nuestra tabla)
   const tabContent = container.querySelector("#rolTable");
-
+  
   let roles;
   ///Llenamos los roles
   try {
