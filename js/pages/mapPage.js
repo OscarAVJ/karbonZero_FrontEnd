@@ -53,6 +53,7 @@ async function renderMap() {
   MapController.updateScale(mapContainer, zoomIn, zoomOut);
 
   searchButton.addEventListener("click", async (e) => {
+    e.preventDefault()
     MapController.loadMap(mapContainer, barContainer, countriesS.value);
   });
 
