@@ -20,6 +20,16 @@ export const maps = {
 };
 
 export async function loadMap(mapContainer, barContainer, text) {
+  mapContainer.innerHTML = `
+    <section class="d-flex align-items-center py-5">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6 text-center text-md-start">
+                <p class="display-3 fw-bold text-success">Espere mientras cargamos el mapa!</p>
+              </div>
+            </div>
+          </div>
+  </section>`;
   const res = await MapService.getGeoData(text);
   const geoJson = res.data;
 
@@ -66,7 +76,7 @@ export async function loadMap(mapContainer, barContainer, text) {
     ...foods.data,
   ];
   maps.consumptions = [];
-
+  maps.consumptionsTotal = 0;
   maps.states = {};
 
   for (let consumption of consumptions) {
@@ -115,6 +125,10 @@ function updateMap(mapContainer) {
     return;
   }
 
+  mapContainer.innerHTML = `
+  <svg class="w-100 h-100">
+    <g class="w-100 h-100" id="map"></g>
+  </svg>`;
   const map = document.querySelector("#map");
   const projection = getProjection(mapContainer);
   const geoGenerator = d3.geoPath().projection(projection);
@@ -130,14 +144,13 @@ function updateMap(mapContainer) {
 
 async function loadPoints(pathGenerator, map) {
   const mean = maps.consumptionsTotal / maps.consumptions.length;
-
   for (let consumption of maps.consumptions) {
     let circle = d3
       .geoCircle()
       .center([consumption.longitude, consumption.latitude])
       .radius(50 / maps.originalScale)();
 
-    const color = getColor(consumption.total, mean / 2);
+    const color = getColor(consumption.total, mean * 2);
 
     map.innerHTML += `<path style="fill: rgba(${color[0]}, ${color[1]}, ${
       color[2]
@@ -273,6 +286,17 @@ export async function loadBarChart(barContainer) {
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(yScale))
     .attr("class", "axis");
+
+  // Add Y-axis-label
+  svg
+    .append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "start")
+    .attr("y", 6)
+    .attr("dy", ".75em")
+    .attr("transform", `translate(${margin.left},0)`)
+    .text("Toneladas de CO2");
+
   // Draw bars
 
   const sum = Object.values(maps.states).reduce((p, a) => p + a.total, 0);
@@ -289,7 +313,7 @@ export async function loadBarChart(barContainer) {
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - margin.bottom - yScale(d.total))
     .attr("style", (d) => {
-      const colors = getColor(d.total, mean);
+      const colors = getColor(d.total, mean * 2);
       return `fill: rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, 100)`;
     });
 
@@ -303,7 +327,7 @@ export async function loadBarChart(barContainer) {
     .attr("x", (d) => xScale(d.name) + xScale.bandwidth() / 2)
     .attr("y", (d) => yScale(d.total) - 5)
     .attr("text-anchor", "middle")
-    .text((d) => Math.round(d.total) + " tCo2");
+    .text((d) => Math.round(d.total));
 }
 
 function getColor(n, base = 10) {

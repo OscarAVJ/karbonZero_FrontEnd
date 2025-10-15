@@ -20,9 +20,17 @@ export async function render() {
         </form>
 
         <div id="mapContainer" class="map-container mx-auto d-flex align-items-center justify-content-center">
-            <svg class="w-100 h-100">
-              <g id="map"></g>
-            </svg>
+            <section class="d-flex align-items-center py-5">
+                <div class="container py-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-center text-md-start">
+                            <h3 class="display-3 fw-bold text-success">Bienvenidos a mapas!</h3>
+                            <p class="rfs-11 fw-light">Elige un país para empezar</p>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
         <div class="overflow-x-scroll"> 
             <div id="barContainer" class="p-3" style="min-width: 400px;" >
@@ -36,14 +44,13 @@ export async function render() {
   `;
 }
 
-
 export function afterRender() {
   renderMap();
 }
 
 async function renderMap() {
   const mapContainer = document.querySelector("#mapContainer");
-  const barContainer = document.querySelector("#barContainer")
+  const barContainer = document.querySelector("#barContainer");
   const countriesS = document.querySelector("#countriesSelect");
   const searchButton = document.querySelector("#searchButton");
 
