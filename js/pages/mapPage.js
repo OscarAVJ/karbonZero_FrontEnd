@@ -1,7 +1,6 @@
 import * as MapController from "../controllers/mapController.js";
 
 export async function render() {
-  loadCSS();
   return `
     <div class="py-4">
         <h2 class="general-title">Mapa de CO₂</h2>
@@ -37,16 +36,6 @@ export async function render() {
   `;
 }
 
-function loadCSS() {
-  const id = "reports-css";
-  if (!document.getElementById(id)) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "../../css/map.css";
-    link.id = id;
-    document.head.appendChild(link);
-  }
-}
 
 export function afterRender() {
   renderMap();

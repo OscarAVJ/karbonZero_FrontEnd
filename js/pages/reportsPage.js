@@ -5,7 +5,6 @@ import * as Alerts from '../../utils/alerts.js'
 import { getAllResources, getAllResourcesSP } from "../services/resourcesService.js";
 
 export async function render() {
-  loadCSS();
   return `
   <div class="main-scroll">
     <div class="py-4">
@@ -442,16 +441,5 @@ export async function afterRender() {
   }
 }
 
-///Aca el loadCss
-function loadCSS() {
-  const id = 'reports-css';
-  if (!document.getElementById(id)) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '../../css/reports.css';
-    link.id = id;
-    document.head.appendChild(link);
-  }
-}
 
 

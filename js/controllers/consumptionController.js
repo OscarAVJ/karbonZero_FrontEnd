@@ -102,7 +102,7 @@ export async function renderConsumptionData(container) {
             <div class="row align-items-center">
                 <div class="col-md-6 order-md-2">
                     <div class="lc-block">
-                        <img class="img-fluid" src="../assets/imgs/BoredParrot.png"></img>
+                        <img class="img-fluid" src="https://res.cloudinary.com/dtxerr5sz/image/upload/v1760503417/boredParrot_evl0kr.png"></img>
                     </div>
                 </div>
                 <div class="col-md-6 text-center text-md-start ">
@@ -283,14 +283,13 @@ export async function updateConsumption(
   user,
   form
 ) {
-  const date = dateT.value.split("-");
 
   const payload = {
     idConsumption: id,
     idResourcePurity: resourceS.value.trim(),
     idUser: user,
     quantity: quantityT.value.trim(),
-    consumptionDate: `${date[2]}/${date[1]}/${date[0]}`,
+    consumptionDate: dateT.value,
     cost: costT.value.trim(),
   };
 

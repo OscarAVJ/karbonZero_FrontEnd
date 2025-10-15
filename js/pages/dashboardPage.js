@@ -4,7 +4,6 @@ import { getAllResourcesConsumptionsCO2 } from "../services/dashboardService";
 import { getAllResourceConsumptionsCO2Total } from "../services/dashboardService";
 
 export async function render() {
-  loadCSS();
   return `
     <!-- Consumptions Section -->
     <div class="py-4">
@@ -43,16 +42,7 @@ export async function render() {
 export function afterRender() {
   initDashboard();
 }
-function loadCSS() {
-  const id = "dashboard-css";
-  if (!document.getElementById(id)) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "../../css/dashboard.css";
-    link.id = id;
-    document.head.appendChild(link);
-  }
-}
+
 
 async function initDashboard() {
   // window.addEventListener("pageshow", async () => {

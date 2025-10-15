@@ -31,7 +31,7 @@ export async function startRouter() {
           <div class="container py-5">
             <div class="row align-items-center">
               <div class="col-md-6 order-md-2">
-                <img class="img-fluid" src="/imgs/BoredParrot.png" alt="">
+                <img class="img-fluid" src="https://res.cloudinary.com/dtxerr5sz/image/upload/v1760503417/boredParrot_evl0kr.png" alt="">
               </div>
               <div class="col-md-6 text-center text-md-start">
                 <h1 class="display-1 fw-bold text-success">Error 404</h1>
