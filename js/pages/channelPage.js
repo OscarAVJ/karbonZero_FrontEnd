@@ -3,7 +3,6 @@ import * as ImageService from "../services/imageService.js";
 import * as Alerts from "../../utils/alerts.js";
 
 export async function render() {
-  loadCSS();
   return `
 <div class="container py-4" id="canal-chat" style="display: flex; flex-direction: column; height: 100vh;">
     <div style="display: flex; flex: 1; overflow: hidden;">
@@ -139,16 +138,7 @@ export function afterRender() {
   initChannel();
 }
 
-function loadCSS() {
-  const id = "channels-css";
-  if (!document.getElementById(id)) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "./../../css/channel.css";
-    link.id = id;
-    document.head.appendChild(link);
-  }
-}
+
 
 async function initChannel() {
   const chatList = document.querySelector("#chat-list");
