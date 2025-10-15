@@ -274,7 +274,6 @@ export function exportToWord(notebookEl) {
     ///Volvemos a mostrar los controles
     hidden.forEach(([el, val]) => (el.style.display = val));
 }
-
 export function renderNotebook(notebook) {
     ///Esto es lo que sale cuando el doc esta vacio
     if (doc.length === 0) {
@@ -284,7 +283,7 @@ export function renderNotebook(notebook) {
                 <div class="row align-items-center d-flex justify-content-between">
                     <div class="col-md-6 order-md-2">
                         <div class="lc-block">
-                            <img class="img-fluid" src="../../assets/imgs/helloParrot.png"></img>
+                            <img class="img-fluid" src="./../../assets/imgs/helloParrot.png"></img>
                         </div>
                     </div>
                     <div class="col-md-6 text-center text-md-start ">

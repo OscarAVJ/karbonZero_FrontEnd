@@ -1,13 +1,12 @@
 import { APIURL } from "../../utils/api_url";
 
-const IMAGE_API = "http://localhost:8080/api/image"; // Ajusta si tu backend está en otro puerto
 
 // Subir imagen a la carpeta "Profiles"
 export async function uploadProfileImage(file) {
   const formData = new FormData();
   formData.append("image", file);
 
-  const res = await fetch(`${IMAGE_API}/upload`, {
+  const res = await fetch(`${APIURL}api/image/upload`, {
     method: "POST",
     body: formData,
     credentials: "include"
@@ -25,7 +24,7 @@ export async function uploadImageToFolder(file, folder){
     formData.append('image', file);
     formData.append('folder', folder);
 
-    const res = await fetch (`${IMAGE_API}/upload-to-folder`,{
+    const res = await fetch (`${APIURL}api/image/upload-to-folder`,{
         method: 'POST',
         body: formData,
         credentials: "include"

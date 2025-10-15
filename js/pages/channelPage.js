@@ -144,7 +144,7 @@ function loadCSS() {
   if (!document.getElementById(id)) {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "../../css/channel.css";
+    link.href = "./../../css/channel.css";
     link.id = id;
     document.head.appendChild(link);
   }
