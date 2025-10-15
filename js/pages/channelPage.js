@@ -15,7 +15,7 @@ export async function render() {
         <div style="width: 50%; min-width: 300px; display: flex; flex-direction: column; padding: 1rem;">
             <div
                 style="display: flex; align-items: center; gap: 0.6rem; font-weight: bold; font-size: 1.2rem; color: #007C65; margin-bottom: 1rem;">
-                <img id="channelImg" src="logo.png"
+                <img id="channelImg" src=""
                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="Logo" />
                 <p id="channelName">Canal</p>
             </div>
