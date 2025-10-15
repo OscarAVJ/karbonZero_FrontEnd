@@ -23,9 +23,9 @@ export async function render() {
             <section class="d-flex align-items-center py-5">
                 <div class="container py-5">
                     <div class="row align-items-center">
-                        <div class="col-md-6 text-center text-md-start">
+                        <div class="text-center text-md-start">
                             <h3 class="display-3 fw-bold text-success">Bienvenidos a mapas!</h3>
-                            <p class="rfs-11 fw-light">Elige un país para empezar</p>
+                            <p class="text-center rfs-11 fw-light">Elige un país para empezar</p>
 
                         </div>
                     </div>
