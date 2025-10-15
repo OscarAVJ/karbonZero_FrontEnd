@@ -36,7 +36,7 @@ export async function render() {
         <div
             style="width: 25%; min-width: 200px; padding: 1rem; display: flex; flex-direction: column; overflow-y: auto;">
             <div style="display: flex; text-align: center; justify-content: center; align-items: end; margin-bottom: 1rem;">
-                <img id="bigChannelImg" src="../../assets/imgs/defaultPfp.png" style="width: 110px; height: auto;" alt="Logo"/>
+                <img id="bigChannelImg" src="https://res.cloudinary.com/dtxerr5sz/image/upload/v1760503737/standupParrot_odkfdz.png" style="width: 110px; height: auto;" alt="Logo"/>
                 <button class="btn edit-button" id="channelNameEdit" data-bs-toggle="modal" data-bs-target="#imgModal"><i class="bi bi-pencil-fill"></i></button>
 
             </div>
