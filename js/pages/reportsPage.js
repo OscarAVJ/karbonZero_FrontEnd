@@ -269,14 +269,11 @@ export async function afterRender() {
   ///Evento para visualizar previamente la informacion que se enviara a el excel
   previewBtn.addEventListener('click', async () => {
     previewModalBody.innerHTML = "";
-    const init = initialDate.value.split("-");
-    const final = lastDate.value.split("-");
-    const initDate = `${init[2]}/${init[1]}/${init[0]}`
-    const finalDate = `${final[2]}/${final[1]}/${final[0]}`
+
     const resourceName = resourceSelected.value;
 
     ///Validamos que los datos si esten
-    if (validateValues(initialDate.value, lastDate.value, resourceSelected.value) === false) {
+    if (validateValues(initialDate.value, lastDate.value) === false) {
       Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
       return;
     }
@@ -285,27 +282,23 @@ export async function afterRender() {
     ///Posteriormente al body del modal le metemos ese div adentro
     previewModalBody.appendChild(container)
     ///Load
-    await loadTable(resourceName, initDate, finalDate, container);
+    await loadTable(resourceName, initialDate.value, lastDate.value, container);
   });
 
   ///Evento para visualizar previamente la informacion que se enviara al doc (contenedor de la informacion para pdf)
   previewBtn2.addEventListener('click', async () => {
     previewModalBody.innerHTML = "";
-    const init = initialDate2.value.split("-");
-    const final = lastDate2.value.split("-");
-    const initDate = `${init[2]}/${init[1]}/${init[0]}`
-    const finalDate = `${final[2]}/${final[1]}/${final[0]}`
     const resourceName = resourceSelected2.value;
 
     ///Validamos
-    if (validateValues(initialDate2.value, lastDate2.value, resourceSelected2.value) === false) {
+    if (validateValues(initialDate2.value, lastDate2.value) === false) {
       Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
       return;
     }
     ///Lo mismo que en el de arriba
     const container = document.createElement('div');
     previewModalBody.appendChild(container)
-    await loadTable(resourceName, initDate, finalDate, container);
+    await loadTable(resourceName, initialDate2.value, lastDate2.value, container);
   });
 
 
@@ -375,7 +368,10 @@ export async function afterRender() {
   ///Aca lo que hacemos el obtener lo que se esta mandando a buscar para incrustarlo en el notebook despues con la funcion de importTable
   async function getTableDataset(resource, init, end) {
     const data = await getAllConsumptionsByFiltersMonth(resource, init, end);
-    if (data.length === 0) return null;
+    if (data.length === 0){
+      Alerts.showInfo('No hay datos que coincidan para los filtros seleccionados')
+      return
+    };
     ///Obtenemos la data
     const dataset = {
       title: `Consumos ${resource ?? ""} (${init}–${end})`,
@@ -396,11 +392,6 @@ export async function afterRender() {
   ///Aca es el evento para insertar las tablas
   importTableBtn.addEventListener('click', async () => {
     tableToImport.innerHTML = "";
-
-    const init = initialDate2.value.split("-");
-    const final = lastDate2.value.split("-");
-    const initDate = `${init[2]}/${init[1]}/${init[0]}`;
-    const finalDate = `${final[2]}/${final[1]}/${final[0]}`;
     const resourceName = resourceSelected2.value;
 
     if (!validateValuesToImport(initialDate2.value, lastDate2.value)) {
@@ -409,7 +400,7 @@ export async function afterRender() {
     }
 
     ///Obtenemos la data
-    const dataset = await getTableDataset(resourceName, initDate, finalDate);
+    const dataset = await getTableDataset(resourceName, initialDate2.value, lastDate2.value);
     if (!dataset) {
       Alerts.showToastCloseInfo("No hay datos para los filtros seleccionados");
       return;

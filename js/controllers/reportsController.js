@@ -28,13 +28,9 @@ export async function loadResouceSelect(data, container) {
 
 ///Aca exportamos la data
 export async function exportToExcel(initData, lastData, resourceSelected, resources) {
-    const init = initData.value.split("-");
-    const final = lastData.value.split("-");
-    const initDate = `${init[2]}/${init[1]}/${init[0]}`
-    const finalDate = `${final[2]}/${final[1]}/${final[0]}`
-
+   
     ///Validamos valores
-    if (!validateValues(initData, lastData, resourceSelected.value)) {
+    if (!validateValues(initData.value, lastData.value, resourceSelected.value)) {
         Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso");
         return;
     }
@@ -67,7 +63,7 @@ export async function exportToExcel(initData, lastData, resourceSelected, resour
         ///Iterara 4 veces creando un tab con cada uno de esos y ese nombre sera el que se enviara como param de resName
         let resp;
         try {
-            resp = await getAllConsumptionsByFiltersMonth(resName, initDate, finalDate);
+            resp = await getAllConsumptionsByFiltersMonth(resName, initData.value, lastData.value);
         } catch (e) {
             continue;
         }
@@ -155,7 +151,7 @@ export async function exportToExcel(initData, lastData, resourceSelected, resour
     link.href = URL.createObjectURL(blob);
 
     ///Le damos un nombre al archivo que se descargará (incluye fechas)
-    link.download = `RegistroDeConsumo_${initDate}_a_${finalDate}.xlsx`;
+    link.download = `RegistroDeConsumo_${initData.value}_a_${lastData.value}.xlsx`;
 
     ///Agregamos el enlace temporal al DOM para poder simular el click
     document.body.appendChild(link);
@@ -448,9 +444,8 @@ export function addCellByNumber(numberLike, payload, notebook) {
     renderNotebook(notebook);
 }
 ///Validamos los campos
-export function validateValues(startStr, endStr, resourceValue) {
+export function validateValues(startStr, endStr) {
     if (!startStr || !endStr) return false;
-    if (!resourceValue || resourceValue === "" || resourceValue === "selecionado") return false;
     return true;
 }
 ///Validamos los campos

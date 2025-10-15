@@ -258,9 +258,10 @@ export async function insertConsumption(
     idResourcePurity: resourceS.value.trim(),
     idUser: user,
     quantity: quantityT.value.trim(),
-    consumptionDate: `${date[2]}/${date[1]}/${date[0]}`,
+    consumptionDate: dateT.value,
     cost: costT.value.trim(),
   };
+  console.log(payload.consumptionDate)
 
   try {
     const res = await ConsumptionService.insertConsumption(payload);

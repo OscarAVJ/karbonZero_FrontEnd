@@ -289,7 +289,7 @@ export async function loadBarChart(barContainer) {
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - margin.bottom - yScale(d.total))
     .attr("style", (d) => {
-      const colors = getColor(d.total, mean / 2);
+      const colors = getColor(d.total, mean);
       return `fill: rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, 100)`;
     });
 
