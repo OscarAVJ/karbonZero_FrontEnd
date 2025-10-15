@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const resetRes = await putUserPassword(id, payload);
 
       if (resetRes.ok) {
-        Alerts.showToast('Contraseña actualizada correctamente.');
+        Alerts.showToastCloseSuccess("Contraseña actualizada correctamente.");
         localStorage.removeItem('recoveryEmail');
         document.getElementById('passwordRecoveryModal').querySelector('form').reset();
         // Si querés cerrar el modal automáticamente:
