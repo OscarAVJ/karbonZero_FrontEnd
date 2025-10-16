@@ -98,6 +98,7 @@ export async function insertUser(payload) {
         if (response.ok) {
             Alerts.showToastCloseSuccess("Usuario creado exitosamente");
         } else {
+          Alerts.showToastCloseError("Error creando usuarios, posibles datos duplicados")
             console.error(`Error creating user: ${response.status}`);
         }
 
@@ -124,6 +125,7 @@ export async function updateUser(payload, id) {
         if (response.ok) {
             Alerts.showToastCloseSuccess("Usuario actualizado exitosamente");
         } else {
+          Alerts.showToastCloseError("Error actualizando usuarios, posibles datos duplicados")
             console.error(`Error updating user: ${response.status}`);
         }
 

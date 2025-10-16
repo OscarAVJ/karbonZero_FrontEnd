@@ -117,6 +117,7 @@ export async function insertResource(payload) {
     }
     ///Si no pues una mala
     else {
+      Alerts.showToastCloseError("Error al crear recurso, posible datos duplicados")
       console.error(`Error creating resource: ${response.status}`);
     }
     ///Retornamos nuestra respuesta

@@ -233,6 +233,7 @@ export function render() {
             <h4 class="kz-modal-title" id="exampleModalLongTitle">Roles</h4>
             <button
               type="button"
+              id="btnCerrar"
               class="btn-close"
               style="position: absolute; right: 1rem; top: 1rem"
               data-bs-dismiss="modal"
@@ -394,7 +395,7 @@ async function rolProcess() {
   const nametxt = document.querySelector("#rolNameTxt");
   const levelSelect = document.querySelector("#levelSelect");
   const idHideen = document.querySelector("#rolIdTxt");
-
+  const closeBtn = document.querySelector("#btnCerrar")
   const rolForm = document.querySelector("#rolForm");
   const modalEl = document.querySelector("#rolModal");
   const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -406,6 +407,8 @@ async function rolProcess() {
       rolController.reload(container);
     }
   });
+
+  closeBtn.addEventListener("click", () => form.reset());
 
   ///Aca definimos que si el boton existe, al hacerle click vamos a limpiar los campos al cargar
   if (addRolBtn) {

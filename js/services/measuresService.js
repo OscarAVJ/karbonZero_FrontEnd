@@ -97,6 +97,7 @@ export async function insertMeasure(payload) {
     }
     ///Si no pues una mala
     else {
+      Alerts.showToastCloseError("Error creando medidas, posibles datos duplicados")
       console.error(`Error creating measure: ${response.status}`);
     }
     ///Retornamos nuestra respuesta
@@ -128,6 +129,7 @@ export async function updateMeasure(payload, id) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Medida actualizada exitosamente");
     } else {
+      Alerts.showToastCloseError("Error actualizando medidas, posibles datos duplicados")
       console.error(`Error updating measure: ${response.status}`);
     }
     const data = await response.json();
