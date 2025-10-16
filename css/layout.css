@@ -21,7 +21,7 @@ body{
   flex-direction:column;
   overflow-y: hidden;     
   overflow-x: visible;   
-
+}
 .sidebar.collapsed{
   width:85px;
   display:flex;
