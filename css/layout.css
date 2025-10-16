@@ -1,13 +1,4 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-:root{
-  /* altura aprox. del footer sticky en expandido */
-  --footer-h: 112px;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
 body{
   display:flex;
@@ -21,45 +12,37 @@ body{
 .sidebar{
   width:200px;
   position:fixed; top:0; left:0;
-  background-color:#016045;
+  background:#016045;
   height:100vh;
   transition:.4s ease;
   z-index:1000;
   scrollbar-width:none;
 
-  display:flex;
+  display:flex;                 /* header fijo + nav scrolleable */
   flex-direction:column;
-  overflow:hidden;           /* el scroll vive en .sidebar-nav */
+  overflow:hidden;              /* el scroll vive en .sidebar-nav */
 }
 
-/* collapsed también con flex y scroll en nav */
 .sidebar.collapsed{
   width:85px;
   display:flex;
   flex-direction:column;
-
-  /* altura del footer sticky cuando está colapsado */
-  --footer-h: 80px;
 }
 
 .sidebar-header{
   position:relative;
-  display:flex;
+  display:flex; align-items:center; justify-content:space-between;
   padding:25px 20px;
-  align-items:center;
-  justify-content:space-between;
 }
 
 .sidebar-header .header-logo img{
-  width:140px; height:70px;
-  display:block; object-fit:contain; border-radius:50%;
+  width:140px; height:70px; display:block; object-fit:contain; border-radius:50%;
 }
-
 .sidebar.collapsed .header-logo{ display:none; }
 
 .sidebar-header .toggler{
   position:absolute; right:20px;
-  height:40px; width:40px; border:0; color:black;
+  height:40px; width:40px; border:0; color:#000;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; border-radius:8px; background:#fff; transition:.4s ease;
 }
@@ -68,42 +51,40 @@ body{
 .sidebar.collapsed .sidebar-header .toggler span{ transform:rotate(180deg); }
 .sidebar-header .toggler span{ font-size:1.75rem; }
 
-/* ===== NAV SCROLLEABLE ===== */
+/* ===== NAV SCROLLEABLE (flex-column dentro del scroll) ===== */
 .nav-label-info{
-  color:#fff; opacity:.7;
-  padding-top:20px; padding-left:17px;
+  color:#fff; opacity:.7; padding-top:20px; padding-left:17px;
 }
 
 .sidebar-nav{
   flex:1 1 auto;
-  overflow-y:auto;                     /* scroll SIEMPRE */
+  overflow-y:auto;                        /* scroll SIEMPRE */
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
-  padding-bottom:var(--footer-h);      /* colchón para el sticky */
   scrollbar-width:none;
+
+  display:flex;                           /* clave: layout por columnas */
+  flex-direction:column;
+  gap:0;
 }
-.sidebar-nav::-webkit-scrollbar{ width:0; height:0; } /* ocultar barra en WebKit */
+
+.sidebar-nav::-webkit-scrollbar{ width:0; height:0; } /* oculta en WebKit */
 
 .sidebar-nav .nav-list{
   list-style:none; text-decoration:none;
-  display:flex; gap:4px;
+  display:flex; flex-direction:column; gap:4px;
   padding:0 15px;
-  flex-direction:column;
-  transform:translateY(15px);
   transition:.4s ease;
 }
 
-.sidebar.collapsed .sidebar-nav .primary-nav{ transform:translateY(65px); }
+.sidebar.collapsed .sidebar-nav .primary-nav{ transform:translateY(0); }
 
 .sidebar-nav .nav-link-side{
-  color:#fff; display:flex; white-space:nowrap;
-  gap:12px; align-items:center;
-  padding:12px 15px; border-radius:8px;
-  text-decoration:none; transition:.4s ease;
+  color:#fff; display:flex; align-items:center; gap:12px;
+  white-space:nowrap; padding:12px 15px;
+  border-radius:8px; text-decoration:none; transition:.4s ease;
 }
-.sidebar-nav .nav-link-side:hover{
-  color:#016045; background:#fff;
-}
+.sidebar-nav .nav-link-side:hover{ color:#016045; background:#fff; }
 
 .sidebar-nav .nav-link-side .nav-label{ transition:opacity .4s ease; }
 .sidebar.collapsed .sidebar-nav .nav-link-side .nav-label{
@@ -125,17 +106,16 @@ body{
   opacity:1; transform:translateY(50%); transition:.4s ease;
 }
 
-/* Footer pegado al fondo PERO dentro del scroll */
+/* ===== BLOQUE INFERIOR SIN STICKY NI SALTOS =====
+   Empujamos el bloque al fondo con margin-top:auto;
+   está dentro del flujo, no tapa nada y no empuja ítems. */
 .sidebar-nav .secondary-nav{
-  position:sticky; bottom:0; width:100%;
+  margin-top:auto;                      /* pega al fondo del viewport del scroll */
+  padding:8px 15px 12px 15px;
   background:#016045;
-  padding-top:8px; padding-bottom:12px;
   box-shadow:0 -8px 16px rgba(0,0,0,.08);
-  z-index:1;
-
-  /* Deja pasar el scroll; los links siguen clicables */
-  pointer-events:none;
 }
+.sidebar-nav .secondary-nav .nav-list{ padding:0; } /* limpia padding doble */
 .sidebar-nav .secondary-nav .nav-link-side{ pointer-events:auto; }
 
 /* ===== CONTENIDO ===== */
@@ -176,8 +156,7 @@ body{
     height:calc(100dvh - 24px);
     margin:12px; border-radius:20px;
     box-shadow:0 10px 30px rgba(0,0,0,.25);
-    transform:translateX(-110%);
-    z-index:1200;
+    transform:translateX(-110%); z-index:1200;
   }
   .sidebar.open{ transform:translateX(0); }
   .sidebar.collapsed{ width:min(86vw,360px); }
@@ -188,21 +167,8 @@ body{
   .sidebar-header .sidebar-toggler{ display:none; }
   .sidebar-close{ display:flex; }
 
-  /* el nav ya tiene scroll; solo ajustamos footer */
-  .sidebar-nav{ padding-bottom:var(--footer-h); }
-
-  /* en móvil el footer deja de ser sticky para evitar superposiciones */
-  .sidebar-nav .secondary-nav{
-    position:static !important;
-    bottom:auto; width:100%;
-    margin-top:16px; padding-bottom:0; box-shadow:none;
-    pointer-events:auto; /* ya no necesitamos desbloquearlo */
-  }
-
-  .main-content{
-    margin-left:0 !important;
-    width:100% !important;
-  }
+  /* El nav ya scrollea; sin sticky tampoco en móvil */
+  .main-content{ margin-left:0 !important; width:100% !important; }
 
   /* tooltips molestan en móvil */
   .sidebar-nav .nav-tooltip{ display:none !important; }
