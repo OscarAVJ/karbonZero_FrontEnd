@@ -8,7 +8,6 @@ body{
 
 #closeMenu{ display:none; }
 
-/* ===== SIDEBAR ===== */
 .sidebar{
   width:200px;
   position:fixed; top:0; left:0;
@@ -18,10 +17,10 @@ body{
   z-index:1000;
   scrollbar-width:none;
 
-  display:flex;                 /* header fijo + nav scrolleable */
+  display:flex;                
   flex-direction:column;
-  overflow:hidden;              /* el scroll vive en .sidebar-nav */
-}
+  overflow-y: hidden;     
+  overflow-x: visible;   
 
 .sidebar.collapsed{
   width:85px;
@@ -51,24 +50,23 @@ body{
 .sidebar.collapsed .sidebar-header .toggler span{ transform:rotate(180deg); }
 .sidebar-header .toggler span{ font-size:1.75rem; }
 
-/* ===== NAV SCROLLEABLE (flex-column dentro del scroll) ===== */
 .nav-label-info{
   color:#fff; opacity:.7; padding-top:20px; padding-left:17px;
 }
 
 .sidebar-nav{
   flex:1 1 auto;
-  overflow-y:auto;                        /* scroll SIEMPRE */
+  overflow-y:auto;                        
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
 
-  display:flex;                           /* clave: layout por columnas */
+  display:flex;                           
   flex-direction:column;
   gap:0;
 }
 
-.sidebar-nav::-webkit-scrollbar{ width:0; height:0; } /* oculta en WebKit */
+.sidebar-nav::-webkit-scrollbar{ width:0; height:0; }
 
 .sidebar-nav .nav-list{
   list-style:none; text-decoration:none;
@@ -93,7 +91,6 @@ body{
 
 .sidebar-nav .nav-item{ position:relative; }
 
-/* === TOOLTIPS (popovers) visibles SOLO en collapsed === */
 .sidebar-nav .nav-tooltip{
   position:absolute; top:-10px; left:calc(100% + 25px);
   opacity:0; display:none; pointer-events:none;
@@ -118,7 +115,6 @@ body{
 .sidebar-nav .secondary-nav .nav-list{ padding:0; } /* limpia padding doble */
 .sidebar-nav .secondary-nav .nav-link-side{ pointer-events:auto; }
 
-/* ===== CONTENIDO ===== */
 .main-content{
   margin-left:200px;
   width:calc(100% - 200px);
