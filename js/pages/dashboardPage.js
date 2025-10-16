@@ -23,7 +23,7 @@ export async function render() {
 
         <div class="tab-content px-4" id="tabContent">
             <div class="tab-pane fade show active" id="general">
-                <div id="main-chart" class="mx-auto" style="max-width: 1000px"></div>
+                <div id="main-chart" class="mx-auto mt-3" style="max-width: 1000px"></div>
             </div>
             <div class="tab-pane fade" id="specific">
                 <div id="time-buttons" class="d-none d-md-block my-2">
@@ -34,7 +34,7 @@ export async function render() {
                     <button class="btn kz-button" id="all">ALL</button>
                 </div>
                 <div id="consumptions-selection"></div>
-                <div id="consumption-chart"></div>
+                <div id="consumption-chart" class="mt-3"></div>
             </div>
         </div>
     </div>
@@ -106,6 +106,10 @@ function loadMainChart(json) {
         },
       },
     ],
+    title: {
+      text: 'tCO2 totales por recurso',
+      align: 'left'
+    },
     legend: { fontSize: "20px" },
   };
 
@@ -121,7 +125,7 @@ function loadCharts(data) {
   consumptionList.innerHTML = "";
 
   if (consumptionChart) {
-    try { consumptionChart.destroy(); } catch {}
+    try { consumptionChart.destroy(); } catch { }
     consumptionChart = null;
   }
 
@@ -138,7 +142,7 @@ function loadCharts(data) {
     const tabItem = document.createElement("div");
     tabItem.className = "d-inline m-1";
     tabItem.innerHTML = `
-      <input type="checkbox" class="btn-check" id="check-${tab.id}" name="check-${tab.id}" ${idx===0 ? "checked" : ""}>
+      <input type="checkbox" class="btn-check" id="check-${tab.id}" name="check-${tab.id}" ${idx === 0 ? "checked" : ""}>
       <label class="btn btn-outline-success" for="check-${tab.id}">${tab.name}</label>
     `;
     consumptionList.appendChild(tabItem);
@@ -230,6 +234,10 @@ function getChartConfig() {
       onItemClick: {
         toggleDataSeries: false,
       },
+    },
+    title: {
+      text: 'tCO2 por tiempo',
+      align: 'left'
     },
   };
 }
