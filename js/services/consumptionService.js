@@ -143,6 +143,7 @@ export async function insertConsumption(payload) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Consumo creado exitosamente");
     } else {
+      Alerts.showToastCloseError("Error creando consumos, posibles datos duplicados")
       console.error(`Error creating consumption: ${response.status}`);
     }
     const data = await response.json();
@@ -168,6 +169,7 @@ export async function updateConsumption(id, payload) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Consumo actualizado exitosamente");
     } else {
+      Alerts.showToastCloseError("Error actualizando consumos, posibles datos duplicados")
       console.error(`Error updating consumption: ${response.status}`);
     }
 

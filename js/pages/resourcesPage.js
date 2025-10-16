@@ -40,7 +40,7 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="resourceCF" class="form-label">Huella de carbono</label>
-                            <input id="resourceCF" type="number" min="0.01" step="0.01"class="form-control" placeholder="Huella de carbono" required>
+                            <input id="resourceCF" type="number" min="0.01" step="0.00001"class="form-control" placeholder="Huella de carbono" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idResource" class="form-label">idResource</label>
