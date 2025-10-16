@@ -99,6 +99,7 @@ export async function insertMeasureUnit(payload) {
     }
     ///Si no pues una mala
     else {
+      Alerts.showToastCloseError("Error creando unidades de medida, posibles datos duplicados")
       console.error(`Error creating measure unit: ${response.status}`);
     }
     const data = await response.json();
@@ -129,6 +130,7 @@ export async function updateMeasureUnit(payload, id) {
     if (response.ok) {
       Alerts.showToastCloseSuccess("Unidad de medida actualizada exitosamente");
     } else {
+      Alerts.showToastCloseError("Error actualizando unidad de medida, posibles datos duplicados")
       console.error(`Error updating measure unit: ${response.status}`);
     }
     const data = await response.json();
