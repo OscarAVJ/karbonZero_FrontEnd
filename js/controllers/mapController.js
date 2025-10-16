@@ -319,7 +319,7 @@ export async function loadBarChart(barContainer) {
 
   // Add labels
   svg
-    .selectAll(".label")
+    .selectAll(".bar-label")
     .data(Object.values(maps.states))
     .enter()
     .append("text")
