@@ -14,6 +14,10 @@ export async function render() {
                     <select class="form-select" aria-label="Países" id="countriesSelect">
                         <option value="El_Salvador">El Salvador</option>
                         <option value="Honduras">Honduras</option>
+                        <option value="Guatemala">Guatemala</option>
+                        <option value="Costa_Rica">Costa Rica</option>
+                        <option value="Nicaragua">Nicaragua</option>
+                        <option value="Panama">Panamá</option>
                     </select>
                 </div>
                 <button id="searchButton" class="kz-button">Buscar</button>
