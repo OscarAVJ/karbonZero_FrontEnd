@@ -171,7 +171,7 @@ function getProjection(mapContainer) {
   return projection;
 }
 
-export function updateScale(mapContainer, zoomInBtn, ZoomOutBtn) {
+export function updateScale(mapContainer, zoomInBtn, ZoomOutBtn,e) {
   let isHolding = false;
 
   async function zoomInLoop() {
@@ -190,7 +190,9 @@ export function updateScale(mapContainer, zoomInBtn, ZoomOutBtn) {
   }
 
   // Boton de acercarse
-  zoomInBtn.addEventListener("click", () => {
+  zoomInBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+
     maps.scale += 1000;
     updateMap(mapContainer);
   });
@@ -210,7 +212,8 @@ export function updateScale(mapContainer, zoomInBtn, ZoomOutBtn) {
   });
 
   // Botón de Alejarse
-  ZoomOutBtn.addEventListener("click", () => {
+  ZoomOutBtn.addEventListener("click", (e) => {
+    e.preventDefault()
     if (maps.scale > 1000) {
       maps.scale -= 1000;
     }

@@ -207,6 +207,7 @@ function loadConversionUnits(conversion, tab) {
     role.applyPermissions();
 }
 export function loadResources(resources, resourceSelect) {
+  resourceSelect.innerHTML=""
   resources.forEach((element) => {
     resourceSelect.innerHTML += `
         <option value="${element.idResource}">${element.name}</option>
@@ -214,6 +215,7 @@ export function loadResources(resources, resourceSelect) {
   });
 }
 export function loadInitialUnit(initialUnit, initialUnitSelect) {
+  initialUnitSelect.innerHTML=""
   initialUnit.forEach((element) => {
     initialUnitSelect.innerHTML += `
         <option value="${element.idMeasureUnit}">${element.name}</option>
@@ -221,6 +223,7 @@ export function loadInitialUnit(initialUnit, initialUnitSelect) {
   });
 }
 export function loadFinalUnits(finalUnits, finalUnitsSelect) {
+  finalUnitsSelect.innerHTML=""
   finalUnits.forEach((element) => {
     finalUnitsSelect.innerHTML += `
         <option value="${element.idMeasureUnit}">${element.name}</option>

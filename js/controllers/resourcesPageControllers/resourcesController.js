@@ -207,6 +207,8 @@ function loadResourcesTable(resources, tab) {
 }
 
 export function loadMeasureUnits(measureUnits, measureSelect) {
+  measureSelect.innerHTML=""
+  measureSelect.innerHTML=""
   measureUnits.forEach((element) => {
     measureSelect.innerHTML += `
         <option value="${element.idMeasureUnit}">${element.name}</option>

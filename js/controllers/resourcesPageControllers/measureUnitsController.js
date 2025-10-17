@@ -186,6 +186,7 @@ function loadMeasureUnits(measures, tab) {
     role.applyPermissions();
 }
 export function loadMeasures(measures, measureSelect) {
+  measureSelect.innerHTML=""
   measures.forEach((element) => {
     measureSelect.innerHTML += `
         <option value="${element.idMeasure}">${element.name}</option>

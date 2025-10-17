@@ -187,6 +187,7 @@ function loadResourcesPurityTable(puritites, tab) {
 }
 
 export function loadResources(resources, resourceSelect) {
+  resourceSelect.innerHTML =""
   resources.forEach((element) => {
     resourceSelect.innerHTML += `
         <option value="${element.idResource}">${element.name} tC0₂: ${element.carbonFootprint}</option>
