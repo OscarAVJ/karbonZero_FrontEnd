@@ -152,7 +152,8 @@ async function consumptionsProcess() {
   const date = document.querySelector("#fecha");
   const hoy = new Date();
   const añoActual = hoy.getFullYear();
-  date.max = `${añoActual}-12-31`;
+  const mesActual = hoy.getMonth()
+  date.max = `${añoActual}-${mesActual}-31`;
   const modalConsumption = document.querySelector("#consumptionsModal");
   const consumptionBsModal =
     bootstrap.Modal.getOrCreateInstance(modalConsumption);
