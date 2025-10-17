@@ -150,7 +150,9 @@ async function consumptionsProcess() {
   const quantitytxt = document.querySelector("#cantidadtxt");
   const costtxt = document.querySelector("#costotxt");
   const date = document.querySelector("#fecha");
-
+  const hoy = new Date();
+  const añoActual = hoy.getFullYear();
+  date.max = `${añoActual}-12-31`;
   const modalConsumption = document.querySelector("#consumptionsModal");
   const consumptionBsModal =
     bootstrap.Modal.getOrCreateInstance(modalConsumption);
@@ -166,11 +168,11 @@ async function consumptionsProcess() {
   const yearSelect = document.querySelector("#yearSelect");
   yearSelect.addEventListener("keyup", (e) => {
     if (e.key == "Enter") {
-        if (yearSelect.value < 0) {
-            Alerts.showToastCloseInfo("El año no puede ser negativo");
-            return;
-        };
-        searchConsumptions(container);
+      if (yearSelect.value < 0) {
+        Alerts.showToastCloseInfo("El año no puede ser negativo");
+        return;
+      };
+      searchConsumptions(container);
     };
   });
 
@@ -250,7 +252,6 @@ async function consumptionsProcess() {
         Alerts.showToastCloseError("Seleccionó una unidad de medida no válida");
         return;
       }
-
       Alerts.showToastCloseInfo("Unidad de medida convertida automáticamente");
       quantitytxt.value = new_quantity.value;
       unitySelect.value = resourceMeasureUnit;
