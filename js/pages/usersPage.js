@@ -160,6 +160,7 @@ export function render() {
                   class="form-control"
                   placeholder="Nombre"
                   maxlength="200"
+                  pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios"
                   required
                 />
               </div>
@@ -171,6 +172,7 @@ export function render() {
                   class="form-control"
                   placeholder="Apellido"
                   maxlength="200"
+                  pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios"
                   required
                 />
               </div>
@@ -184,6 +186,7 @@ export function render() {
                   class="form-control"
                   placeholder="Usuario"
                   maxlength="200"
+                  pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios"
                   required
                 />
               </div>
@@ -257,6 +260,7 @@ export function render() {
                     class="form-control"
                     placeholder="Nombre"
                     maxlength="100"
+                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios"
                     required
                   />
                 </div>

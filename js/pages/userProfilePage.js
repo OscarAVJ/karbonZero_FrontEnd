@@ -45,15 +45,15 @@ export async function render() {
                         <div class="modal-body mx-3">
                             <div class="col mb-2">
                                 <label for="nombretxt" class="form-label">Nombre</label>
-                                <input id="nombretxt" type="text" class="form-control" placeholder="Nombre" maxlength="200">
+                                <input pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"  id="nombretxt" type="text" class="form-control" placeholder="Nombre" maxlength="200" title="Solo se permiten letras y espacios">
                             </div>
                             <div class="col mb-2">
                                 <label for="apellidotxt" class="form-label">Apellido</label>
-                                <input type="text" id="apellidotxt" class="form-control" placeholder="Apellido" maxlength="200">
+                                <input type="text" id="apellidotxt" class="form-control" placeholder="Apellido" maxlength="200" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios">
                             </div>
                             <div class="col mb-2">
                                 <label for="usuariotxt" class="form-label">Usuario</label>
-                                <input type="text" id="usuariotxt" class="form-control" placeholder="Usuario" maxlength="200">
+                                <input type="text" id="usuariotxt" class="form-control" placeholder="Usuario" maxlength="200" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios">
                             </div>
                             <div class="col mb-2">
                                 <label for="correoElectronicotxt" class="form-label">Correo electrónico</label>

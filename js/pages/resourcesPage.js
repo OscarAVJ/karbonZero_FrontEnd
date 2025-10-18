@@ -105,7 +105,7 @@ export async function render() {
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="nameMetxt" class="form-label">Medida</label>
-                            <input maxlength="200" id="nameMetxt" type="text" class="form-control" placeholder="Nombre" required>
+                            <input maxlength="200" id="nameMetxt" type="text" class="form-control" placeholder="Nombre" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios" required>
                         </div>
                     </div>
                     <div class="modal-body mx-3 d-none">
@@ -141,7 +141,7 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nombreUtxt" class="form-label">Unidad</label>
-                            <input maxlength="200" id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" required>
+                            <input maxlength="200" id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idhiddenMeasureU" class="form-label">Unidad</label>
