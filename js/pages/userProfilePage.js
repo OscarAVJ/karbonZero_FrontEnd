@@ -45,19 +45,19 @@ export async function render() {
                         <div class="modal-body mx-3">
                             <div class="col mb-2">
                                 <label for="nombretxt" class="form-label">Nombre</label>
-                                <input id="nombretxt" type="text" class="form-control" placeholder="Nombre">
+                                <input id="nombretxt" type="text" class="form-control" placeholder="Nombre" maxlength="200">
                             </div>
                             <div class="col mb-2">
                                 <label for="apellidotxt" class="form-label">Apellido</label>
-                                <input type="text" id="apellidotxt" class="form-control" placeholder="Apellido">
+                                <input type="text" id="apellidotxt" class="form-control" placeholder="Apellido" maxlength="200">
                             </div>
                             <div class="col mb-2">
                                 <label for="usuariotxt" class="form-label">Usuario</label>
-                                <input type="text" id="usuariotxt" class="form-control" placeholder="Usuario">
+                                <input type="text" id="usuariotxt" class="form-control" placeholder="Usuario" maxlength="200">
                             </div>
                             <div class="col mb-2">
                                 <label for="correoElectronicotxt" class="form-label">Correo electrónico</label>
-                                <input type="email" id="correoElectronicotxt" class="form-control" placeholder="Correo">
+                                <input type="email" id="correoElectronicotxt" class="form-control" placeholder="Correo" maxlength="200">
                             </div>
                             <div class="col mb-2">
                                 <label for="fileImg" class="form-label">Foto de perfil</label>
@@ -93,20 +93,20 @@ export async function render() {
                             <div class="col mb-2">
                                 <label for="viejaContratxt" class="form-label">Contraseña actual</label>
                                 <div class="input-group">
-                                    <input id="viejaContratxt" type="password" class="form-control" placeholder="Contraseña actual" required>
+                                    <input id="viejaContratxt" type="password" class="form-control" placeholder="Contraseña actual" maxlength="200" required>
                                     <button class="btn" type="button" id="hideOldPassword"><i class="bi bi-eye-fill"></i></button>
                                 </div>
                             </div>
                             <div class="col mb-2">
                                 <label for="nuevaContratxt" class="form-label">Nueva contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" id="nuevaContratxt" class="form-control" placeholder="Nueva contraseña" required>
+                                    <input type="password" id="nuevaContratxt" class="form-control" placeholder="Nueva contraseña" maxlength="200" required>
                                     <button class="btn" type="button" id="hideNewPassword"><i class="bi bi-eye-fill"></i></button>
                                 </div>
                             </div>
                             <div class="col mb-2">
                                 <label for="confirmarContratxt" class="form-label">Confirmar contraseña</label>
-                                <input type="password" id="confirmarContratxt" class="form-control" placeholder="Confirmar contraseña" required>
+                                <input type="password" id="confirmarContratxt" class="form-control" placeholder="Confirmar contraseña" maxlength="200" required>
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-center">

@@ -20,12 +20,12 @@ export async function render() {
         </div>
         <div class="d-flex align-items-center gap-3 flex-nowrap ms-auto">
             <div class="input-group">
-                <span class="input-group-text"">Año: </span>
+                <span id="yearSelectlbl" class="input-group-text"">Año: </span>
                 <input type="number" class="form-control" min="1900" max="2200" value="" id="yearSelect">
             </div>
             <div class="input-group">
-                <span class="input-group-text">Mes: </span>
-                <select class="form-select" id="monthSelect" style="max-height: 250px; overflow-y: scroll;">
+                <span class="input-group-text"id="monthSelectlbl">Mes: </span>
+                <select class="form-select" maxlength="50" id="monthSelect" style="max-height: 250px; overflow-y: scroll;">
                     <option value=""></option>
                     <option value="1">Enero</option>
                     <option value="2">Febrero</option>
@@ -76,13 +76,13 @@ export async function render() {
                   </div>
                   <div class="col-sm-3">
                     <label for="cantidadtxt" class="form-label">Cantidad</label>
-                    <input id="cantidadtxt" type="number" class="form-control" placeholder="Cantidad" step=0.001>
+                    <input id="cantidadtxt" type="number" class="form-control" placeholder="Cantidad" step=0.001 min="0">
                   </div>
                 </div>
                 <div class="row g-2 mb-3">
                   <div class="col-sm-6">
                     <label for="costotxt" class="form-label">Costo</label>
-                    <input type="number" id="costotxt" class="form-control" placeholder="Costo">
+                    <input type="number" id="costotxt" class="form-control" placeholder="Costo" min="0">
                   </div>
                   <div class="col-sm-6">
                     <label for="fecha" class="form-label">Fecha</label>
@@ -166,8 +166,14 @@ async function consumptionsProcess() {
   });
 
   const yearSelect = document.querySelector("#yearSelect");
+  yearSelect.max = añoActual
+
   yearSelect.addEventListener("keyup", (e) => {
     if (e.key == "Enter") {
+      if (yearSelect.value > añoActual) {
+        Alerts.showToastCloseInfo(`El valor del año no puede ser mayor al año actual ${añoActual}`)
+        return;
+      }
       if (yearSelect.value < 0) {
         Alerts.showToastCloseInfo("El año no puede ser negativo");
         return;

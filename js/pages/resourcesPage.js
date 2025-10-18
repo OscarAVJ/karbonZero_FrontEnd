@@ -36,7 +36,7 @@ export async function render() {
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nameResource" class="form-label">Nombre</label>
-                            <input id="nameResource" type="text" class="form-control" placeholder="Nombre" required>
+                            <input maxlength="200" id="nameResource" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="resourceCF" class="form-label">Huella de carbono</label>
@@ -105,7 +105,7 @@ export async function render() {
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="nameMetxt" class="form-label">Medida</label>
-                            <input id="nameMetxt" type="text" class="form-control" placeholder="Nombre" required>
+                            <input maxlength="200" id="nameMetxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                     </div>
                     <div class="modal-body mx-3 d-none">
@@ -135,13 +135,13 @@ export async function render() {
                     <div class="modal-body mx-3">
                         <div class="row g-2 mb-3">
                             <label for="medidasUtxt" class="form-label">Medida</label>
-                            <select id="medidasUtxt" class="form-select">
+                            <select id="medidasUtxt" class="form-select required">
 
                             </select>
                         </div>
                         <div class="row g-2 mb-3">
                             <label for="nombreUtxt" class="form-label">Unidad</label>
-                            <input id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" required>
+                            <input maxlength="200" id="nombreUtxt" type="text" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="row g-2 mb-3 d-none">
                             <label for="idhiddenMeasureU" class="form-label">Unidad</label>
@@ -199,7 +199,7 @@ export async function render() {
                             </div>
                             <div class="col-6">
                                 <label for="constantxt" class="form-label">Constante</label>
-                                <input id="constantxt" type="number" step="0.01" class="form-control" placeholder="Constante" required>
+                                <input min="0" id="constantxt" type="number" step="0.01" class="form-control" placeholder="Constante" required>
                             </div>
                              <div class="col-6 d-none">
                                 <label for="conversionIdHidden" class="form-label">Constante</label>

@@ -202,3 +202,10 @@
         transform: rotate(-90deg);
     }
 }
+@media (max-width: 668px) {
+  #monthSelect,
+  #yearSelect,#monthSelectlbl,
+  #yearSelectlbl {
+    display: none !important;
+  }
+}

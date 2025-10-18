@@ -159,6 +159,8 @@ export function render() {
                   type="text"
                   class="form-control"
                   placeholder="Nombre"
+                  maxlength="200"
+                  required
                 />
               </div>
               <div class="col-sm-6">
@@ -168,6 +170,8 @@ export function render() {
                   type="text"
                   class="form-control"
                   placeholder="Apellido"
+                  maxlength="200"
+                  required
                 />
               </div>
             </div>
@@ -179,6 +183,7 @@ export function render() {
                   type="text"
                   class="form-control"
                   placeholder="Usuario"
+                  maxlength="200"
                   required
                 />
               </div>
@@ -191,6 +196,7 @@ export function render() {
                   type="email"
                   class="form-control"
                   placeholder="Correo"
+                  maxlength="200"
                   required
                 />
               </div>
@@ -250,6 +256,8 @@ export function render() {
                     type="text"
                     class="form-control"
                     placeholder="Nombre"
+                    maxlength="100"
+                    required
                   />
                 </div>
                 <div class="row g-2 mb-3">
