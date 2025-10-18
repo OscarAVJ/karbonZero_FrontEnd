@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = emailInput.value.trim();
 
     if (!email) {
-      alert('Por favor, ingresa tu correo electrónico.');
+      Alerts.showToastCloseInfo("Por favor ingres tu email")
       return;
     }
     try {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {
       console.error('Error enviando el correo:', err);
-      alert('Ocurrió un error al enviar el correo.');
+      Alerts.showToastCloseInfo('Ocurrió un error al enviar el correo.');
     }
   });
 });
