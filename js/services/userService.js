@@ -94,12 +94,10 @@ export async function insertUser(payload) {
             body: JSON.stringify(payload)
         });
         ///Transformamos la data a json 
-
         if (response.ok) {
             Alerts.showToastCloseSuccess("Usuario creado exitosamente");
         } else {
           Alerts.showToastCloseError("Error creando usuarios, posibles datos duplicados")
-            console.error(`Error creating user: ${response.status}`);
         }
 
         const data = await response.json();

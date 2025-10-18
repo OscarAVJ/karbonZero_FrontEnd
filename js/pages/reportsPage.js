@@ -158,7 +158,7 @@ export async function render() {
                 <div class="col-8" id="selectResourceContainer">
                   <label for="selectResourceReport2" class="form-label">Recurso</label>
                   <select class="form-select" id="selectResourceReport2" aria-label="Default select example">
-                    <option value="" selected>Selecciona un recurso para filtrar</option>
+                    <option value="0" selected>Selecciona un recurso para filtrar</option>
                   </select>
                 </div>
               </div>
@@ -235,6 +235,12 @@ export async function afterRender() {
 
   loadResouceSelect(data, resourceSelected);
   loadResouceSelect(data, resourceSelected2);
+  const now = new Date();
+  const currentYear = now.getFullYear()
+  initialDate.max= `${currentYear}-12-31`;
+  initialDate2.max=`${currentYear}-12-31`;
+    lastDate.max=`${currentYear}-12-31`;
+  lastDate2.max=`${currentYear}-12-31`;
 
   ///Iniamos un array de recursos
   let resources = [];
@@ -319,7 +325,7 @@ export async function afterRender() {
   ///Este es el boton que tiene el popover, es el que crea los elementos
   document.getElementById('btn-create-element').addEventListener('click', () => {
     const text = toastInput.value.trim();
-    if (text.length === 0 ) {
+    if (text.length === 0) {
       Alerts.showToastCloseInfo('Escribe algo en el contenido')
       return;
     }
@@ -334,16 +340,17 @@ export async function afterRender() {
     selectedNumber = null;
     toast.hide();
   });
-  
+
   ///Lo inicializamos en true por que la primera vez que se le click va a estar checked y ya
   let isChecked = true;
-  displayResourceOpt.addEventListener('click',()=>{
+  displayResourceOpt.addEventListener('click', () => {
     ///Si es true
-    if(isChecked){
+    if (isChecked) {
       selectResourceForTable.classList.add('d-none')
       resourceSelected2.value = ""
-    }else{
+    } else {
       ///Si es false
+
       selectResourceForTable.classList.remove('d-none')
     }
     ///Invertimos su valor para el siguiente click, el cual sera para descheckearlo??
@@ -351,6 +358,10 @@ export async function afterRender() {
   })
   ///Evento de exportar a excel
   exportExcel.addEventListener('click', async () => {
+    if(initialDate.value > lastDate.value){
+      Alerts.showToastCloseInfo("La fecha inicial no puede ser mayor a la fecha final")
+      return
+    }
     await exportToExcel(initialDate, lastDate, resourceSelected, resources)
   });
   ///Evento de exportar a pdf
@@ -367,7 +378,7 @@ export async function afterRender() {
   ///Aca lo que hacemos el obtener lo que se esta mandando a buscar para incrustarlo en el notebook despues con la funcion de importTable
   async function getTableDataset(resource, init, end) {
     const data = await getAllConsumptionsByFiltersMonth(resource, init, end);
-    if (data.length === 0){
+    if (data.length === 0) {
       Alerts.showInfo('No hay datos que coincidan para los filtros seleccionados')
       return
     };
@@ -392,7 +403,14 @@ export async function afterRender() {
   importTableBtn.addEventListener('click', async () => {
     tableToImport.innerHTML = "";
     const resourceName = resourceSelected2.value;
-
+    if(initialDate2.value > lastDate2.value){
+      Alerts.showToastCloseInfo("La fecha inicial no puede ser mayor a la fecha final")
+      return
+    }
+    if (!isChecked && resourceSelected2.value === 0) {
+      Alerts.showToastCloseInfo("Debes seleccionar un recurso")
+      return;
+    }
     if (!validateValuesToImport(initialDate2.value, lastDate2.value)) {
       Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso");
       return;
