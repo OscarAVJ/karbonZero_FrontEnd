@@ -470,7 +470,6 @@ export async function loadTable(resource, init, end, container) {
         container.innerHTML = "<p>No hay datos que coincidan con los filtros seleccionados</p>"
         return
     }
-    console.table(data)
     ///Lo de siempre
     container.innerHtml = "";
     container.innerHTML = `

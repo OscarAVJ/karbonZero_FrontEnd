@@ -40,7 +40,6 @@ export function initializeEventListeners(chatContainer, chatContent) {
       const id = approveBtn.dataset.id;
 
       if (processedIds.has(id)) {
-        console.log("Ya se está procesando este post");
         return;
       }
 
@@ -60,7 +59,6 @@ export function initializeEventListeners(chatContainer, chatContent) {
       const id = deleteBtn.dataset.id;
 
       if (processedIds.has(id)) {
-        console.log("Ya se está procesando este post");
         return;
       }
 
@@ -81,7 +79,6 @@ export function initializeEventListeners(chatContainer, chatContent) {
     const id = deleteBtn.dataset.id;
 
     if (processedIds.has(id)) {
-      console.log("Ya se está procesando este post");
       return;
     }
 

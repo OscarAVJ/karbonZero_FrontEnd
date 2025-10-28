@@ -270,7 +270,6 @@ export async function afterRender() {
     ///Esto sera el valor de la columna name de nuestro tabla
     const item = { nameR: value };
     resources.push(item);
-    console.table(item);
     ///Aca pueden ver como se renderiza la tabla
     loadResourcesTable(tableToSelectResource, item);
   });
@@ -412,7 +411,6 @@ export async function afterRender() {
         "$" + c.cost,
       ]),
     };
-    console.table(dataset);
     return dataset;
   }
 
