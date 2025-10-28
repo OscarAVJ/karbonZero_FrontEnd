@@ -270,11 +270,14 @@ export async function afterRender() {
     if (!deleteSelectedResource) return;
 
     const name = deleteSelectedResource.dataset.id;
+    console.log(name)
     if (!name) return; 
 
     const index = resources.findIndex((r) => r.nameR === name);
+    if (index !== -1) {
       resources.splice(index, 1);
       loadResourcesTable(tableToSelectResource, resources);
+    }
   });
 
   ///Agregamos un registro a nuestra tabla (resources)

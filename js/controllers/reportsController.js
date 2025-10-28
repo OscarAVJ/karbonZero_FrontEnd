@@ -459,7 +459,11 @@ export function loadResourcesTable(table, item) {
     <tr>
       <td>${item.nameR}</td>
       <td>
-        <button class="btn btn-sm btn-danger btn-delete-resourceReport" data-id="${item.nameR}"><i class="bi bi-trash-fill"></i></button>
+        <button 
+            class="btn-delete-resourceReport btn btn-danger" 
+            data-id="${item.nameR}">
+            <i class="bi bi-trash"></i>
+        </button>      
       </td>
     </tr>`;
 }
