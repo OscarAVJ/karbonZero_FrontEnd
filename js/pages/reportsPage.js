@@ -134,7 +134,6 @@ export async function render() {
                   <thead class="table-light">
                     <tr>
                         <th>Recurso</th>
-                        <th>Accion</th>
                     </tr>
                   </thead>
                   <tbody id="TableToSelectResources">
