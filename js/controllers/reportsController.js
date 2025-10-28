@@ -458,13 +458,6 @@ export function loadResourcesTable(table, item) {
     table.innerHTML += `
     <tr>
       <td>${item.nameR}</td>
-      <td>
-        <button 
-            class="btn-delete-resourceReport btn btn-danger" 
-            data-id="${item.nameR}">
-            <i class="bi bi-trash"></i>
-        </button>      
-      </td>
     </tr>`;
 }
 

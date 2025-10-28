@@ -263,22 +263,6 @@ export async function afterRender() {
   ///Iniamos un array de recursos
   let resources = [];
   ///TODO: Hacer que esto sirva
-  tableToSelectResource.addEventListener("click", (e) => {
-    const deleteSelectedResource = e.target.closest(
-      ".btn-delete-resourceReport"
-    );
-    if (!deleteSelectedResource) return;
-
-    const name = deleteSelectedResource.dataset.id;
-    console.log(name)
-    if (!name) return; 
-
-    const index = resources.findIndex((r) => r.nameR === name);
-    if (index !== -1) {
-      resources.splice(index, 1);
-      loadResourcesTable(tableToSelectResource, resources);
-    }
-  });
 
   ///Agregamos un registro a nuestra tabla (resources)
   addResourceBtn.addEventListener("click", () => {
