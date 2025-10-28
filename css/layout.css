@@ -103,16 +103,13 @@ body{
   opacity:1; transform:translateY(50%); transition:.4s ease;
 }
 
-/* ===== BLOQUE INFERIOR SIN STICKY NI SALTOS =====
-   Empujamos el bloque al fondo con margin-top:auto;
-   está dentro del flujo, no tapa nada y no empuja ítems. */
 .sidebar-nav .secondary-nav{
-  margin-top:auto;                      /* pega al fondo del viewport del scroll */
+  margin-top:auto;                
   padding:8px 15px 12px 15px;
   background:#016045;
   box-shadow:0 -8px 16px rgba(0,0,0,.08);
 }
-.sidebar-nav .secondary-nav .nav-list{ padding:0; } /* limpia padding doble */
+.sidebar-nav .secondary-nav .nav-list{ padding:0; } 
 .sidebar-nav .secondary-nav .nav-link-side{ pointer-events:auto; }
 
 .main-content{
@@ -145,7 +142,6 @@ body{
 
 .sidebar-close{ display:none; }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 991.98px){
   .sidebar{
     width:min(86vw,360px);
@@ -163,10 +159,8 @@ body{
   .sidebar-header .sidebar-toggler{ display:none; }
   .sidebar-close{ display:flex; }
 
-  /* El nav ya scrollea; sin sticky tampoco en móvil */
   .main-content{ margin-left:0 !important; width:100% !important; }
 
-  /* tooltips molestan en móvil */
   .sidebar-nav .nav-tooltip{ display:none !important; }
 
   .btn-mobile-open{

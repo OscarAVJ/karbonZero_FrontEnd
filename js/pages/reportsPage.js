@@ -1,8 +1,22 @@
-import { addCellByNumber, exportToExcel, exportToPdf, exportToWord, loadResouceSelect, loadResourcesTable, loadTable, renderNotebook, validateValues, validateValuesToImport } from "../controllers/reportsController";
+import {
+  addCellByNumber,
+  exportToExcel,
+  exportToPdf,
+  exportToWord,
+  loadResouceSelect,
+  loadResourcesTable,
+  loadTable,
+  renderNotebook,
+  validateValues,
+  validateValuesToImport,
+} from "../controllers/reportsController";
 import { getAllConsumptionsByFiltersMonth } from "../services/consumptionService";
 import { getAllResourcePuritiesList } from "../services/puritiesServices";
-import * as Alerts from '../../utils/alerts.js'
-import { getAllResources, getAllResourcesSP } from "../services/resourcesService.js";
+import * as Alerts from "../../utils/alerts.js";
+import {
+  getAllResources,
+  getAllResourcesSP,
+} from "../services/resourcesService.js";
 
 export async function render() {
   return `
@@ -194,38 +208,42 @@ export async function render() {
 }
 export async function afterRender() {
   ///Referencia a los controles que abren un toast
-  const toastTrigger1 = document.querySelector('#liveToastBtnH1')
-  const toastTrigger2 = document.querySelector('#liveToastBtnH2')
-  const toastTrigger3 = document.querySelector('#liveToastBtnH3')
-  const toastTrigger4 = document.querySelector('#liveToastBtnH4')
-  const toastTrigger5 = document.querySelector('#liveToastBtnH5')
-  const toastTrigger6 = document.querySelector('#liveToastBtnH6')
-  const toastTriggerP = document.querySelector('#liveToastBtnP')
+  const toastTrigger1 = document.querySelector("#liveToastBtnH1");
+  const toastTrigger2 = document.querySelector("#liveToastBtnH2");
+  const toastTrigger3 = document.querySelector("#liveToastBtnH3");
+  const toastTrigger4 = document.querySelector("#liveToastBtnH4");
+  const toastTrigger5 = document.querySelector("#liveToastBtnH5");
+  const toastTrigger6 = document.querySelector("#liveToastBtnH6");
+  const toastTriggerP = document.querySelector("#liveToastBtnP");
 
-  ///Referencia a MUCHOS controles, creo que los nombres son lo suficiente claros 
-  const toastLiveExample = document.getElementById('liveToast')
-  const previewBtn = document.getElementById('previewBtn');
-  const previewBtn2 = document.getElementById('previewBtn2');
-  const tableToImport = document.getElementById('loadTableToImport')
-  const exportExcel = document.getElementById('exportExcelBtn');
-  const initialDate = document.getElementById('fechaInicioReporte')
-  const lastDate = document.getElementById('fechaFinReporte')
-  const initialDate2 = document.getElementById('fechaInicioReporte2')
-  const lastDate2 = document.getElementById('fechaFinReporte2')
-  const resourceSelected = document.getElementById('selectResourceReport')
-  const resourceSelected2 = document.getElementById('selectResourceReport2')
-  const importTableBtn = document.getElementById('importTableBtn')
-  const previewModalBody = document.getElementById('previewModalBody')
-  const addResourceBtn = document.getElementById('addResourceReport')
-  const toastEl = document.getElementById('liveToast');
+  ///Referencia a MUCHOS controles, creo que los nombres son lo suficiente claros
+  const toastLiveExample = document.getElementById("liveToast");
+  const previewBtn = document.getElementById("previewBtn");
+  const previewBtn2 = document.getElementById("previewBtn2");
+  const tableToImport = document.getElementById("loadTableToImport");
+  const exportExcel = document.getElementById("exportExcelBtn");
+  const initialDate = document.getElementById("fechaInicioReporte");
+  const lastDate = document.getElementById("fechaFinReporte");
+  const initialDate2 = document.getElementById("fechaInicioReporte2");
+  const lastDate2 = document.getElementById("fechaFinReporte2");
+  const resourceSelected = document.getElementById("selectResourceReport");
+  const resourceSelected2 = document.getElementById("selectResourceReport2");
+  const importTableBtn = document.getElementById("importTableBtn");
+  const previewModalBody = document.getElementById("previewModalBody");
+  const addResourceBtn = document.getElementById("addResourceReport");
+  const toastEl = document.getElementById("liveToast");
   const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
-  const toastInput = document.getElementById('toastValue');
-  const exportToWordBtn = document.getElementById('exportToWordBtn');
-  const displayResourceOpt = document.getElementById('flexCheckChecked');
-  const selectResourceForTable = document.getElementById('selectResourceContainer')
-  const notebook = document.getElementById('notebook');
-  const exportToPdfBtn = document.getElementById('exportToPdf');
-  const tableToSelectResource = document.getElementById('TableToSelectResources');
+  const toastInput = document.getElementById("toastValue");
+  const exportToWordBtn = document.getElementById("exportToWordBtn");
+  const displayResourceOpt = document.getElementById("flexCheckChecked");
+  const selectResourceForTable = document.getElementById(
+    "selectResourceContainer"
+  );
+  const notebook = document.getElementById("notebook");
+  const exportToPdfBtn = document.getElementById("exportToPdf");
+  const tableToSelectResource = document.getElementById(
+    "TableToSelectResources"
+  );
 
   ///Inicializamos nuestro "cuaderno" vacio, osea que le pasamos los valores iniciales de notebook
   renderNotebook(notebook);
@@ -236,23 +254,25 @@ export async function afterRender() {
   loadResouceSelect(data, resourceSelected);
   loadResouceSelect(data, resourceSelected2);
   const now = new Date();
-  const currentYear = now.getFullYear()
-  initialDate.max= `${currentYear}-12-31`;
-  initialDate2.max=`${currentYear}-12-31`;
-    lastDate.max=`${currentYear}-12-31`;
-  lastDate2.max=`${currentYear}-12-31`;
+  const currentYear = now.getFullYear();
+  initialDate.max = `${currentYear}-12-31`;
+  initialDate2.max = `${currentYear}-12-31`;
+  lastDate.max = `${currentYear}-12-31`;
+  lastDate2.max = `${currentYear}-12-31`;
 
   ///Iniamos un array de recursos
   let resources = [];
   ///TODO: Hacer que esto sirva
-  tableToSelectResource.addEventListener('click', (e) => {
-    const deleteSelectedResource = e.target.closest(".btn-delete-resourceReport");
+  tableToSelectResource.addEventListener("click", (e) => {
+    const deleteSelectedResource = e.target.closest(
+      ".btn-delete-resourceReport"
+    );
     if (!deleteSelectedResource) return;
-    console.log('i am here')
+
     const name = deleteSelectedResource.dataset.id;
-    console.log(name)
-    const index = resources.findIndex(r => r.nameR === name);
-    console.log(index)
+    if (!name) return; 
+
+    const index = resources.findIndex((r) => r.nameR === name);
     if (index !== -1) {
       resources.splice(index, 1);
       loadResourcesTable(tableToSelectResource, resources);
@@ -260,118 +280,129 @@ export async function afterRender() {
   });
 
   ///Agregamos un registro a nuestra tabla (resources)
-  addResourceBtn.addEventListener('click', () => {
+  addResourceBtn.addEventListener("click", () => {
     const value = resourceSelected.value?.trim();
     if (!value) return;
     ///Esto sera el valor de la columna name de nuestro tabla
     const item = { nameR: value };
     resources.push(item);
-    console.table(item)
+    console.table(item);
     ///Aca pueden ver como se renderiza la tabla
     loadResourcesTable(tableToSelectResource, item);
   });
 
   ///Evento para visualizar previamente la informacion que se enviara a el excel
-  previewBtn.addEventListener('click', async () => {
+  previewBtn.addEventListener("click", async () => {
     previewModalBody.innerHTML = "";
 
     const resourceName = resourceSelected.value;
 
     ///Validamos que los datos si esten
     if (validateValues(initialDate.value, lastDate.value) === false) {
-      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
+      Alerts.showToastCloseInfo(
+        "Favor seleccionar el filtro de fechas y el nombre del recurso"
+      );
       return;
     }
     ///Creamos un elemento div
-    const container = document.createElement('div');
+    const container = document.createElement("div");
     ///Posteriormente al body del modal le metemos ese div adentro
-    previewModalBody.appendChild(container)
+    previewModalBody.appendChild(container);
     ///Load
     await loadTable(resourceName, initialDate.value, lastDate.value, container);
   });
 
   ///Evento para visualizar previamente la informacion que se enviara al doc (contenedor de la informacion para pdf)
-  previewBtn2.addEventListener('click', async () => {
+  previewBtn2.addEventListener("click", async () => {
     previewModalBody.innerHTML = "";
     const resourceName = resourceSelected2.value;
 
     ///Validamos
     if (validateValues(initialDate2.value, lastDate2.value) === false) {
-      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso")
+      Alerts.showToastCloseInfo(
+        "Favor seleccionar el filtro de fechas y el nombre del recurso"
+      );
       return;
     }
     ///Lo mismo que en el de arriba
-    const container = document.createElement('div');
-    previewModalBody.appendChild(container)
-    await loadTable(resourceName, initialDate2.value, lastDate2.value, container);
+    const container = document.createElement("div");
+    previewModalBody.appendChild(container);
+    await loadTable(
+      resourceName,
+      initialDate2.value,
+      lastDate2.value,
+      container
+    );
   });
-
-
 
   ///iniciamos nuestro selected number
   let selectedNumber = null;
 
   ///Aca se maneja el evento del select de los elementos
-  document.querySelector('#dropdown-menu-main').addEventListener('click', (e) => {
-    ///Accedemos al data-number, propiedad a la cual le asignamos valor desde render
-    const item = e.target.closest('[data-number]');
-    if (!item) return;
-    ///Y pues aca
-    selectedNumber = item.dataset.number;
-    toast.show();
-    toastInput.focus();
-  });
+  document
+    .querySelector("#dropdown-menu-main")
+    .addEventListener("click", (e) => {
+      ///Accedemos al data-number, propiedad a la cual le asignamos valor desde render
+      const item = e.target.closest("[data-number]");
+      if (!item) return;
+      ///Y pues aca
+      selectedNumber = item.dataset.number;
+      toast.show();
+      toastInput.focus();
+    });
 
   ///Este es el boton que tiene el popover, es el que crea los elementos
-  document.getElementById('btn-create-element').addEventListener('click', () => {
-    const text = toastInput.value.trim();
-    if (text.length === 0) {
-      Alerts.showToastCloseInfo('Escribe algo en el contenido')
-      return;
-    }
+  document
+    .getElementById("btn-create-element")
+    .addEventListener("click", () => {
+      const text = toastInput.value.trim();
+      if (text.length === 0) {
+        Alerts.showToastCloseInfo("Escribe algo en el contenido");
+        return;
+      }
 
-    ///Lo agregamos a nuestro "cuaderno" con el formato
-    addCellByNumber(selectedNumber, text, notebook);
+      ///Lo agregamos a nuestro "cuaderno" con el formato
+      addCellByNumber(selectedNumber, text, notebook);
 
-    ///Limpiamos el toast
-    toastInput.value = '';
+      ///Limpiamos el toast
+      toastInput.value = "";
 
-    ///SelectedNumber vuelve a ser null
-    selectedNumber = null;
-    toast.hide();
-  });
+      ///SelectedNumber vuelve a ser null
+      selectedNumber = null;
+      toast.hide();
+    });
 
   ///Lo inicializamos en true por que la primera vez que se le click va a estar checked y ya
   let isChecked = true;
-  displayResourceOpt.addEventListener('click', () => {
+  displayResourceOpt.addEventListener("click", () => {
     ///Si es true
     if (isChecked) {
-      selectResourceForTable.classList.add('d-none')
-      resourceSelected2.value = ""
+      selectResourceForTable.classList.add("d-none");
+      resourceSelected2.value = "";
     } else {
-      ///Si es false
-
-      selectResourceForTable.classList.remove('d-none')
+      selectResourceForTable.classList.remove("d-none");
     }
     ///Invertimos su valor para el siguiente click, el cual sera para descheckearlo??
     isChecked = !isChecked;
-  })
+  });
   ///Evento de exportar a excel
-  exportExcel.addEventListener('click', async () => {
-    if(initialDate.value > lastDate.value){
-      Alerts.showToastCloseInfo("La fecha inicial no puede ser mayor a la fecha final")
-      return
+  exportExcel.addEventListener("click", async () => {
+    if (initialDate.value > lastDate.value) {
+      Alerts.showToastCloseInfo(
+        "La fecha inicial no puede ser mayor a la fecha final"
+      );
+      return;
     }
-    await exportToExcel(initialDate, lastDate, resourceSelected, resources)
+    await exportToExcel(initialDate, lastDate, resourceSelected, resources);
   });
   ///Evento de exportar a pdf
-  exportToPdfBtn.addEventListener('click', async () => {
-    console.log(previewModalBody)
+  exportToPdfBtn.addEventListener("click", async () => {
+    console.log(previewModalBody);
     exportToPdf(notebook);
   });
   ///Evento de exportar a word
-  exportToWordBtn.addEventListener('click', async () => {
-    console.log(previewModalBody)
+  exportToWordBtn.addEventListener("click", async () => {
+    console.log(previewModalBody);
     exportToWord(notebook);
   });
 
@@ -379,45 +410,55 @@ export async function afterRender() {
   async function getTableDataset(resource, init, end) {
     const data = await getAllConsumptionsByFiltersMonth(resource, init, end);
     if (data.length === 0) {
-      Alerts.showInfo('No hay datos que coincidan para los filtros seleccionados')
-      return
-    };
+      Alerts.showInfo(
+        "No hay datos que coincidan para los filtros seleccionados"
+      );
+      return;
+    }
     ///Obtenemos la data
     const dataset = {
       title: `Consumos ${resource ?? ""} (${init}–${end})`,
-      columns: ['#', 'Recurso', 'Cantidad', 'Fecha', 'Costo'],
+      columns: ["#", "Recurso", "Cantidad", "Fecha", "Costo"],
       ///Iteramos las filas obtenidas
       rows: data.map((c, i) => [
         i + 1,
         c.resourcePurityName,
         c.quantity + " " + c.resourceMeasureUnit,
-        (c.consumptionDate || '').split(' ')[0],
-        "$" + c.cost
-      ])
+        (c.consumptionDate || "").split(" ")[0],
+        "$" + c.cost,
+      ]),
     };
-    console.table(dataset)
+    console.table(dataset);
     return dataset;
   }
 
   ///Aca es el evento para insertar las tablas
-  importTableBtn.addEventListener('click', async () => {
+  importTableBtn.addEventListener("click", async () => {
     tableToImport.innerHTML = "";
     const resourceName = resourceSelected2.value;
-    if(initialDate2.value > lastDate2.value){
-      Alerts.showToastCloseInfo("La fecha inicial no puede ser mayor a la fecha final")
-      return
+    if (initialDate2.value > lastDate2.value) {
+      Alerts.showToastCloseInfo(
+        "La fecha inicial no puede ser mayor a la fecha final"
+      );
+      return;
     }
     if (!isChecked && resourceSelected2.value === 0) {
-      Alerts.showToastCloseInfo("Debes seleccionar un recurso")
+      Alerts.showToastCloseInfo("Debes seleccionar un recurso");
       return;
     }
     if (!validateValuesToImport(initialDate2.value, lastDate2.value)) {
-      Alerts.showToastCloseInfo("Favor seleccionar el filtro de fechas y el nombre del recurso");
+      Alerts.showToastCloseInfo(
+        "Favor seleccionar el filtro de fechas y el nombre del recurso"
+      );
       return;
     }
 
     ///Obtenemos la data
-    const dataset = await getTableDataset(resourceName, initialDate2.value, lastDate2.value);
+    const dataset = await getTableDataset(
+      resourceName,
+      initialDate2.value,
+      lastDate2.value
+    );
     if (!dataset) {
       Alerts.showToastCloseInfo("No hay datos para los filtros seleccionados");
       return;
@@ -427,37 +468,54 @@ export async function afterRender() {
     addCellByNumber(10, dataset, notebook);
   });
 
-
   ///Aca le asignamos a cada elemento desde el h1-h6 y el p que puedan abrir el toast
   if (toastTrigger1) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger1.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger1.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTrigger2) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger2.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger2.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTrigger3) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger3.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger3.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTrigger4) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger4.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger4.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTrigger5) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger5.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger5.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTrigger6) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTrigger6.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTrigger6.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
   if (toastTriggerP) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-    toastTriggerP.addEventListener('click', () => { toastBootstrap.show() })
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastTriggerP.addEventListener("click", () => {
+      toastBootstrap.show();
+    });
   }
 }
-
-
-
